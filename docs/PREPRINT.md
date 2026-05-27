@@ -1,6 +1,6 @@
 # The Macrokit Pattern: Intent Routing and Macro Distillation for Weak LLMs on Narrow Workflows
 
-**Author:** James Walstonn, Deakee Technology / Macrokit
+**Author:** Cheng Qian, Deakee Technology / Macrokit
 **Status:** Published at Zenodo. DOI: [10.5281/zenodo.20412772](https://zenodo.org/records/20412772)
 **Repository:** [github.com/macrokit/core](https://github.com/macrokit/core) (commit pinned at submission)
 **License of accompanying code:** Apache 2.0
