@@ -1,0 +1,25 @@
+{
+  "name": "@macrokit-example/pr-triager",
+  "version": "0.0.1",
+  "description": "Dogfood: a tiny GitHub PR triager built only on public Macrokit APIs.",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/main.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "gate": "node ../../packages/cli/dist/cli.js gate .macrokit/sessions"
+  },
+  "dependencies": {
+    "@macrokit/authoring": "workspace:*",
+    "@macrokit/llm": "workspace:*",
+    "@macrokit/runtime": "workspace:*",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
