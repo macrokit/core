@@ -20,7 +20,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@macrokit/runtime": "workspace:*"
+    "@macrokit/runtime": "workspace:*",
+    "zod-to-json-schema": "^3.23.5"
   },
   "devDependencies": {
     "tsup": "^8.3.5",

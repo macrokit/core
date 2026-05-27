@@ -1,4 +1,5 @@
 import type { Macro, MacroContext, Schema } from "@macrokit/runtime";
+import { zodToJsonSchema } from "zod-to-json-schema";
 
 /**
  * A test fixture: a recorded (args, result) pair, optionally with the tool
@@ -73,9 +74,45 @@ export function defineMacro<TInput, TOutput>(
   return {
     name: spec.name,
     intent: spec.intent,
-    schema: spec.schema,
+    schema: enrichSchema(spec.schema),
     handler: spec.handler,
     category: spec.category ?? "domain",
     fixtures: spec.fixtures ?? [],
   };
+}
+
+/**
+ * Attach a JSON Schema rendering to the macro's schema so the IntentRouter
+ * shows the model real argument names + types (instead of a permissive
+ * "object" fallback). Critical for weak models — see benchmark run 1
+ * (commit prior to this change), where every miss was `tool_only`: model
+ * picked the right macro but invented arg names because it never saw the
+ * actual schema.
+ *
+ * Supports zod natively (detected via `_def`). Schemas from other libs
+ * that already carry a `jsonSchema` property are passed through. Otherwise
+ * we leave the schema alone and the router falls back to permissive
+ * defaults.
+ */
+function enrichSchema<T>(schema: Schema<T>): Schema<T> {
+  const s = schema as Schema<T> & { jsonSchema?: unknown; _def?: unknown };
+  if (s.jsonSchema && typeof s.jsonSchema === "object") return s;
+  if (!s._def) return s;
+  try {
+    const json = zodToJsonSchema(schema as never, {
+      $refStrategy: "none",
+      target: "openApi3",
+    }) as Record<string, unknown>;
+    // OpenAI tool params don't want $schema/title; strip them.
+    delete json["$schema"];
+    delete json["title"];
+    return new Proxy(schema as object, {
+      get(target, prop): unknown {
+        if (prop === "jsonSchema") return json;
+        return Reflect.get(target, prop, target);
+      },
+    }) as Schema<T>;
+  } catch {
+    return schema;
+  }
 }
