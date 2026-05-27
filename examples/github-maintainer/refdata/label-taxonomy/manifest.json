@@ -1,0 +1,14 @@
+{
+  "name": "macrokit-github-maintainer-labels",
+  "version": "1.0.0",
+  "publishedAt": "2026-05-27T09:15:18.997Z",
+  "files": [
+    {
+      "path": "labels.json",
+      "format": "json",
+      "sha256": "bebfdd3dec95b3176a9c201587baf7934aa045097f7a29ab44ed4bb6cf4d8b66"
+    }
+  ],
+  "signedBy": "b3666bd7e109da5cf1ee5f8d320020ed1407cc39f3e0993407e05158062a4538",
+  "signature": "e886bf2a703aac6699abbe81c062c32f81e7c2f2f5efd5ef08e4c8b9edd04e1b51aa655952b7162ac1e0e4f54b7ce572a37901d711866f6f2d3731edbefac308"
+}

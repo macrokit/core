@@ -21,7 +21,7 @@ importers:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.19.19)(jsdom@25.0.1)
 
-  examples/pr-triager:
+  examples/github-maintainer:
     dependencies:
       '@macrokit/authoring':
         specifier: workspace:*
@@ -29,6 +29,9 @@ importers:
       '@macrokit/llm':
         specifier: workspace:*
         version: link:../../packages/llm
+      '@macrokit/reference-data':
+        specifier: workspace:*
+        version: link:../../packages/reference-data
       '@macrokit/runtime':
         specifier: workspace:*
         version: link:../../packages/runtime

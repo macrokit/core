@@ -1,7 +1,7 @@
 {
-  "name": "@macrokit-example/pr-triager",
+  "name": "@macrokit-example/github-maintainer",
   "version": "0.0.1",
-  "description": "Dogfood: a tiny GitHub PR triager built only on public Macrokit APIs.",
+  "description": "Macrokit reference implementation: a GitHub maintainer agent. Drives github.com via its API plus 1–2 adjacent surfaces via the browser package.",
   "license": "Apache-2.0",
   "private": true,
   "type": "module",
@@ -9,11 +9,13 @@
     "start": "tsx src/main.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
+    "refdata:build": "tsx refdata/label-taxonomy/build.ts",
     "gate": "node ../../packages/cli/dist/cli.js gate .macrokit/sessions"
   },
   "dependencies": {
     "@macrokit/authoring": "workspace:*",
     "@macrokit/llm": "workspace:*",
+    "@macrokit/reference-data": "workspace:*",
     "@macrokit/runtime": "workspace:*",
     "zod": "^3.23.8"
   },

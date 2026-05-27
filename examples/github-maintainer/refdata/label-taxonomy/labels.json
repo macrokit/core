@@ -1,0 +1,14 @@
+[
+  { "name": "bug", "category": "type", "color": "d73a4a", "description": "Something isn't working" },
+  { "name": "feature", "category": "type", "color": "a2eeef", "description": "New capability" },
+  { "name": "docs", "category": "type", "color": "0075ca", "description": "Documentation only" },
+  { "name": "test", "category": "type", "color": "fef2c0", "description": "Tests only" },
+  { "name": "chore", "category": "type", "color": "ededed", "description": "Maintenance, refactor, deps" },
+  { "name": "small-change", "category": "size", "color": "c2e0c6", "description": "<20 lines" },
+  { "name": "large-change", "category": "size", "color": "f9d0c4", "description": ">500 lines" },
+  { "name": "needs-review-when-ready", "category": "status", "color": "fbca04", "description": "Draft PR" },
+  { "name": "needs-response", "category": "status", "color": "fbca04", "description": "Issue awaiting first reply" },
+  { "name": "good first issue", "category": "status", "color": "7057ff", "description": "Mentor-friendly", "stalePrune": false },
+  { "name": "pinned", "category": "status", "color": "0e8a16", "description": "Don't auto-close", "stalePrune": false },
+  { "name": "security", "category": "type", "color": "b60205", "description": "Security-relevant", "stalePrune": false }
+]
