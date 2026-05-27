@@ -27,7 +27,7 @@ If that observation holds, the answer is not to make weak models reason better. 
 
 We call the encoded sequence a **macro**. The library of macros for a given domain is the **macro registry**. The runtime that maps a user request to a macro and dispatches it is the **intent router**.
 
-The theorem is not a formal claim — it is a working hypothesis that has held in at least one private production deployment (a cross-border commerce operations system serving users without frontier-API access, in continuous operation since early 2026, currently shipping ~30 deterministic macros across five external surfaces). It is the hypothesis Macrokit is built to make testable in other domains.
+The theorem is not a formal claim — it is a working hypothesis that has held in at least one private production deployment serving users without frontier-API access since early 2026. It is the hypothesis Macrokit is built to make testable in other domains. The launch benchmark exercises it on a smaller, fully public corpus: see [`BENCHMARK.md`](BENCHMARK.md).
 
 The theorem implies a workflow split:
 

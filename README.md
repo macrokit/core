@@ -88,14 +88,15 @@ The point of this example is what's *not* in it. No agent loop. No planning prom
 
 - **[`docs/THE_PATTERN.md`](docs/THE_PATTERN.md)** — the pattern, the theorem, the distillation gate, the public/private boundary. Start here.
 - **[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)** — the SDK's component layout and the runtime loop in detail.
-- **Quickstart** — coming with Week 11 (docs site at [macrokit.dev](https://macrokit.dev)).
-- **API reference** — coming with Week 11 (auto-generated, on the docs site).
+- **[`docs/BENCHMARK.md`](docs/BENCHMARK.md)** — the launch benchmark: methodology, two-run story, honest analysis of misses, and why we don't run frontier rows ourselves.
+- **Quickstart** — landing with the launch (docs site at [macrokit.dev](https://macrokit.dev)).
+- **API reference** — landing with the launch (auto-generated, on the docs site).
 
 ## Status
 
 Pre-release. Targeting public launch in Q3 2026.
 
-The pattern Macrokit codifies has been running in a private production deployment since early 2026 (cross-border operations tooling for users without frontier-API access). Macrokit is the vertical-agnostic extraction of that work into a reusable SDK.
+The pattern Macrokit codifies has been running in a private production deployment since early 2026 (operations tooling for users without frontier-API access). Macrokit is the vertical-agnostic extraction of that work into a reusable SDK. The [`launch benchmark`](docs/BENCHMARK.md) exercises it on a public maintainer-agent corpus: a 7B local model scored 94.5% with zero structural failures.
 
 We will not publish a roadmap until launch. We will not promise dates. We will ship one substantive non-sensitive reference implementation alongside the launch so the pattern is demonstrable, not just describable.
 

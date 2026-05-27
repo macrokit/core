@@ -1,7 +1,7 @@
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
-import { OllamaAdapter, OpenAICompatibleAdapter } from "@macrokit/llm";
+import { AnthropicAdapter, OllamaAdapter, OpenAICompatibleAdapter } from "@macrokit/llm";
 import type { LLMAdapter } from "@macrokit/runtime";
 import { loadAllTasks } from "./load-tasks.js";
 import { runBenchmark } from "./runner.js";
@@ -51,10 +51,12 @@ const MODELS: Record<string, ModelConfig> = {
   "claude-sonnet-4": {
     id: "claude-sonnet-4",
     display: "Claude Sonnet 4 (Anthropic API)",
-    notes: "Requires ANTHROPIC_API_KEY. Anthropic API is not OpenAI-compatible by default — use an OpenAI-compat shim or update this adapter.",
-    build: () => {
-      throw new Error("claude-sonnet-4 adapter not yet wired (pending API key).");
-    },
+    notes: "Requires ANTHROPIC_API_KEY.",
+    build: () =>
+      new AnthropicAdapter({
+        model: process.env.ANTHROPIC_MODEL ?? "claude-sonnet-4-20250514",
+        apiKey: process.env.ANTHROPIC_API_KEY ?? "",
+      }),
   },
   "qwen-plus": {
     id: "qwen-plus",

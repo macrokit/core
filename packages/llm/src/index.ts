@@ -17,3 +17,4 @@ export {
   type OpenAICompatibleOptions,
 } from "./openai-compatible.js";
 export { OllamaAdapter, type OllamaOptions } from "./ollama.js";
+export { AnthropicAdapter, type AnthropicAdapterOptions } from "./anthropic.js";
