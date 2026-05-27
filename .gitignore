@@ -1,0 +1,21 @@
+node_modules
+dist
+.turbo
+.next
+.cache
+coverage
+*.tsbuildinfo
+
+# editor / OS
+.DS_Store
+.vscode
+.idea
+
+# env
+.env
+.env.local
+.env.*.local
+
+# runtime artifacts
+.macrokit/
+*.log
