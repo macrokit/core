@@ -1,11 +1,11 @@
-import type { CompleteResult, ToolSpec } from "./types.js";
+import type { CompleteResult, ToolSpec } from "./llm-types.js";
 
 /**
  * The bail-out detector catches the small, well-known set of failure modes
  * weak LLMs exhibit when they are out of their depth. See docs/THE_PATTERN.md §4.
  *
  * Each detector returns either { fired: false } or a structured fire with a
- * stable `code` so callers can route on the code rather than the prose.
+ * stable `code` so callers route on the code, not the prose.
  */
 
 export type BailOutCode =
@@ -33,29 +33,18 @@ const PASS: BailOutPass = { fired: false };
 export interface BailOutDetectorOptions {
   /** Tool specs the router advertised this turn. */
   tools: ToolSpec[];
-  /**
-   * Recent normalized tool-call history. The most recent call is index 0.
-   * Used to detect repeat-loops.
-   */
+  /** Recent normalized tool-call history; most recent at index 0. Used for repeat-loop. */
   recentToolCalls?: Array<{ name: string; args: Record<string, unknown> }>;
   /** Most recent user message — used for explicit-escalation phrases. */
   userMessage?: string;
-  /**
-   * If true, the detector treats "no tool call AND tools were available" as
-   * a fire. Off by default — many turns are valid free-form answers.
-   */
+  /** If true, treat "no tool call AND tools were available" as a fire. */
   requireToolCall?: boolean;
 }
 
-/**
- * Detector entry point. Pass the adapter's CompleteResult plus context;
- * receive either PASS or a structured fire.
- */
 export function detectBailOut(
   result: CompleteResult,
   opts: BailOutDetectorOptions,
 ): BailOutResult {
-  // 1. Explicit user escalation: user asked for the strong model.
   if (opts.userMessage && EXPLICIT_ESCALATION.test(opts.userMessage)) {
     return {
       fired: true,
@@ -65,7 +54,6 @@ export function detectBailOut(
     };
   }
 
-  // 2. Tool call printed as text instead of structured tool_calls.
   if (result.toolCalls.length === 0 && looksLikeToolCallText(result.text)) {
     return {
       fired: true,
@@ -79,7 +67,6 @@ export function detectBailOut(
     };
   }
 
-  // 3. Tool name not in the advertised set.
   const validNames = new Set(opts.tools.map((t) => t.name));
   for (const tc of result.toolCalls) {
     if (!validNames.has(tc.name)) {
@@ -94,7 +81,6 @@ export function detectBailOut(
     }
   }
 
-  // 4. Repeat-loop: same tool with same args as the most-recent call.
   if (opts.recentToolCalls && opts.recentToolCalls.length > 0 && result.toolCalls[0]) {
     const last = opts.recentToolCalls[0]!;
     const current = result.toolCalls[0];
@@ -105,8 +91,7 @@ export function detectBailOut(
       return {
         fired: true,
         code: "repeated_tool_call",
-        message:
-          `Model called "${current.name}" with identical arguments twice in a row.`,
+        message: `Model called "${current.name}" with identical arguments twice in a row.`,
         hint:
           "The previous call's result is already in the transcript. Surface " +
           "the result to the user, or escalate to the fallback adapter.",
@@ -114,7 +99,6 @@ export function detectBailOut(
     }
   }
 
-  // 5. No tool call when caller required one.
   if (opts.requireToolCall && result.toolCalls.length === 0) {
     return {
       fired: true,
@@ -131,20 +115,6 @@ export function detectBailOut(
   return PASS;
 }
 
-// ---------------------------------------------------------------------------
-// Heuristics
-// ---------------------------------------------------------------------------
-
-/**
- * Recognizes shapes a weak model uses when it intends a tool call but emits
- * it as content:
- *   - JSON object whose first key is `name`/`tool`/`function`/`action`
- *   - "tool_call: name(args)" style
- *   - bare "`function_call`" markdown fence opener
- *
- * Kept short and documented; adopters extend by passing their own custom
- * detector around this one.
- */
 const TOOL_CALL_TEXT_PATTERNS: RegExp[] = [
   /^\s*\{?\s*"?(tool|name|function|action|tool_call)"?\s*:/i,
   /^\s*tool[_ ]?call\s*[:=]/i,

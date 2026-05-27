@@ -1,7 +1,7 @@
 {
-  "name": "@macrokit/llm",
+  "name": "@macrokit/browser",
   "version": "0.0.1",
-  "description": "Macrokit LLM adapters: OpenAI-compatible, Ollama, with normalized tool-call shape and bail-out detector.",
+  "description": "Macrokit browser service: annotated screenshots and DOM action menus for weak LLMs driving web UIs.",
   "license": "Apache-2.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -19,10 +19,16 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "@macrokit/runtime": "workspace:*"
+  "peerDependencies": {
+    "playwright-core": "^1.50.0"
+  },
+  "peerDependenciesMeta": {
+    "playwright-core": { "optional": true }
   },
   "devDependencies": {
+    "@types/jsdom": "^21.1.7",
+    "jsdom": "^25.0.1",
+    "playwright-core": "^1.50.0",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"

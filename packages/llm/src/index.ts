@@ -1,3 +1,5 @@
+// Re-export the contract from runtime so adopters can import everything
+// from a single package if they only need adapters + types.
 export type {
   ChatMessage,
   ChatRole,
@@ -15,12 +17,3 @@ export {
   type OpenAICompatibleOptions,
 } from "./openai-compatible.js";
 export { OllamaAdapter, type OllamaOptions } from "./ollama.js";
-
-export {
-  detectBailOut,
-  type BailOutCode,
-  type BailOutDetectorOptions,
-  type BailOutFire,
-  type BailOutPass,
-  type BailOutResult,
-} from "./bail-out-detector.js";
