@@ -1,0 +1,95 @@
+{
+  "header": {
+    "modelId": "qwen-7b-local",
+    "modelDisplay": "Qwen 2.5 7B Instruct Q4_K_M (llama-server on China Mac)",
+    "llmProvider": "llama-server",
+    "startedAt": "2026-05-27T09:48:01.353Z",
+    "harnessCommit": "1ac076ee50beb9fe69022413f688cd1585c2cf54",
+    "corpusCommit": "1ac076ee50beb9fe69022413f688cd1585c2cf54",
+    "notes": "Production on-device model for REDACTED. SHA256 65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423. Served via llama.cpp build b9354 at 127.0.0.1:18080 via SSH tunnel."
+  },
+  "taskCount": 100,
+  "totalScore": 107,
+  "maxScore": 200,
+  "percent": 53.5,
+  "bucketBreakdown": {
+    "triage_pull_request": {
+      "total": 15,
+      "max": 30,
+      "percent": 50,
+      "count": 15
+    },
+    "triage_issue": {
+      "total": 16,
+      "max": 30,
+      "percent": 53.333333333333336,
+      "count": 15
+    },
+    "generate_release_notes": {
+      "total": 12,
+      "max": 24,
+      "percent": 50,
+      "count": 12
+    },
+    "close_stale_issues": {
+      "total": 12,
+      "max": 24,
+      "percent": 50,
+      "count": 12
+    },
+    "suggest_reviewers": {
+      "total": 10,
+      "max": 24,
+      "percent": 41.66666666666667,
+      "count": 12
+    },
+    "capture_workflow_log": {
+      "total": 8,
+      "max": 16,
+      "percent": 50,
+      "count": 8
+    },
+    "no_macro": {
+      "total": 20,
+      "max": 22,
+      "percent": 90.9090909090909,
+      "count": 11
+    },
+    "ambiguous_multi_intent": {
+      "total": 14,
+      "max": 30,
+      "percent": 46.666666666666664,
+      "count": 15
+    }
+  },
+  "difficultyBreakdown": {
+    "easy_direct": {
+      "total": 28,
+      "max": 50,
+      "percent": 56.00000000000001,
+      "count": 25
+    },
+    "medium_paraphrase": {
+      "total": 27,
+      "max": 48,
+      "percent": 56.25,
+      "count": 24
+    },
+    "hard_implicit": {
+      "total": 20,
+      "max": 40,
+      "percent": 50,
+      "count": 20
+    },
+    "hard_distractor": {
+      "total": 32,
+      "max": 62,
+      "percent": 51.61290322580645,
+      "count": 31
+    }
+  },
+  "bailOutCount": 0,
+  "bailOutBreakdown": {},
+  "meanLatencyMs": 3824.03,
+  "finishedAt": "2026-05-27T09:54:23.914Z"
+}
