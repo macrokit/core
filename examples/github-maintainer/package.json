@@ -14,12 +14,14 @@
   },
   "dependencies": {
     "@macrokit/authoring": "workspace:*",
+    "@macrokit/browser": "workspace:*",
     "@macrokit/llm": "workspace:*",
     "@macrokit/reference-data": "workspace:*",
     "@macrokit/runtime": "workspace:*",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "playwright-core": "^1.50.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"

@@ -19,7 +19,7 @@ A natural-language request from a maintainer routes to one of six deterministic 
 | `generate_release_notes(owner, repo, base, head, headingLevel?)` | Compare two refs, group commits by conventional-commit prefix, render a markdown changelog. |
 | `close_stale_issues(owner, repo, minDaysOpen?, maxComments?, excludeLabels?, apply?, closingComment?)` | Find issues inactive past a threshold (default 90 days), excluding bug/security/pinned/good-first-issue. With `apply: true`, comments + closes. Dry-run by default. |
 | `suggest_reviewers(owner, repo, number, max?)` | Match PR's changed files against the repo's CODEOWNERS, exclude the author, suggest up to N reviewers. |
-| `capture_workflow_log(owner, repo, runId)` | **[Browser-driven]** Drive the GitHub Actions web UI to capture the rendered text of a failed workflow run's logs. Exists to demonstrate that the same macro library can mix API and browser surfaces transparently. *Lands in the next commit.* |
+| `capture_workflow_log(owner, repo, runId, maxChars?)` | **[Browser-driven]** Drive the GitHub Actions web UI via `@macrokit/browser` to capture the rendered text of a workflow run's logs. The API gives you a zip of raw text; this gives you the same view a human reads — step grouping, expansions, timing annotations. Opt in with `MACROKIT_BROWSER=playwright`. |
 
 ## Architecture
 

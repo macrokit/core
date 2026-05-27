@@ -73,6 +73,13 @@ export interface BrowserService {
   /** Type into the focused / selector-matched element. */
   type(selector: string, text: string): Promise<void>;
 
+  /**
+   * Return the visible text content of the page or a specific element.
+   * Pass a CSS selector to scope to one node; omit it to return the full
+   * page body text. Whitespace is collapsed.
+   */
+  getText(selector?: string): Promise<string>;
+
   /** Release any held resources (close the page / browser context). */
   close(): Promise<void>;
 }

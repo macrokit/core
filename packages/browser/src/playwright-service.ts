@@ -94,6 +94,13 @@ export class PlaywrightBrowserService implements BrowserService {
     await this.page.locator(selector).first().fill(text);
   }
 
+  async getText(selector?: string): Promise<string> {
+    const raw = selector
+      ? ((await this.page.locator(selector).first().textContent()) ?? "")
+      : await this.page.evaluate(() => document.body.innerText);
+    return raw.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
+  }
+
   async close(): Promise<void> {
     // Don't close the page if we don't own the browser — that would clobber
     // the caller's session.
