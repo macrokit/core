@@ -108,6 +108,10 @@ The patent grant matters in enterprise contexts; that is the reason for Apache o
 
 ## Contributing
 
-The project is in its foundational weeks and not yet accepting external contributions. Watch this repository (or [macrokit.dev](https://macrokit.dev)) for the launch announcement; contribution guidelines, RFC process, and issue triage policy will land at that point.
+There are two contribution paths, with different rules.
 
-If you are building under the constraints Macrokit is designed for and want to be a design partner, the contact path will be published on [macrokit.dev](https://macrokit.dev) when the docs site goes live.
+**Publishing your own macros for a vertical.** This is the path most contributors want. Macrokit deliberately keeps `core/examples/` small (curated reference implementations); vertical macro libraries live as standalone npm packages you publish yourself, and get discovered via the community registry and the `macrokit-macros` GitHub topic. See [`CONTRIBUTING_MACROS.md`](CONTRIBUTING_MACROS.md) for the naming convention, minimum requirements, and how to get listed. The `macrokit lint --pkg <path>` command checks your package against the conformance bar before you open a registry PR.
+
+**SDK-internal contributions** (changes to `@macrokit/runtime`, `@macrokit/llm`, `@macrokit/browser`, `@macrokit/authoring`, `@macrokit/reference-data`, `@macrokit/cli`) are not yet accepting external PRs while the API surface stabilizes. Issues and discussion are welcome on this repo's tracker. A full contribution guideline + RFC process lands after the first stable minor.
+
+If you are building under the constraints Macrokit is designed for and want to be a design partner, contact via [macrokit.dev](https://macrokit.dev) or [@macrokitdev](https://x.com/macrokitdev) on X.
