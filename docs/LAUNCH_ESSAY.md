@@ -37,11 +37,11 @@ Two of the seven misses turned out to be scoring artifacts I caught after the fa
 
 ## What I am *not* saying
 
-I am not saying weak local models match frontier models. I have not run frontier models on this benchmark. I'm not going to.
+I'm not saying weak local models match frontier models. I haven't run frontier models on this benchmark, and the published table doesn't have a frontier row. That's deliberate.
 
-There were two ways to ship this. One was to pay for inference on Claude, GPT-4o, Qwen Plus, GLM-4, DeepSeek; produce a five-row table; publish a "weak models match frontier" headline. The other was to publish the local row, ship the harness, and put the burden of cloud comparison on whoever wants the comparison.
+There were two ways to ship this. One was to pay for inference on Claude, GPT-4o, Qwen Plus, GLM-4, DeepSeek; produce a five-row table; publish a "weak models match frontier" headline. The other was to publish the local row, ship the harness, and put the cost of comparing on whoever wants the comparison.
 
-I'm taking the second path. Three reasons, in order of how much they matter:
+I took the second path. Three reasons, in priority order:
 
 **(1) The constraint is the product.** Macrokit's intended users — operators in regulated verticals, Chinese-market deployers, air-gapped enterprise — cannot use frontier APIs. If I run cloud comparisons to validate Macrokit, I'm implicitly conceding that the cloud row is the standard and the local row is a managed regression from it. That's the framing the SDK exists to dissolve. The on-device number isn't a discount; it's the headline.
 
@@ -91,6 +91,6 @@ ANTHROPIC_API_KEY=sk-ant-... pnpm exec tsx src/cli.ts run --model claude-sonnet-
 
 Apache 2.0. No telemetry. No phone-home. Built for users who can't or won't depend on cloud APIs.
 
-[macrokit.dev](https://macrokit.dev) · [github.com/macrokit](https://github.com/macrokit) · [@macrokitdev](https://twitter.com/macrokitdev) *(if Twitter is still here when you read this)*
+[macrokit.dev](https://macrokit.dev) · [github.com/macrokit](https://github.com/macrokit) · [@macrokitdev](https://x.com/macrokitdev) on X
 
-— *James, founder, [Deakee](https://deakee.com). Built on the architecture proven in production by an unrelated cross-border ops tool we run privately; Macrokit is the vertical-agnostic extraction.*
+— *James, founder, [Deakee](https://deakee.com). Macrokit is the vertical-agnostic extraction of an architecture proven in production by an unrelated operations tool we run privately.*

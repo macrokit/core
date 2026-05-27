@@ -1,7 +1,7 @@
 # The Macrokit Pattern: Intent Routing and Macro Distillation for Weak LLMs on Narrow Workflows
 
 **Author:** James Walston, Deakee Technology / Macrokit
-**Status:** Draft v1.0 for arXiv submission (cs.SE / cs.HC), 2026-Q3
+**Status:** Draft v1.0 for Zenodo preprint deposit, 2026-Q3 (DOI assigned at submission)
 **Repository:** [github.com/macrokit/core](https://github.com/macrokit/core) (commit pinned at submission)
 **License of accompanying code:** Apache 2.0
 
@@ -247,14 +247,17 @@ This work would not have been possible without the prior practice of the [REDACT
 
 ## Bibliography
 
-*(To be filled in pre-arXiv submission.)*
-
-[1] Schick, T., et al. *Toolformer: Language Models Can Teach Themselves to Use Tools.* NeurIPS 2023.
-[2] Yao, S., et al. *ReAct: Synergizing Reasoning and Acting in Language Models.* ICLR 2023.
-[3] Patil, S. G., et al. *Gorilla: Large Language Model Connected with Massive APIs.* arXiv:2305.15334, 2023.
-[4] OpenAI. *Function calling in the Chat Completions API.* Developer documentation, 2023–2026.
-[5] Anthropic. *Tool use with Claude.* Developer documentation, 2024–2026.
-[6] LangChain documentation. *Building agents with LangChain.* langchain.com, 2023–2026.
+[1] Schick, T., Dwivedi-Yu, J., Dessì, R., Raileanu, R., Lomeli, M., Zettlemoyer, L., Cancedda, N., Scialom, T. *Toolformer: Language Models Can Teach Themselves to Use Tools.* arXiv:2302.04761, Feb 2023. (Appeared NeurIPS 2023.)
+[2] Yao, S., Zhao, J., Yu, D., Du, N., Shafran, I., Narasimhan, K., Cao, Y. *ReAct: Synergizing Reasoning and Acting in Language Models.* arXiv:2210.03629, Oct 2022. (Appeared ICLR 2023.)
+[3] Patil, S. G., Zhang, T., Wang, X., Gonzalez, J. E. *Gorilla: Large Language Model Connected with Massive APIs.* arXiv:2305.15334, May 2023.
+[4] Qwen Team, Alibaba. *Qwen2.5 Technical Report.* arXiv:2412.15115, Dec 2024.
+[5] OpenAI. *Function calling and other API updates.* openai.com, June 2023; chat completions function-calling API reference, platform.openai.com/docs, 2023–2026.
+[6] Anthropic. *Tool use with Claude.* Anthropic Messages API reference, docs.anthropic.com/en/docs/build-with-claude/tool-use, 2024–2026.
+[7] llama.cpp project. *llama.cpp: LLM inference in C/C++.* github.com/ggml-org/llama.cpp, accessed at release tag b9354.
+[8] Bartowski. *Qwen2.5-7B-Instruct-GGUF (Q4_K_M).* huggingface.co/bartowski/Qwen2.5-7B-Instruct-GGUF, SHA-256 of the Q4_K_M GGUF: `65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423`.
+[9] LangChain. *Agents with LangChain.* python.langchain.com/docs/concepts/agents/, 2023–2026.
+[10] Microsoft Research. *AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation.* arXiv:2308.08155, Aug 2023.
+[11] crewAIInc. *crewAI: Cutting-edge framework for orchestrating role-playing autonomous AI agents.* github.com/crewAIInc/crewAI, 2023–2026.
 
 ---
 
