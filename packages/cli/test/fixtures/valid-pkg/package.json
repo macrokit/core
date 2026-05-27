@@ -1,0 +1,13 @@
+{
+  "name": "macrokit-macros-paper-triage",
+  "version": "0.1.0",
+  "description": "Fixture: a Macrokit macro package that should pass `macrokit lint --pkg`.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "files": ["dist", "src"],
+  "peerDependencies": {
+    "@macrokit/authoring": "^0.0.1",
+    "zod": "^3.23.0"
+  }
+}

@@ -6,7 +6,7 @@ import {
   loadSessionLog,
   type GateViolation,
 } from "./gate.js";
-import { lintProject } from "./lint.js";
+import { lintPackage, lintProject } from "./lint.js";
 import { initProject } from "./init.js";
 
 const HELP = `macrokit — the Macrokit CLI
@@ -17,6 +17,11 @@ Usage:
 
   macrokit lint [<path>]
       Static checks on macro source files (defaults to ./src).
+
+  macrokit lint --pkg <path>
+      Validate a standalone community macro package against the
+      community spec (peer dep on @macrokit/authoring, Macro-shape
+      export, tests, README). See core/CONTRIBUTING_MACROS.md.
 
   macrokit gate [<path>] [--threshold N] [--json]
       Distillation gate: flag sessions whose user turns dispatched
@@ -90,6 +95,11 @@ function runInit(args: string[]): number {
 // ---------------------------------------------------------------------------
 
 function runLint(args: string[]): number {
+  const pkgPath = flagValue(args, "--pkg");
+  if (pkgPath !== undefined) {
+    return runLintPackage(resolve(pkgPath));
+  }
+
   const root = resolve(args.find((a) => !a.startsWith("--")) ?? "./src");
   if (!existsSync(root)) {
     process.stderr.write(`macrokit lint: ${root} does not exist\n`);
@@ -104,6 +114,37 @@ function runLint(args: string[]): number {
     process.stdout.write(`${f.file}:${f.line}: ${f.rule}: ${f.message}\n`);
   }
   process.stdout.write(`\n${findings.length} finding(s).\n`);
+  return 1;
+}
+
+function runLintPackage(pkgPath: string): number {
+  if (!existsSync(pkgPath)) {
+    process.stderr.write(`macrokit lint --pkg: ${pkgPath} does not exist\n`);
+    return 2;
+  }
+  const result = lintPackage(pkgPath);
+  const passed = result.checks.filter((c) => c.ok).length;
+  const total = result.checks.length;
+
+  process.stdout.write(`Linting community macro package: ${pkgPath}\n\n`);
+  for (const c of result.checks) {
+    const mark = c.ok ? "✓" : "✗";
+    process.stdout.write(`  ${mark} ${c.rule}\n    ${c.message}\n\n`);
+  }
+
+  if (result.findings.length === 0) {
+    process.stdout.write(
+      `macrokit lint --pkg: PASS — ${passed}/${total} checks green.\n` +
+        `Package is eligible for registry listing once it has 5+ benchmark ` +
+        `tasks and follows the README/license rules in CONTRIBUTING_MACROS.md.\n`,
+    );
+    return 0;
+  }
+
+  process.stdout.write(
+    `macrokit lint --pkg: FAIL — ${result.findings.length} of ${total} checks failed.\n` +
+      `Fix the failing checks above before opening a registry PR.\n`,
+  );
   return 1;
 }
 
