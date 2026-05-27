@@ -1,0 +1,11 @@
+{"id":"NM001","bucket":"no_macro","difficulty":"easy_direct","prompt":"hi! how are you today?","expected":{"tool":null}}
+{"id":"NM002","bucket":"no_macro","difficulty":"easy_direct","prompt":"what's 2 + 2?","expected":{"tool":null}}
+{"id":"NM003","bucket":"no_macro","difficulty":"easy_direct","prompt":"thanks!","expected":{"tool":null}}
+{"id":"NM004","bucket":"no_macro","difficulty":"medium_paraphrase","prompt":"can you write me a haiku about software engineering","expected":{"tool":null},"notes":"Creative task; no maintainer macro applies."}
+{"id":"NM005","bucket":"no_macro","difficulty":"medium_paraphrase","prompt":"what's the best programming language and why","expected":{"tool":null}}
+{"id":"NM006","bucket":"no_macro","difficulty":"medium_paraphrase","prompt":"explain how git rebase works","expected":{"tool":null}}
+{"id":"NM007","bucket":"no_macro","difficulty":"hard_distractor","prompt":"can you help me triage my email inbox","expected":{"tool":null},"notes":"'triage' is in the prompt but the target is email, not a PR/issue."}
+{"id":"NM008","bucket":"no_macro","difficulty":"hard_distractor","prompt":"in github terms, what does 'CODEOWNERS' actually mean","expected":{"tool":null},"notes":"Conceptual question about GitHub; not actionable."}
+{"id":"NM009","bucket":"no_macro","difficulty":"hard_distractor","prompt":"how do you decide if a pull request is a bug or a feature","expected":{"tool":null},"notes":"Asking how triage WORKS, not asking to triage."}
+{"id":"NM010","bucket":"no_macro","difficulty":"hard_distractor","prompt":"give me a release notes template I can adapt","expected":{"tool":null},"notes":"Template request, not 'generate notes for repo X'."}
+{"id":"NM011","bucket":"no_macro","difficulty":"hard_distractor","prompt":"how often should I be closing stale issues in a project","expected":{"tool":null}}

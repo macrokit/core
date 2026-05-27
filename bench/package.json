@@ -1,0 +1,24 @@
+{
+  "name": "@macrokit/bench",
+  "version": "0.0.1",
+  "description": "Launch benchmark harness: 5 models × ~100 maintainer-agent tasks, scored on intent-routing accuracy.",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "run": "tsx src/cli.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@macrokit/authoring": "workspace:*",
+    "@macrokit/llm": "workspace:*",
+    "@macrokit/runtime": "workspace:*",
+    "@macrokit-example/github-maintainer": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
