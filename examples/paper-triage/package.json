@@ -1,0 +1,24 @@
+{
+  "name": "@macrokit-example/paper-triage",
+  "version": "0.0.1",
+  "description": "Macrokit reference implementation: an academic paper triage agent driving Semantic Scholar and OpenAlex.",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/main.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@macrokit/authoring": "workspace:*",
+    "@macrokit/llm": "workspace:*",
+    "@macrokit/runtime": "workspace:*",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
