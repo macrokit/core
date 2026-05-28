@@ -19,3 +19,8 @@ coverage
 # runtime artifacts
 .macrokit/
 *.log
+
+# Pattern-report inbox (auto-implementer input). Lives at parent dir
+# ~/Documents/macrokit/.inbox/ but listed here as belt-and-suspenders in
+# case a script ever writes into core/.inbox/.
+.inbox/

@@ -1,0 +1,109 @@
+name: Leakage scan
+
+# Defense in depth for Sacred Rule #1 (CLAUDE.md): no REDACTED domain
+# content leaks into Macrokit's public repo. Runs on EVERY PR to main,
+# not just auto-implementer PRs — human PRs get the same gate.
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: leakage-scan-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    name: Diff scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          # Need history so we can diff against the PR base.
+          fetch-depth: 0
+
+      - name: Fetch base ref
+        run: |
+          git fetch --no-tags --prune origin "+refs/heads/${{ github.base_ref }}:refs/remotes/origin/${{ github.base_ref }}"
+
+      - name: Run leakage scan
+        id: scan
+        env:
+          BASE_REF: origin/${{ github.base_ref }}
+        run: |
+          set +e
+          bash scripts/check-leakage.sh > scan-output.txt 2>&1
+          code=$?
+          set -e
+          echo "exit_code=${code}" >> "${GITHUB_OUTPUT}"
+          # Always show the output in the job log.
+          cat scan-output.txt
+          # Persist for the comment step.
+          {
+            echo "SCAN_OUTPUT<<EOF"
+            cat scan-output.txt
+            echo "EOF"
+          } >> "${GITHUB_ENV}"
+          # 0 = clean, 2 = soft-warn (do not fail), 1 = hard fail.
+          if [[ "${code}" == "1" ]]; then exit 1; fi
+          exit 0
+
+      - name: Comment on PR (hard fail)
+        if: failure() && steps.scan.outputs.exit_code == '1'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = [
+              '## ❌ Leakage scan failed',
+              '',
+              'This PR contains terms that violate the Macrokit public/private boundary',
+              '(Sacred Rule #1, see `CLAUDE.md` and `docs/AUTOMATED_PATTERN_INGESTION.md`).',
+              '',
+              '<details><summary>Scanner output</summary>',
+              '',
+              '```',
+              process.env.SCAN_OUTPUT || '(no output captured)',
+              '```',
+              '',
+              '</details>',
+              '',
+              'If this is a false positive, see `docs/AUTOMATED_PATTERN_INGESTION.md`',
+              'for how to extend the deny-list or rephrase the change.',
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+
+      - name: Comment on PR (manual review)
+        if: success() && steps.scan.outputs.exit_code == '2'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = [
+              '## ⚠️ Leakage scan: manual review marker',
+              '',
+              'Soft-warn terms were detected. The job did **not** fail, but a reviewer',
+              'should eyeball the matches before merging.',
+              '',
+              '<details><summary>Scanner output</summary>',
+              '',
+              '```',
+              process.env.SCAN_OUTPUT || '(no output captured)',
+              '```',
+              '',
+              '</details>',
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
