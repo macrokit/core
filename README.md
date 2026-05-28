@@ -1,5 +1,7 @@
 # Macrokit
 
+[![CI](https://github.com/macrokit/core/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/macrokit/core/actions/workflows/ci.yml)
+
 **An open-source SDK that lets weak and local LLMs work like frontier models on narrow workflows.**
 
 [macrokit.dev](https://macrokit.dev) · Apache 2.0 · TypeScript · Pre-release
