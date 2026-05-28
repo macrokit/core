@@ -1,0 +1,149 @@
+name: Auto-merge auto-implementer PRs
+
+# Auto-squashes PRs from the auto/patterns-* branch namespace once all
+# required checks pass. Human PRs are NEVER auto-merged — this workflow
+# is namespaced to auto/patterns-* only.
+#
+# Required signals (enforced by the conditionals below):
+#   - PR head ref matches auto/patterns-*
+#   - CI workflow ("Build & test") succeeded on the PR head
+#   - Leakage scan succeeded on the PR head
+#   - PR has no requested reviewers (i.e. nobody has flagged it for human review)
+#   - PR is not draft
+#
+# If any condition is unmet the job exits cleanly without merging.
+
+on:
+  workflow_run:
+    workflows: ["CI", "Leakage scan"]
+    types: [completed]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
+jobs:
+  auto-merge:
+    name: Auto-merge if green
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Only run for auto/patterns-* branches. Critical guard: human PRs
+    # MUST NOT be auto-merged.
+    if: >
+      (github.event_name == 'pull_request' && startsWith(github.event.pull_request.head.ref, 'auto/patterns-')) ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request' &&
+       startsWith(github.event.workflow_run.head_branch, 'auto/patterns-'))
+    steps:
+      - name: Resolve PR number
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // For pull_request events we have it directly. For workflow_run
+            // we have to find the open PR whose head matches.
+            if (context.eventName === 'pull_request') {
+              core.setOutput('number', context.payload.pull_request.number);
+              core.setOutput('head_sha', context.payload.pull_request.head.sha);
+              core.setOutput('head_ref', context.payload.pull_request.head.ref);
+              return;
+            }
+            const branch = context.payload.workflow_run.head_branch;
+            const sha = context.payload.workflow_run.head_sha;
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: `${context.repo.owner}:${branch}`,
+            });
+            if (prs.length === 0) {
+              core.info(`no open PR for ${branch}; skipping`);
+              return;
+            }
+            core.setOutput('number', prs[0].number);
+            core.setOutput('head_sha', sha);
+            core.setOutput('head_ref', branch);
+
+      - name: Check guard conditions
+        id: guard
+        if: steps.pr.outputs.number != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = parseInt('${{ steps.pr.outputs.number }}', 10);
+            const headSha = '${{ steps.pr.outputs.head_sha }}';
+            const headRef = '${{ steps.pr.outputs.head_ref }}';
+
+            // Hard guard #1: branch name MUST match auto/patterns-*. The
+            // workflow `if:` already filtered this but verify in code too.
+            if (!headRef.startsWith('auto/patterns-')) {
+              core.setFailed(`refusing to auto-merge non-auto branch: ${headRef}`);
+              return;
+            }
+
+            // Hard guard #2: PR must be open and not draft.
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+            if (pr.state !== 'open' || pr.draft) {
+              core.info(`PR ${prNumber} not open or is draft; skipping`);
+              core.setOutput('proceed', 'false');
+              return;
+            }
+
+            // Hard guard #3: no review requested.
+            const reviewersRequested =
+              (pr.requested_reviewers && pr.requested_reviewers.length > 0) ||
+              (pr.requested_teams && pr.requested_teams.length > 0);
+            if (reviewersRequested) {
+              core.info(`PR ${prNumber} has requested reviewers; skipping`);
+              core.setOutput('proceed', 'false');
+              return;
+            }
+
+            // Required checks. Pull the latest check runs for the head SHA
+            // and assert that CI's "Build & test" and "Leakage scan / Diff
+            // scan" both succeeded.
+            const { data: checks } = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: headSha,
+              per_page: 100,
+            });
+
+            const required = ['Build & test', 'Diff scan'];
+            const byName = new Map();
+            for (const cr of checks.check_runs) byName.set(cr.name, cr);
+
+            for (const name of required) {
+              const cr = byName.get(name);
+              if (!cr) {
+                core.info(`required check "${name}" not present yet; skipping`);
+                core.setOutput('proceed', 'false');
+                return;
+              }
+              if (cr.status !== 'completed' || cr.conclusion !== 'success') {
+                core.info(`check "${name}" status=${cr.status} conclusion=${cr.conclusion}; skipping`);
+                core.setOutput('proceed', 'false');
+                return;
+              }
+            }
+
+            core.setOutput('proceed', 'true');
+            core.setOutput('pr_number', String(prNumber));
+
+      - name: Enable auto-merge (squash)
+        if: steps.guard.outputs.proceed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr merge "${{ steps.guard.outputs.pr_number }}" \
+            --repo "${{ github.repository }}" \
+            --squash \
+            --auto \
+            --delete-branch
