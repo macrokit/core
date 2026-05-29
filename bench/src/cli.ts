@@ -27,7 +27,7 @@ const BENCH_ROOT = resolve(here, "..");
 const MODELS: Record<string, ModelConfig> = {
   "qwen-7b-local": {
     id: "qwen-7b-local",
-    display: "Qwen 2.5 7B Instruct Q4_K_M (llama-server on China Mac)",
+    display: "Qwen 2.5 7B Instruct Q4_K_M (llama-server on an M1 MacBook)",
     notes:
       "Production on-device model of the private reference deployment. SHA256 " +
       "65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423. " +

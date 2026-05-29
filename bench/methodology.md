@@ -29,7 +29,7 @@ We **are** measuring: *given the pattern, does the routing step work at all on w
 | Cloud (mid-size) | `qwen-plus` | Alibaba DashScope | Cloud API | pending API key |
 | Cloud (cheap) | `deepseek-chat` | DeepSeek | Cloud API | pending API key |
 | Cloud (cheap) | `glm-4-flash` | Zhipu | Cloud API | pending API key |
-| **On-device floor** | **`Qwen 2.5 7B Instruct Q4_K_M`** | **llama-server, China Mac (M1, 16 GB)** | **Local** | **runnable now** |
+| **On-device floor** | **`Qwen 2.5 7B Instruct Q4_K_M`** | **llama-server, M1 MacBook (16 GB)** | **Local** | **runnable now** |
 
 The on-device row is the **production model** of the private reference deployment. Exact quant: bartowski's GGUF, SHA256 `65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423`, 4.4 GB. llama.cpp build `b9354`.
 
