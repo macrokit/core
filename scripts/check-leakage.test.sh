@@ -122,7 +122,7 @@ index 1111..2222 100644
 +++ b/docs/architecture.md
 @@ -1,1 +1,2 @@
  line one
-+Macrokit runs on Apple Silicon and Linux
++The Apple logo appeared in the demo screenshot
 '
 run_case 2 "${APPLE_DIFF}" "soft-warn 'Apple' returns exit 2"
 
@@ -173,6 +173,64 @@ index 1111..2222 100644
 -this used to mention REDACTED but is being removed
 '
 run_case 0 "${DELETION_DIFF}" "deletions of banned terms do not trigger"
+
+# Allowlist: a line carrying an allowlisted fixed substring (author byline)
+# must NOT trigger even though it contains a deny-listed token (Deakee).
+ALLOWLIST_DIFF='diff --git a/docs/PREPRINT.md b/docs/PREPRINT.md
+index 1111..2222 100644
+--- a/docs/PREPRINT.md
++++ b/docs/PREPRINT.md
+@@ -1,1 +1,2 @@
+ line
++**Author:** Cheng Qian, Deakee Technology / Macrokit
+'
+run_case 0 "${ALLOWLIST_DIFF}" "allowlisted author byline (Deakee Technology) does not trigger"
+
+# Allowlist is scoped: the SAME token outside the allowlisted phrase still fails.
+NONALLOWLIST_DIFF='diff --git a/docs/foo.md b/docs/foo.md
+index 1111..2222 100644
+--- a/docs/foo.md
++++ b/docs/foo.md
+@@ -1,1 +1,2 @@
+ line
++the deakee platform does things
+'
+run_case 1 "${NONALLOWLIST_DIFF}" "deakee outside allowlisted phrase still fails"
+
+# ---------------------------------------------------------------------------
+# Full-tree mode. Run the real --all scan against the working tree; it must
+# come back clean (exit 0) now that all leaks are fixed and allowlisted.
+# ---------------------------------------------------------------------------
+run_full_tree_case() {
+  local expected="$1"
+  local desc="$2"
+  local actual
+  set +e
+  ( cd "${SCRIPT_DIR}/.." && "${SCANNER}" --all ) >/dev/null 2>&1
+  actual=$?
+  set -e
+  if [[ "${actual}" == "${expected}" ]]; then
+    printf '  ok  %s (exit %s)\n' "${desc}" "${actual}"
+    PASS=$((PASS + 1))
+  else
+    printf '  FAIL %s — expected exit %s, got %s\n' "${desc}" "${expected}" "${actual}"
+    FAIL=$((FAIL + 1))
+  fi
+}
+
+run_full_tree_case 0 "full-tree scan of working tree is clean"
+
+# Verify the four required terms are present in the hard-fail deny-list by
+# grepping the scanner source (cheap, no second scan needed).
+for required in REDACTED cross-border ecommerce e-commerce; do
+  if grep -qF "\"${required}\"" "${SCANNER}"; then
+    printf '  ok  deny-list contains %s\n' "${required}"
+    PASS=$((PASS + 1))
+  else
+    printf '  FAIL deny-list missing %s\n' "${required}"
+    FAIL=$((FAIL + 1))
+  fi
+done
 
 echo ""
 echo "Results: ${PASS} passed, ${FAIL} failed"

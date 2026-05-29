@@ -1,11 +1,18 @@
 name: Leakage scan
 
-# Defense in depth for Sacred Rule #1 (CLAUDE.md): no REDACTED domain
-# content leaks into Macrokit's public repo. Runs on EVERY PR to main,
-# not just auto-implementer PRs — human PRs get the same gate.
+# Defense in depth for Sacred Rule #1 (CLAUDE.md): no private-deployment
+# domain content leaks into Macrokit's public repo.
+#
+# Two layers:
+#   - Diff scan: runs on EVERY PR to main (human + auto). Scans added lines.
+#   - Full-tree scan: runs on every push to main. Scans ALL tracked files,
+#     so a leak that slips in another way (force-push, direct commit, a
+#     base that drifted) is still caught after landing.
 
 on:
   pull_request:
+    branches: [main]
+  push:
     branches: [main]
 
 concurrency:
@@ -15,6 +22,7 @@ concurrency:
 jobs:
   scan:
     name: Diff scan
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 3
     permissions:
@@ -107,3 +115,27 @@ jobs:
               issue_number: context.issue.number,
               body,
             });
+
+  full-tree:
+    name: Full-tree scan
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run full-tree leakage scan
+        run: |
+          set +e
+          bash scripts/check-leakage.sh --all
+          code=$?
+          set -e
+          # 0 = clean, 2 = soft-warn (non-fatal, just logged), 1 = hard fail.
+          if [[ "${code}" == "1" ]]; then
+            echo "::error::Full-tree leakage scan found banned terms on main."
+            exit 1
+          fi
+          exit 0

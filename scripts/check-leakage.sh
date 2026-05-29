@@ -60,8 +60,39 @@ SELF_EXCLUDE=(
   ":(exclude)scripts/install-auto-implementer-cron.sh"
   ":(exclude).github/workflows/leakage-scan.yml"
   ":(exclude)docs/AUTOMATED_PATTERN_INGESTION.md"
+  # Frozen pre-registered benchmark artifacts. The corpus + recorded run
+  # outputs are immutable (a corpusCommit hash pins them); editing them to
+  # scrub a sample-repo name would invalidate the pre-registration. They
+  # are append-only data, not authored prose. Excluded by explicit decision
+  # — see docs/AUTOMATED_PATTERN_INGESTION.md "Allowlist".
+  ":(exclude)bench/runs/*"
+  ":(exclude)bench/tasks/*"
 )
-SELF_EXCLUDE_PATHS="scripts/check-leakage.sh scripts/check-leakage.test.sh scripts/auto-implementer.sh scripts/install-auto-implementer-cron.sh .github/workflows/leakage-scan.yml docs/AUTOMATED_PATTERN_INGESTION.md"
+SELF_EXCLUDE_PATHS="scripts/check-leakage.sh scripts/check-leakage.test.sh scripts/auto-implementer.sh scripts/install-auto-implementer-cron.sh .github/workflows/leakage-scan.yml docs/AUTOMATED_PATTERN_INGESTION.md bench/runs/ bench/tasks/"
+
+# -----------------------------------------------------------------------------
+# Line-content allowlist. Unlike SELF_EXCLUDE (whole-file), this exempts
+# INDIVIDUAL lines that contain an allowed fixed substring, anywhere in the
+# tree. Use sparingly — only for content that legitimately must mention a
+# deny-listed token (e.g. the author's real company affiliation in a byline).
+# Matched as fixed strings (grep -F).
+# -----------------------------------------------------------------------------
+ALLOWLIST_SUBSTRINGS=(
+  "Deakee Technology"                        # PREPRINT.md author affiliation (byline)
+  "founder, [Deakee](https://deakee.com)"    # LAUNCH_ESSAY.md author byline
+  "Apple Silicon"                            # hardware platform, not a brand-list leak
+)
+
+# Drop any line (from stdin) that contains an allowlisted fixed substring.
+drop_allowlisted() {
+  local input
+  input="$(cat -)"
+  local alw
+  for alw in "${ALLOWLIST_SUBSTRINGS[@]}"; do
+    input="$(printf '%s\n' "${input}" | grep -vF -- "${alw}" || true)"
+  done
+  printf '%s\n' "${input}"
+}
 
 # -----------------------------------------------------------------------------
 # Deny-lists. Two tiers:
@@ -149,14 +180,14 @@ if [[ "${MODE}" == "full-tree" ]]; then
 
   for term in "${HARD_FAIL_TERMS[@]}"; do
     pattern="(^|[^A-Za-z0-9])${term}([^A-Za-z0-9]|$)"
-    hits="$(git grep -inE -e "${pattern}" -- . "${SELF_EXCLUDE[@]}" 2>/dev/null || true)"
+    hits="$(git grep -inE -e "${pattern}" -- . "${SELF_EXCLUDE[@]}" 2>/dev/null | drop_allowlisted | grep -E '.' || true)"
     if [[ -n "${hits}" ]]; then
       HARD_HITS+="HARD-FAIL term \"${term}\":"$'\n'"${hits}"$'\n\n'
     fi
   done
 
   for pat in "${SECRET_HARD_PATTERNS[@]}"; do
-    hits="$(git grep -nE -e "${pat}" -- . "${SELF_EXCLUDE[@]}" 2>/dev/null || true)"
+    hits="$(git grep -nE -e "${pat}" -- . "${SELF_EXCLUDE[@]}" 2>/dev/null | drop_allowlisted | grep -E '.' || true)"
     if [[ -n "${hits}" ]]; then
       HARD_HITS+="HARD-FAIL secret-shaped pattern \"${pat}\":"$'\n'"${hits}"$'\n\n'
     fi
@@ -164,7 +195,7 @@ if [[ "${MODE}" == "full-tree" ]]; then
 
   for term in "${SOFT_WARN_TERMS[@]}"; do
     pattern="(^|[^A-Za-z0-9])${term}([^A-Za-z0-9]|$)"
-    hits="$(git grep -nE -e "${pattern}" -- . "${SELF_EXCLUDE[@]}" 2>/dev/null || true)"
+    hits="$(git grep -nE -e "${pattern}" -- . "${SELF_EXCLUDE[@]}" 2>/dev/null | drop_allowlisted | grep -E '.' || true)"
     if [[ -n "${hits}" ]]; then
       SOFT_HITS+="SOFT-WARN term \"${term}\":"$'\n'"${hits}"$'\n\n'
     fi
@@ -220,8 +251,8 @@ else
   FILTERED_DIFF="$(printf '%s\n' "${DIFF_SRC}" | filter_self_excluded)"
 
   # Only look at lines that are additions (start with +, not ++). This is
-  # what would land on main if merged.
-  ADDED_LINES="$(printf '%s\n' "${FILTERED_DIFF}" | grep -E '^\+[^+]' || true)"
+  # what would land on main if merged. Allowlisted lines are dropped.
+  ADDED_LINES="$(printf '%s\n' "${FILTERED_DIFF}" | grep -E '^\+[^+]' | drop_allowlisted | grep -E '.' || true)"
 
   if [[ -z "${ADDED_LINES}" ]]; then
     echo "check-leakage: no added lines to scan (clean)"
