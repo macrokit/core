@@ -2,7 +2,7 @@
 
 *Or: the load-bearing claim of Macrokit is not "weak models match frontier models." It's "you don't need to find out."*
 
-A few weeks ago I ran a 100-task benchmark against a private Macrokit deployment we've had in production since early 2026. The deployment is a vertical app whose users have no practical access to frontier APIs — Chinese-market sellers on 16 GB MacBooks, doing operations work that has to keep working when the network does not. The whole architecture is structured around the constraint that the LLM in the inner loop is small, local, and not very smart.
+A few weeks ago I ran a 100-task benchmark against a private Macrokit deployment we've had in production since early 2026. The deployment is a vertical app whose users have no practical access to frontier APIs — operators on 16 GB MacBooks doing high-volume back-office work that has to keep working when the network does not. The whole architecture is structured around the constraint that the LLM in the inner loop is small, local, and not very smart.
 
 The benchmark was pre-registered. The model was Qwen 2.5 7B Instruct Q4_K_M, running on llama.cpp at 4.4 GB on disk, on a 16 GB M1 MacBook. The corpus was 100 hand-crafted natural-language requests against a six-macro maintainer agent we built specifically for the benchmark (issue triage, PR triage, release notes, stale-issue cleanup, reviewer suggestion, and one browser-driven log-capture macro). The macros are a real reference implementation, not a toy — see [`examples/github-maintainer/`](../examples/github-maintainer/).
 
@@ -43,7 +43,7 @@ There were two ways to ship this. One was to pay for inference on Claude, GPT-4o
 
 I took the second path. Three reasons, in priority order:
 
-**(1) The constraint is the product.** Macrokit's intended users — operators in regulated verticals, Chinese-market deployers, air-gapped enterprise — cannot use frontier APIs. If I run cloud comparisons to validate Macrokit, I'm implicitly conceding that the cloud row is the standard and the local row is a managed regression from it. That's the framing the SDK exists to dissolve. The on-device number isn't a discount; it's the headline.
+**(1) The constraint is the product.** Macrokit's intended users — operators in regulated verticals, deployers in markets without practical frontier-API access, air-gapped enterprise — cannot use frontier APIs. If I run cloud comparisons to validate Macrokit, I'm implicitly conceding that the cloud row is the standard and the local row is a managed regression from it. That's the framing the SDK exists to dissolve. The on-device number isn't a discount; it's the headline.
 
 **(2) Benchmarks paid for by the vendor are inherently less trustworthy than benchmarks anyone can run.** I can publish numbers I bought; you have to trust them. I can publish a harness; you can run it. The harness is the artifact. The model SHA is in the methodology, the runs are in the repo, the scoring code is reviewable. If you have keys, the same `pnpm exec tsx src/cli.ts run --model <id>` produces a number you can publish alongside mine. The community will do the cloud comparisons, and they'll do them better than I would, because they have skin in their own model choices and I have skin in mine.
 
