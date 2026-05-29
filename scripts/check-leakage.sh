@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 # check-leakage.sh — Sacred Rule #1 enforcer
 #
-# Scans a unified diff (stdin or a file) for terms that would leak
-# REDACTED's private domain context into Macrokit's public repo.
+# Scans for terms that would leak the private reference deployment's
+# domain context into Macrokit's public repo. Two modes:
+#
+#   DIFF MODE (default): scan only the lines added by a diff.
+#   FULL-TREE MODE (--all): scan every tracked file in the repo.
 #
 # Usage:
 #   check-leakage.sh                          # diff against $BASE_REF (default origin/main)
 #   check-leakage.sh path/to/diff.patch       # scan a file containing a unified diff
 #   git diff main..HEAD | check-leakage.sh -  # scan stdin
+#   check-leakage.sh --all                    # full-tree scan of all tracked files
 #
 # Exit codes:
 #   0  clean
@@ -15,15 +19,32 @@
 #   2  manual-review warning only (suspicious context terms present)
 #   3  invocation error (bad args, missing tools)
 #
-# CI usage: env var BASE_REF defaults to "origin/main". The workflow that
-# calls this script is responsible for fetching the base ref with enough
-# depth that `git diff $BASE_REF..HEAD` works.
+# CI usage: env var BASE_REF defaults to "origin/main" (diff mode). The
+# workflow that calls this script is responsible for fetching the base ref
+# with enough depth that `git diff $BASE_REF..HEAD` works. Full-tree mode
+# needs no base ref — it scans the working tree's tracked files.
 #
 # The script intentionally excludes its own files from the scan so the
 # deny-list does not self-trigger. If you add new files that legitimately
 # need to mention deny-listed terms, add them to SELF_EXCLUDE below.
 
 set -euo pipefail
+
+# -----------------------------------------------------------------------------
+# Mode parsing. --all / --full-tree switches to full-tree scan.
+# -----------------------------------------------------------------------------
+MODE="diff"
+INPUT_ARG=""
+for arg in "$@"; do
+  case "${arg}" in
+    --all|--full-tree) MODE="full-tree" ;;
+    -h|--help)
+      sed -n '2,30p' "$0"
+      exit 0
+      ;;
+    *) INPUT_ARG="${arg}" ;;
+  esac
+done
 
 # -----------------------------------------------------------------------------
 # Self-exclusion: files that legitimately contain deny-listed terms because
@@ -112,102 +133,130 @@ SECRET_HARD_PATTERNS=(
   '-----BEGIN ((RSA|EC|OPENSSH|PGP) )?PRIVATE KEY-----'
 )
 
-# -----------------------------------------------------------------------------
-# Resolve the diff to scan.
-# -----------------------------------------------------------------------------
-DIFF_SRC=""
-if [[ $# -ge 1 ]]; then
-  if [[ "$1" == "-" ]]; then
-    DIFF_SRC="$(cat -)"
-  elif [[ -f "$1" ]]; then
-    DIFF_SRC="$(cat -- "$1")"
-  else
-    echo "check-leakage: input file not found: $1" >&2
-    exit 3
-  fi
-else
-  BASE_REF="${BASE_REF:-origin/main}"
-  if ! git rev-parse --git-dir >/dev/null 2>&1; then
-    echo "check-leakage: not in a git repo and no diff file given" >&2
-    exit 3
-  fi
-  # Use `git diff` with self-exclusion pathspecs.
-  DIFF_SRC="$(git diff --no-color "${BASE_REF}"...HEAD -- . "${SELF_EXCLUDE[@]}" 2>/dev/null || true)"
-fi
-
-if [[ -z "${DIFF_SRC}" ]]; then
-  echo "check-leakage: no diff content to scan (clean)"
-  exit 0
-fi
-
-# -----------------------------------------------------------------------------
-# When scanning a diff file passed directly (test harness or stdin), we
-# manually drop hunks that target self-excluded paths.
-# -----------------------------------------------------------------------------
-filter_self_excluded() {
-  awk -v excludes="${SELF_EXCLUDE_PATHS}" '
-    BEGIN {
-      n = split(excludes, arr, " ")
-      for (i = 1; i <= n; i++) ex[arr[i]] = 1
-      skip = 0
-    }
-    /^diff --git / {
-      # path is after "b/" in the second filename
-      match($0, /b\/[^ ]+$/)
-      path = substr($0, RSTART+2, RLENGTH-2)
-      skip = (path in ex) ? 1 : 0
-    }
-    { if (!skip) print }
-  '
-}
-
-FILTERED_DIFF="$(printf '%s\n' "${DIFF_SRC}" | filter_self_excluded)"
-
-# Only look at lines that are additions (start with +, not ++). This is
-# what would land on main if merged.
-ADDED_LINES="$(printf '%s\n' "${FILTERED_DIFF}" | grep -E '^\+[^+]' || true)"
-
-if [[ -z "${ADDED_LINES}" ]]; then
-  echo "check-leakage: no added lines to scan (clean)"
-  exit 0
-fi
-
-# -----------------------------------------------------------------------------
-# Run hard-fail term scan. Word-boundary, case-insensitive.
-# -----------------------------------------------------------------------------
 HARD_HITS=""
-for term in "${HARD_FAIL_TERMS[@]}"; do
-  # \b doesn't work inside POSIX bracket expressions for "1688"; use \W or anchor.
-  pattern="(^|[^A-Za-z0-9])${term}([^A-Za-z0-9]|$)"
-  hits="$(printf '%s\n' "${ADDED_LINES}" | grep -inE "${pattern}" || true)"
-  if [[ -n "${hits}" ]]; then
-    HARD_HITS+="HARD-FAIL term \"${term}\":"$'\n'"${hits}"$'\n\n'
-  fi
-done
-
-# -----------------------------------------------------------------------------
-# Run hard-fail secret pattern scan.
-# -----------------------------------------------------------------------------
-for pat in "${SECRET_HARD_PATTERNS[@]}"; do
-  # -e guards against patterns that begin with '-' (e.g. the PEM header)
-  # being parsed as a grep option.
-  hits="$(printf '%s\n' "${ADDED_LINES}" | grep -nE -e "${pat}" || true)"
-  if [[ -n "${hits}" ]]; then
-    HARD_HITS+="HARD-FAIL secret-shaped pattern \"${pat}\":"$'\n'"${hits}"$'\n\n'
-  fi
-done
-
-# -----------------------------------------------------------------------------
-# Run soft-warn term scan. Case-sensitive, must be capitalized standalone.
-# -----------------------------------------------------------------------------
 SOFT_HITS=""
-for term in "${SOFT_WARN_TERMS[@]}"; do
-  pattern="(^|[^A-Za-z0-9])${term}([^A-Za-z0-9]|$)"
-  hits="$(printf '%s\n' "${ADDED_LINES}" | grep -nE "${pattern}" || true)"
-  if [[ -n "${hits}" ]]; then
-    SOFT_HITS+="SOFT-WARN term \"${term}\":"$'\n'"${hits}"$'\n\n'
+
+if [[ "${MODE}" == "full-tree" ]]; then
+  # ---------------------------------------------------------------------------
+  # FULL-TREE MODE: scan every tracked file with `git grep`. git grep only
+  # searches tracked files and honors the self-exclusion pathspecs, giving
+  # real path:lineno:content references.
+  # ---------------------------------------------------------------------------
+  if ! git rev-parse --git-dir >/dev/null 2>&1; then
+    echo "check-leakage: --all requires a git repo" >&2
+    exit 3
   fi
-done
+
+  for term in "${HARD_FAIL_TERMS[@]}"; do
+    pattern="(^|[^A-Za-z0-9])${term}([^A-Za-z0-9]|$)"
+    hits="$(git grep -inE -e "${pattern}" -- . "${SELF_EXCLUDE[@]}" 2>/dev/null || true)"
+    if [[ -n "${hits}" ]]; then
+      HARD_HITS+="HARD-FAIL term \"${term}\":"$'\n'"${hits}"$'\n\n'
+    fi
+  done
+
+  for pat in "${SECRET_HARD_PATTERNS[@]}"; do
+    hits="$(git grep -nE -e "${pat}" -- . "${SELF_EXCLUDE[@]}" 2>/dev/null || true)"
+    if [[ -n "${hits}" ]]; then
+      HARD_HITS+="HARD-FAIL secret-shaped pattern \"${pat}\":"$'\n'"${hits}"$'\n\n'
+    fi
+  done
+
+  for term in "${SOFT_WARN_TERMS[@]}"; do
+    pattern="(^|[^A-Za-z0-9])${term}([^A-Za-z0-9]|$)"
+    hits="$(git grep -nE -e "${pattern}" -- . "${SELF_EXCLUDE[@]}" 2>/dev/null || true)"
+    if [[ -n "${hits}" ]]; then
+      SOFT_HITS+="SOFT-WARN term \"${term}\":"$'\n'"${hits}"$'\n\n'
+    fi
+  done
+else
+  # ---------------------------------------------------------------------------
+  # DIFF MODE: resolve the diff to scan (stdin, file, or git diff vs BASE_REF).
+  # ---------------------------------------------------------------------------
+  DIFF_SRC=""
+  if [[ -n "${INPUT_ARG}" ]]; then
+    if [[ "${INPUT_ARG}" == "-" ]]; then
+      DIFF_SRC="$(cat -)"
+    elif [[ -f "${INPUT_ARG}" ]]; then
+      DIFF_SRC="$(cat -- "${INPUT_ARG}")"
+    else
+      echo "check-leakage: input file not found: ${INPUT_ARG}" >&2
+      exit 3
+    fi
+  else
+    BASE_REF="${BASE_REF:-origin/main}"
+    if ! git rev-parse --git-dir >/dev/null 2>&1; then
+      echo "check-leakage: not in a git repo and no diff file given" >&2
+      exit 3
+    fi
+    # Use `git diff` with self-exclusion pathspecs.
+    DIFF_SRC="$(git diff --no-color "${BASE_REF}"...HEAD -- . "${SELF_EXCLUDE[@]}" 2>/dev/null || true)"
+  fi
+
+  if [[ -z "${DIFF_SRC}" ]]; then
+    echo "check-leakage: no diff content to scan (clean)"
+    exit 0
+  fi
+
+  # When scanning a diff file passed directly (test harness or stdin), we
+  # manually drop hunks that target self-excluded paths.
+  filter_self_excluded() {
+    awk -v excludes="${SELF_EXCLUDE_PATHS}" '
+      BEGIN {
+        n = split(excludes, arr, " ")
+        for (i = 1; i <= n; i++) ex[arr[i]] = 1
+        skip = 0
+      }
+      /^diff --git / {
+        # path is after "b/" in the second filename
+        match($0, /b\/[^ ]+$/)
+        path = substr($0, RSTART+2, RLENGTH-2)
+        skip = (path in ex) ? 1 : 0
+      }
+      { if (!skip) print }
+    '
+  }
+
+  FILTERED_DIFF="$(printf '%s\n' "${DIFF_SRC}" | filter_self_excluded)"
+
+  # Only look at lines that are additions (start with +, not ++). This is
+  # what would land on main if merged.
+  ADDED_LINES="$(printf '%s\n' "${FILTERED_DIFF}" | grep -E '^\+[^+]' || true)"
+
+  if [[ -z "${ADDED_LINES}" ]]; then
+    echo "check-leakage: no added lines to scan (clean)"
+    exit 0
+  fi
+
+  # Hard-fail term scan. Word-boundary, case-insensitive.
+  for term in "${HARD_FAIL_TERMS[@]}"; do
+    # \b doesn't work inside POSIX bracket expressions for "1688"; anchor instead.
+    pattern="(^|[^A-Za-z0-9])${term}([^A-Za-z0-9]|$)"
+    hits="$(printf '%s\n' "${ADDED_LINES}" | grep -inE "${pattern}" || true)"
+    if [[ -n "${hits}" ]]; then
+      HARD_HITS+="HARD-FAIL term \"${term}\":"$'\n'"${hits}"$'\n\n'
+    fi
+  done
+
+  # Hard-fail secret pattern scan.
+  for pat in "${SECRET_HARD_PATTERNS[@]}"; do
+    # -e guards against patterns that begin with '-' (e.g. the PEM header)
+    # being parsed as a grep option.
+    hits="$(printf '%s\n' "${ADDED_LINES}" | grep -nE -e "${pat}" || true)"
+    if [[ -n "${hits}" ]]; then
+      HARD_HITS+="HARD-FAIL secret-shaped pattern \"${pat}\":"$'\n'"${hits}"$'\n\n'
+    fi
+  done
+
+  # Soft-warn term scan. Case-sensitive, must be capitalized standalone.
+  for term in "${SOFT_WARN_TERMS[@]}"; do
+    pattern="(^|[^A-Za-z0-9])${term}([^A-Za-z0-9]|$)"
+    hits="$(printf '%s\n' "${ADDED_LINES}" | grep -nE "${pattern}" || true)"
+    if [[ -n "${hits}" ]]; then
+      SOFT_HITS+="SOFT-WARN term \"${term}\":"$'\n'"${hits}"$'\n\n'
+    fi
+  done
+fi
 
 # -----------------------------------------------------------------------------
 # Report and exit.

@@ -29,7 +29,7 @@ A practitioner building an LLM-driven production application in 2026 faces three
 
 The deployable substitute — a small local LLM — fails on multi-step reasoning, hallucinates tool names, drifts into prose where structured tool calls are required, and recovers poorly from errors. The dominant industry response has been to scaffold the weak model with agent frameworks (LangChain, AutoGen, CrewAI) that attempt to externalize reasoning via prompt-engineered planning loops. We observe that these frameworks compete on *improving runtime reasoning*, while our approach competes by *eliminating it*.
 
-The architecture we describe has been running in continuous production since 2026-Q1 in a private cross-border operations tool. We do not present that deployment as evidence in this paper; instead, we present a pre-registered, fully public benchmark of the same architecture against a fresh six-macro maintainer-agent reference implementation, with all code, methodology, raw outputs, and audit notes committed to a public repository. The intended contribution of this paper is reproducible.
+The architecture we describe has been running in continuous production since 2026-Q1 in a private operations tool serving users without practical frontier-API access. We do not present that deployment as evidence in this paper; instead, we present a pre-registered, fully public benchmark of the same architecture against a fresh six-macro maintainer-agent reference implementation, with all code, methodology, raw outputs, and audit notes committed to a public repository. The intended contribution of this paper is reproducible.
 
 ---
 
@@ -243,7 +243,7 @@ For the application class we describe, frontier-API inference is not the natural
 
 ## Acknowledgments
 
-This work would not have been possible without the prior practice of the [REDACTED](https://deakee.com) team, whose private production deployment originated the architecture; nor without the open-weights work of the Qwen team at Alibaba and the llama.cpp project. Errors and decisions are the author's.
+This work would not have been possible without the prior practice of the team behind the private operations deployment that originated the architecture; nor without the open-weights work of the Qwen team at Alibaba and the llama.cpp project. Errors and decisions are the author's.
 
 ## Bibliography
 

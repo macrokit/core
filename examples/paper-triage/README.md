@@ -18,7 +18,7 @@ Given a natural-language request from a researcher / lit-review person, the weak
 
 ## Why this vertical
 
-The handoff lists academic paper triage as one of two non-ecommerce reference verticals (alongside GitHub maintainer ops). It's structurally **different** from `github-maintainer/` in three useful ways:
+The handoff lists academic paper triage as one of two reference verticals (alongside GitHub maintainer ops) chosen from domains outside the maintainers' own commercial verticals. It's structurally **different** from `github-maintainer/` in three useful ways:
 
 1. **Mostly read-only.** GitHub macros write back (close issues, add labels); paper-triage macros only read. The deterministic-handler claim ("workflows are encoded, the LLM only routes") is the same; the failure mode profile is gentler.
 2. **No auth required.** Public academic APIs accept anonymous reads. Adopters can run the example without account setup.

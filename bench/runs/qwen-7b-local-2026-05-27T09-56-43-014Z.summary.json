@@ -6,7 +6,7 @@
     "startedAt": "2026-05-27T09:56:43.014Z",
     "harnessCommit": "ca97926a38e8e66cd27912c578efba111eebc1fb",
     "corpusCommit": "ca97926a38e8e66cd27912c578efba111eebc1fb",
-    "notes": "Production on-device model for REDACTED. SHA256 65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423. Served via llama.cpp build b9354 at 127.0.0.1:18080 via SSH tunnel."
+    "notes": "Production on-device model of the private reference deployment. SHA256 65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423. Served via llama.cpp build b9354 at 127.0.0.1:18080 via SSH tunnel."
   },
   "taskCount": 100,
   "totalScore": 189,

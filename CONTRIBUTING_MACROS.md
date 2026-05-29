@@ -146,7 +146,7 @@ If your package is registry-listed, the topic is redundant but harmless. If it's
 
 The following are explicit anti-requests for community packages.
 
-- **No ecommerce reference impls.** This is the same constraint Macrokit's own examples follow. Healthcare and legal are also generally off-limits as canonical reference impls — compliance gravity makes them a poor learning surface for a public ecosystem.
+- **No reference impls in the domains the maintainers operate in commercially.** This is the same constraint Macrokit's own examples follow. Healthcare and legal are also generally off-limits as canonical reference impls — compliance gravity makes them a poor learning surface for a public ecosystem.
 - **No mock LLMs in handlers.** If your macro needs an LLM in the inner loop (rare; usually means the workflow should be encoded differently), pull the adapter from `ctx.tools.llm`, don't construct one. Stubbing one inside the handler hides where the dependency lives.
 - **No browser launches in module top-level.** Browser-driven macros should import `BrowserService` as a type and read the service from `ctx.tools.browser`. Launching Chromium at import time turns a casual `import` into a multi-hundred-megabyte download.
 - **No global registry mutation.** Don't import `MacroRegistry` and side-effect-register your macros at module load. Export the macros as values; let the adopter compose them into their own registry.

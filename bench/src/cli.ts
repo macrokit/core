@@ -29,13 +29,13 @@ const MODELS: Record<string, ModelConfig> = {
     id: "qwen-7b-local",
     display: "Qwen 2.5 7B Instruct Q4_K_M (llama-server on China Mac)",
     notes:
-      "Production on-device model for REDACTED. SHA256 " +
+      "Production on-device model of the private reference deployment. SHA256 " +
       "65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423. " +
       "Served via llama.cpp build b9354 at 127.0.0.1:18080 via SSH tunnel.",
     build: () =>
       new OpenAICompatibleAdapter({
         baseUrl: process.env.MACROKIT_BENCH_LOCAL_URL ?? "http://127.0.0.1:18080/v1",
-        model: "REDACTED-mini",
+        model: "local-7b-reference",
         apiKey: "local",
         provider: "llama-server",
       }),
