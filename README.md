@@ -114,6 +114,8 @@ There are two contribution paths, with different rules.
 
 **Publishing your own macros for a vertical.** This is the path most contributors want. Macrokit deliberately keeps `core/examples/` small (curated reference implementations); vertical macro libraries live as standalone npm packages you publish yourself, and get discovered via the community registry and the `macrokit-macros` GitHub topic. See [`CONTRIBUTING_MACROS.md`](CONTRIBUTING_MACROS.md) for the naming convention, minimum requirements, and how to get listed. The `macrokit lint --pkg <path>` command checks your package against the conformance bar before you open a registry PR.
 
+The registry is the seed of a broader ecosystem we intend to grow: a place to share and discover the vertical macro libraries authors build, so adopting a new vertical can start from proven macros instead of a cold start. If that direction interests you as an early author, say hello via [@macrokitdev](https://x.com/macrokitdev).
+
 **SDK-internal contributions** (changes to `@macrokit/runtime`, `@macrokit/llm`, `@macrokit/browser`, `@macrokit/authoring`, `@macrokit/reference-data`, `@macrokit/cli`) are not yet accepting external PRs while the API surface stabilizes. Issues and discussion are welcome on this repo's tracker. A full contribution guideline + RFC process lands after the first stable minor.
 
 If you are building under the constraints Macrokit is designed for and want to be a design partner, contact via [macrokit.dev](https://macrokit.dev) or [@macrokitdev](https://x.com/macrokitdev) on X.
