@@ -192,7 +192,7 @@ Reference-data bundles version independently per adopter. The SDK's loader handl
 To pre-empt the obvious feature requests:
 
 - **A hosted runtime.** Macrokit ships as a library you embed. We may eventually publish a reference hosted runtime for evaluation purposes; we will not build a SaaS that requires you to send your macros to us.
-- **A macro marketplace.** A federated registry of public macros across verticals is conceivable, but loads the project with curation, signing-key, and policy questions that are wrong to take on pre-launch.
+- **A macro exchange.** A federated registry of public macros across verticals is conceivable, but loads the project with curation, signing-key, and policy questions that are wrong to take on pre-launch.
 - **An IDE plugin.** Macros are written in TypeScript files; existing IDE tooling is sufficient.
 - **A LangChain-style "agent graph" layer.** Out of scope by design — the whole point of the pattern is to not have one.
 - **A non-TypeScript primary SDK.** The runtime is in TypeScript. A Python port is conceivable post-launch if demand justifies it; we will not ship a Python SDK that lags behind the TS one.
@@ -210,7 +210,7 @@ Week 12 is the public launch milestone. The architecture above is the target. Th
 - One non-trivial reference implementation in `examples/` against a publicly observable surface.
 - `docs-site` at `macrokit.dev` carrying this document, `THE_PATTERN.md`, the quickstart, and the API reference.
 
-What is *not* in the launch cut: hosted runtime, marketplace, additional language SDKs, the Chrome-extension backend, distributed/multi-process runtime support, fine-grained per-macro permissioning. Those are post-launch decisions, informed by whichever ones adopters actually need.
+What is *not* in the launch cut: hosted runtime, macro exchange, additional language SDKs, the Chrome-extension backend, distributed/multi-process runtime support, fine-grained per-macro permissioning. Those are post-launch decisions, informed by whichever ones adopters actually need.
 
 ---
 

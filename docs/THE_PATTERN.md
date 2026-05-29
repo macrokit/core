@@ -139,7 +139,7 @@ The runtime is engineering. The distillation gate is the cultural innovation. We
 
 ## 6. The public/private boundary
 
-Macros are versioned, parameterized programs. Their *contents* — the URLs, selectors, decision rules, scoring formulas, banned-input lists, supplier names, customer lists — can be the most operationally valuable IP an organization owns. Their *shape* — the pattern of "intent classified → macro dispatched → result returned" — is generic and worth nothing as a secret.
+Macros are versioned, parameterized programs. Their *contents* — the URLs, selectors, decision rules, scoring formulas, banned-input lists, vendor names, customer lists — can be the most operationally valuable IP an organization owns. Their *shape* — the pattern of "intent classified → macro dispatched → result returned" — is generic and worth nothing as a secret.
 
 Macrokit is built around this asymmetry:
 
