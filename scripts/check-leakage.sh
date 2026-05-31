@@ -48,7 +48,7 @@ done
 
 # -----------------------------------------------------------------------------
 # Self-exclusion: files that legitimately contain deny-listed terms because
-# they ARE the deny-list (the scanner, its tests, and the doc explaining it).
+# they ARE the deny-list (the scanner and its tests).
 # -----------------------------------------------------------------------------
 # These files describe, prohibit, or test the deny-list, so they
 # legitimately contain banned terms. Keep this in sync with
@@ -56,19 +56,14 @@ done
 SELF_EXCLUDE=(
   ":(exclude)scripts/check-leakage.sh"
   ":(exclude)scripts/check-leakage.test.sh"
-  ":(exclude)scripts/auto-implementer.sh"
-  ":(exclude)scripts/install-auto-implementer-cron.sh"
   ":(exclude).github/workflows/leakage-scan.yml"
-  ":(exclude)docs/AUTOMATED_PATTERN_INGESTION.md"
-  # Frozen pre-registered benchmark artifacts. The corpus + recorded run
-  # outputs are immutable (a corpusCommit hash pins them); editing them to
-  # scrub a sample-repo name would invalidate the pre-registration. They
-  # are append-only data, not authored prose. Excluded by explicit decision
-  # — see docs/AUTOMATED_PATTERN_INGESTION.md "Allowlist".
+  # Frozen pre-registered benchmark artifacts (append-only data, not authored
+  # prose). The corpus + recorded run outputs are immutable, so they're
+  # excluded by explicit decision rather than edited.
   ":(exclude)bench/runs/*"
   ":(exclude)bench/tasks/*"
 )
-SELF_EXCLUDE_PATHS="scripts/check-leakage.sh scripts/check-leakage.test.sh scripts/auto-implementer.sh scripts/install-auto-implementer-cron.sh .github/workflows/leakage-scan.yml docs/AUTOMATED_PATTERN_INGESTION.md bench/runs/ bench/tasks/"
+SELF_EXCLUDE_PATHS="scripts/check-leakage.sh scripts/check-leakage.test.sh .github/workflows/leakage-scan.yml bench/runs/ bench/tasks/"
 
 # -----------------------------------------------------------------------------
 # Line-content allowlist. Unlike SELF_EXCLUDE (whole-file), this exempts
@@ -105,7 +100,7 @@ drop_allowlisted() {
 # The script also runs entropy/regex checks for secret-shaped strings.
 # -----------------------------------------------------------------------------
 
-# Hard-fail: REDACTED domain content that must NEVER appear in Macrokit.
+# Hard-fail: private-deployment domain content that must NEVER appear in Macrokit.
 # (Sacred Rule #1, CLAUDE.md.)
 HARD_FAIL_TERMS=(
   # Platforms
@@ -126,11 +121,20 @@ HARD_FAIL_TERMS=(
   "marketplace"
   "supplier"
   "dropship"
-  # Product / personal handles
-  "REDACTED"
-  "deakee"
-  "REDACTED"
 )
+
+# Private deny-terms (the Sacred Rule #1 product/personal-handle identifiers) are
+# deliberately NOT stored in this public repo. They load at runtime from an
+# optional gitignored local file (scripts/.leakage-terms.local); in CI the
+# workflow materializes that file from a repository secret. If the file is
+# absent, the scanner still enforces the generic terms + secret patterns above.
+LEAKAGE_TERMS_FILE="${LEAKAGE_TERMS_FILE:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.leakage-terms.local}"
+if [[ -f "${LEAKAGE_TERMS_FILE}" ]]; then
+  while IFS= read -r _term || [[ -n "${_term}" ]]; do
+    if [[ -z "${_term}" || "${_term}" == \#* ]]; then continue; fi
+    HARD_FAIL_TERMS+=("${_term}")
+  done < "${LEAKAGE_TERMS_FILE}"
+fi
 
 # Soft-warn: words that often appear in normal English ("apple pie",
 # "nike air") but that, in a Macrokit diff, may indicate a leaked brand
@@ -299,7 +303,7 @@ if [[ -n "${HARD_HITS}" ]]; then
     printf '%s\n' "----- Additionally flagged for manual review -----"
     printf '%s\n' "${SOFT_HITS}"
   fi
-  printf '%s\n' "See docs/AUTOMATED_PATTERN_INGESTION.md for how to handle false positives."
+  printf '%s\n' "See CLAUDE.md (Sacred Rule #1) for how to handle false positives."
   exit 1
 fi
 

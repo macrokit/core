@@ -39,6 +39,12 @@ jobs:
         run: |
           git fetch --no-tags --prune origin "+refs/heads/${{ github.base_ref }}:refs/remotes/origin/${{ github.base_ref }}"
 
+      - name: Load private deny-terms
+        env:
+          TERMS: ${{ secrets.MACROKIT_LEAKAGE_TERMS }}
+        run: |
+          if [ -n "${TERMS}" ]; then printf '%s\n' "${TERMS}" > scripts/.leakage-terms.local; fi
+
       - name: Run leakage scan
         id: scan
         env:
@@ -70,7 +76,7 @@ jobs:
               '## ❌ Leakage scan failed',
               '',
               'This PR contains terms that violate the Macrokit public/private boundary',
-              '(Sacred Rule #1, see `CLAUDE.md` and `docs/AUTOMATED_PATTERN_INGESTION.md`).',
+              '(Sacred Rule #1, see `CLAUDE.md`).',
               '',
               '<details><summary>Scanner output</summary>',
               '',
@@ -80,7 +86,7 @@ jobs:
               '',
               '</details>',
               '',
-              'If this is a false positive, see `docs/AUTOMATED_PATTERN_INGESTION.md`',
+              'If this is a false positive, see `CLAUDE.md` (Sacred Rule #1)',
               'for how to extend the deny-list or rephrase the change.',
             ].join('\n');
             await github.rest.issues.createComment({
@@ -126,6 +132,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Load private deny-terms
+        env:
+          TERMS: ${{ secrets.MACROKIT_LEAKAGE_TERMS }}
+        run: |
+          if [ -n "${TERMS}" ]; then printf '%s\n' "${TERMS}" > scripts/.leakage-terms.local; fi
 
       - name: Run full-tree leakage scan
         run: |

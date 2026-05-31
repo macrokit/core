@@ -61,7 +61,6 @@ HARD_TERMS=(
   "taobao" "pinduoduo" "wangwang"
   "ecommerce" "e-commerce" "cross-border" "seller"
   "marketplace" "supplier" "dropship"
-  "REDACTED" "deakee" "REDACTED"
 )
 
 for term in "${HARD_TERMS[@]}"; do
@@ -76,16 +75,16 @@ index 1111..2222 100644
   run_case 1 "${DIRTY_DIFF}" "term '${term}' triggers hard fail"
 done
 
-# Case-insensitivity: REDACTED in caps must also fail.
+# Case-insensitivity: an uppercase hard-fail term must also fail.
 CAPS_DIFF='diff --git a/docs/foo.md b/docs/foo.md
 index 1111..2222 100644
 --- a/docs/foo.md
 +++ b/docs/foo.md
 @@ -1,1 +1,2 @@
  line one
-+the REDACTED product is great
++the ALIEXPRESS platform is great
 '
-run_case 1 "${CAPS_DIFF}" "uppercase REDACTED triggers hard fail"
+run_case 1 "${CAPS_DIFF}" "uppercase ALIEXPRESS triggers hard fail"
 
 # Word-boundary: "amazonia" should NOT trigger (no word break inside "amazon"
 # match — well actually "amazon" appears as a substring at the start of
@@ -109,7 +108,7 @@ index 1111..2222 100644
 +++ b/scripts/check-leakage.sh
 @@ -1,3 +1,4 @@
  some line
-+  "REDACTED"
++  "shopify"
 +  "aliexpress"
 '
 run_case 0 "${SELF_DIFF}" "self-exclusion: scanner file itself does not trigger"
@@ -170,7 +169,7 @@ index 1111..2222 100644
 +++ b/docs/foo.md
 @@ -1,2 +1,1 @@
  line one
--this used to mention REDACTED but is being removed
+-this used to mention aliexpress but is being removed
 '
 run_case 0 "${DELETION_DIFF}" "deletions of banned terms do not trigger"
 
@@ -220,9 +219,9 @@ run_full_tree_case() {
 
 run_full_tree_case 0 "full-tree scan of working tree is clean"
 
-# Verify the four required terms are present in the hard-fail deny-list by
+# Verify the required generic terms are present in the hard-fail deny-list by
 # grepping the scanner source (cheap, no second scan needed).
-for required in REDACTED cross-border ecommerce e-commerce; do
+for required in cross-border ecommerce e-commerce; do
   if grep -qF "\"${required}\"" "${SCANNER}"; then
     printf '  ok  deny-list contains %s\n' "${required}"
     PASS=$((PASS + 1))

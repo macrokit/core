@@ -24,3 +24,6 @@ coverage
 # ~/Documents/macrokit/.inbox/ but listed here as belt-and-suspenders in
 # case a script ever writes into core/.inbox/.
 .inbox/
+
+# private leakage deny-terms (Sacred Rule #1 identifiers; never commit)
+scripts/.leakage-terms.local
