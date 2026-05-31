@@ -168,7 +168,7 @@ Per-difficulty breakdown:
 
 ### 5.6 The two-run story
 
-A first run of the same model on the same corpus, with the same harness but *before* a single SDK fix described below, scored **53.5%** (107.0 / 200). The fix is documented at commit `5de35d3` of the public repository. The shipped change is twelve lines in `@macrokit/authoring/src/define-macro.ts`: zod schemas are now automatically converted to JSON Schema (via `zod-to-json-schema`) and attached to each macro's `schema.jsonSchema` field. The runtime's `IntentRouter` previously fell back to a permissive `{ type: "object" }` rendering when no JSON Schema was attached; that fallback was what the model saw on run 1.
+A first run of the same model on the same corpus, with the same harness but *before* a single SDK fix described below, scored **53.5%** (107.0 / 200). The fix is documented at commit `6424cc7` of the public repository. The shipped change is twelve lines in `@macrokit/authoring/src/define-macro.ts`: zod schemas are now automatically converted to JSON Schema (via `zod-to-json-schema`) and attached to each macro's `schema.jsonSchema` field. The runtime's `IntentRouter` previously fell back to a permissive `{ type: "object" }` rendering when no JSON Schema was attached; that fallback was what the model saw on run 1.
 
 Inspecting the raw run-1 outputs reveals that *every* miss was the same failure mode: the model selected the correct macro but produced argument names that were plausible variants of, but not equal to, the schema's actual argument names. `repo_owner` and `repo_name` instead of `owner` and `repo`; `pr_number` instead of `number`; `from_ref` and `to_ref` instead of `base` and `head`; `workflow_run_id` instead of `runId`. The model was guessing reasonable names because the actual names were not in its tool spec.
 
@@ -238,8 +238,8 @@ For the application class we describe, frontier-API inference is not the natural
 | Raw run outputs | [`bench/runs/`](../bench/runs/) |
 | Model GGUF SHA256 | `65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423` |
 | llama.cpp build | `b9354` |
-| Pre-registration commit | [`1ac076e`](https://github.com/macrokit/core/commit/1ac076e) |
-| SDK fix commit (run-2-enabling) | [`5de35d3`](https://github.com/macrokit/core/commit/5de35d3) |
+| Pre-registration commit | [`ff843b1`](https://github.com/macrokit/core/commit/ff843b1) |
+| SDK fix commit (run-2-enabling) | [`6424cc7`](https://github.com/macrokit/core/commit/6424cc7) |
 
 ## Acknowledgments
 

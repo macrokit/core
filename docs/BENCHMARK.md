@@ -40,7 +40,7 @@ The first benchmark run scored **53.5%**. We found a fixable SDK config issue, f
 - Score: **53.5%** (107.0 / 200)
 - Bail-outs: 0 / 100
 - Mean latency: 3.82 s
-- Commit: [run-1 outputs](../bench/runs/) immediately after pre-registration commit [`1ac076e`](https://github.com/macrokit/core/commit/1ac076e)
+- Commit: [run-1 outputs](../bench/runs/) immediately after pre-registration commit [`ff843b1`](https://github.com/macrokit/core/commit/ff843b1)
 
 Inspecting the raw outputs, every miss was the same failure mode: **tool selection was correct, argument naming was not.** The model called `triage_pull_request` correctly but supplied `{"repo": "owner/name", "pr_number": 1234}` instead of `{"owner": "owner", "repo": "name", "number": 1234}`. The schema's argument names were not making it into the tool spec the model saw.
 
@@ -51,7 +51,7 @@ Root cause was in `@macrokit/runtime`'s tool-spec rendering: zod schemas weren't
 - Score: **94.5%** (189.0 / 200)
 - Bail-outs: 0 / 100
 - Mean latency: 5.85 s
-- Commit: [`5de35d3`](https://github.com/macrokit/core/commit/5de35d3) — `@macrokit/authoring` now auto-converts zod schemas to JSON Schema at `defineMacro()` time.
+- Commit: [`6424cc7`](https://github.com/macrokit/core/commit/6424cc7) — `@macrokit/authoring` now auto-converts zod schemas to JSON Schema at `defineMacro()` time.
 
 The model's capability was never the bottleneck. The SDK's communication of arg names was. This is on us; finding it before launch is exactly what a pre-registered benchmark + raw-output publishing is *for*.
 
@@ -160,6 +160,6 @@ We will accept submissions for any model — including cloud frontier models, wh
 
 Corpus and harness are versioned alongside the SDK. When we add macros, we add tasks. When we change the runtime's routing prompt, we mark a new benchmark version and republish all rows. Currently:
 
-- **Benchmark v1.0** — frozen at the pre-registration commit ([`1ac076e`](https://github.com/macrokit/core/commit/1ac076e)). All current numbers are v1.0.
+- **Benchmark v1.0** — frozen at the pre-registration commit ([`ff843b1`](https://github.com/macrokit/core/commit/ff843b1)). All current numbers are v1.0.
 
 Future runs against newer SDK versions, against new macros, or with corpus changes will be tagged v1.1, v2.0, etc. Old runs stay published; they document where the SDK was at the time.
