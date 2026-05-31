@@ -16,4 +16,11 @@ export {
   type PackageLintCheck,
   type PackageLintResult,
 } from "./lint.js";
-export { initProject, type InitOptions, type InitResult } from "./init.js";
+export {
+  initProject,
+  isVertical,
+  type InitOptions,
+  type InitResult,
+  type Vertical,
+} from "./init.js";
+export { launchStudio, type LaunchStudioOptions } from "./studio.js";

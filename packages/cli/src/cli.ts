@@ -7,13 +7,22 @@ import {
   type GateViolation,
 } from "./gate.js";
 import { lintPackage, lintProject } from "./lint.js";
-import { initProject } from "./init.js";
+import { initProject, isVertical, type Vertical } from "./init.js";
+import { launchStudio } from "./studio.js";
 
 const HELP = `macrokit — the Macrokit CLI
 
 Usage:
-  macrokit init <name> [--dir <path>] [--provider ollama|openai-compatible] [--force]
-      Scaffold a new project.
+  macrokit init <name> [--vertical github|starter] [--dir <path>]
+                       [--provider ollama|openai-compatible] [--force]
+      Scaffold a new project. --vertical github seeds a real by-product
+      project (macrokit.json, macros/, primitives/, fixtures/) that
+      \`macrokit studio\` can open and run.
+
+  macrokit studio [<path>] [--port <n>] [--no-open]
+      Open a project in Macrokit Studio — a local server + browser GUI that
+      lists the project's on-disk macros and runs a task against them on a
+      local/weak model. Defaults to the current directory.
 
   macrokit lint [<path>]
       Static checks on macro source files (defaults to ./src).
@@ -46,6 +55,8 @@ async function main(argv: string[]): Promise<number> {
   switch (cmd) {
     case "init":
       return runInit(args.slice(1));
+    case "studio":
+      return runStudio(args.slice(1));
     case "lint":
       return runLint(args.slice(1));
     case "gate":
@@ -71,23 +82,53 @@ function runInit(args: string[]): number {
     | "ollama"
     | "openai-compatible"
     | undefined;
+  const verticalFlag = flagValue(args, "--vertical");
+  let vertical: Vertical = "starter";
+  if (verticalFlag !== undefined) {
+    if (!isVertical(verticalFlag)) {
+      process.stderr.write(
+        `macrokit init: unknown vertical "${verticalFlag}". Known: github, starter.\n`,
+      );
+      return 2;
+    }
+    vertical = verticalFlag;
+  }
   const force = args.includes("--force");
 
   const result = initProject({
     dir,
     name,
+    vertical,
     provider: providerFlag ?? "ollama",
     force,
   });
 
-  process.stdout.write(`Wrote ${result.filesWritten.length} files to ${dir}:\n`);
+  process.stdout.write(
+    `Wrote ${result.filesWritten.length} files to ${dir} (vertical: ${result.vertical}):\n`,
+  );
   for (const f of result.filesWritten) process.stdout.write(`  + ${f}\n`);
   if (result.skipped.length > 0) {
     process.stdout.write(`Skipped (already exist; use --force to overwrite):\n`);
     for (const f of result.skipped) process.stdout.write(`  - ${f}\n`);
   }
-  process.stdout.write(`\nNext steps:\n  cd ${name}\n  npm install\n  npm start\n`);
+  const next =
+    result.vertical === "github"
+      ? `\nNext steps:\n  cd ${name}\n  macrokit studio .\n`
+      : `\nNext steps:\n  cd ${name}\n  npm install\n  npm start\n`;
+  process.stdout.write(next);
   return 0;
+}
+
+// ---------------------------------------------------------------------------
+// studio
+// ---------------------------------------------------------------------------
+
+async function runStudio(args: string[]): Promise<number> {
+  const path = resolve(args.find((a) => !a.startsWith("--")) ?? ".");
+  const portStr = flagValue(args, "--port");
+  const port = portStr ? Number(portStr) : undefined;
+  const open = !args.includes("--no-open");
+  return launchStudio({ projectDir: path, port, open });
 }
 
 // ---------------------------------------------------------------------------
