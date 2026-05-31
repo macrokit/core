@@ -8,7 +8,7 @@ import {
 } from "./gate.js";
 import { lintPackage, lintProject } from "./lint.js";
 import { initProject, isVertical, type Vertical } from "./init.js";
-import { launchStudio } from "./studio.js";
+import { launchMcp, launchStudio } from "./studio.js";
 
 const HELP = `macrokit — the Macrokit CLI
 
@@ -23,6 +23,12 @@ Usage:
       Open a project in Macrokit Studio — a local server + browser GUI that
       lists the project's on-disk macros and runs a task against them on a
       local/weak model. Defaults to the current directory.
+
+  macrokit mcp [<path>]
+      Start the Macrokit Studio MCP server over stdio (Phase-2 authoring):
+      exposes the project's domain primitives as MCP tools + an author tool, so
+      your agent (Claude Code / Cursor) authors a macro by calling them.
+      Add to an agent, e.g.:  claude mcp add macrokit -- macrokit mcp <path>
 
   macrokit lint [<path>]
       Static checks on macro source files (defaults to ./src).
@@ -57,6 +63,8 @@ async function main(argv: string[]): Promise<number> {
       return runInit(args.slice(1));
     case "studio":
       return runStudio(args.slice(1));
+    case "mcp":
+      return runMcp(args.slice(1));
     case "lint":
       return runLint(args.slice(1));
     case "gate":
@@ -129,6 +137,11 @@ async function runStudio(args: string[]): Promise<number> {
   const port = portStr ? Number(portStr) : undefined;
   const open = !args.includes("--no-open");
   return launchStudio({ projectDir: path, port, open });
+}
+
+async function runMcp(args: string[]): Promise<number> {
+  const path = resolve(args.find((a) => !a.startsWith("--")) ?? ".");
+  return launchMcp({ projectDir: path });
 }
 
 // ---------------------------------------------------------------------------
