@@ -15,8 +15,9 @@ import { join } from "node:path";
  *    `fixtures/` (offline test data), seeded with a working starter macro.
  *    This is the layout Macrokit Studio (the local IDE) opens and runs.
  *
- * Reference verticals are NEVER ecommerce (see DECISIONS.md D-008): github,
- * devops, hr, support, paper-triage. github is the seeded reference for now.
+ * Reference verticals are the safe set in DECISIONS.md D-008: github, devops,
+ * hr, support, paper-triage — never the private reference deployment's domain.
+ * github is the seeded reference for now.
  */
 
 export type Vertical = "starter" | "github";
