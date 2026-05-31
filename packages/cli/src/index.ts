@@ -23,4 +23,9 @@ export {
   type InitResult,
   type Vertical,
 } from "./init.js";
-export { launchStudio, type LaunchStudioOptions } from "./studio.js";
+export {
+  launchStudio,
+  launchMcp,
+  type LaunchStudioOptions,
+  type LaunchMcpOptions,
+} from "./studio.js";
