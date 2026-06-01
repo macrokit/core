@@ -94,6 +94,7 @@ The point of this example is what's *not* in it. No agent loop. No planning prom
 - **[`docs/THE_PATTERN.md`](docs/THE_PATTERN.md)** — the pattern, the theorem, the distillation gate, the public/private boundary. Start here.
 - **[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)** — the SDK's component layout and the runtime loop in detail.
 - **[`docs/BENCHMARK.md`](docs/BENCHMARK.md)** — the launch benchmark: methodology, two-run story, honest analysis of misses, and why we don't run frontier rows ourselves.
+- **[`docs/WHY_IT_WORKS.md`](docs/WHY_IT_WORKS.md)** — *optional.* The theoretical account of why the pattern produces value (value per joule), citing the *A Mathematical Theory of Value* preprint. Not needed to use Macrokit.
 - **Quickstart** — `macrokit init my-app --vertical github`, then run it against a local model (see [60-second hello world](#60-second-hello-world) above and [`examples/`](examples/)).
 - **[macrokit.dev](https://macrokit.dev)** — the project site and how-it-works walkthrough.
 

@@ -211,6 +211,10 @@ A pattern is only as durable as the practice that surrounds it. If Macrokit is j
 
 That is the bet.
 
+## Further reading
+
+- [WHY_IT_WORKS.md](./WHY_IT_WORKS.md) — *optional.* The theoretical account of why the pattern produces value (value per joule / `I(X;Y)` per unit compute), drawn from the *A Mathematical Theory of Value* preprint. You do not need it to use the pattern; it is the underlying reason for readers who want it.
+
 ---
 
 *Feedback and pushback welcome on the project's public issue tracker.*
