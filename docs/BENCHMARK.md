@@ -1,8 +1,27 @@
 # Macrokit launch benchmark
 
-**Headline:** A 7B local model (Qwen 2.5 7B Instruct Q4_K_M, ~4.4 GB, running on a 16 GB M1 MacBook) scored **94.5%** on a pre-registered 100-task intent-routing benchmark against the [`github-maintainer`](../examples/github-maintainer/) reference implementation. Zero structural failures (the bail-out detector didn't fire on any task). Mean latency 5.85 s per request.
+**Headline:** Off-the-shelf **local** models clear the bar on a pre-registered 100-task intent-routing benchmark (the [`github-maintainer`](../examples/github-maintainer/) reference implementation). The Qwen 2.5 line scales cleanly on a 16 GB MacBook — 1.5B / 3B / 7B at **74 / 79 / 82%** — and Llama 3.1 8B lands at **82.5%**, all via `ollama pull` at temperature 0. The same 7B served as the production reference (llama.cpp, Q4_K_M) reaches **94.5%** with zero structural failures. Full multi-model table below; raw runs for every row in [`bench/runs/`](../bench/runs/).
 
-The harness is shipped, the corpus is committed, the runs are public — **including the failed first run**. If you have API keys for any cloud model, run the same harness yourself; instructions below. **We intentionally did not buy or use any frontier API to produce this benchmark.** That choice is the point of this document.
+The harness is shipped, the corpus is committed, the runs are public — **including the failed first run, and a model that flunks**. If you have API keys for any cloud model, run the same harness yourself; instructions below. **We intentionally did not buy or use any frontier API to produce this benchmark.** That choice is the point of this document.
+
+## Results — weak and local models on the same 100-task corpus
+
+Every row is the **same** pre-registered 100-task corpus, scored at **temperature 0** (greedy, per [`methodology.md`](../bench/methodology.md)). No frontier models (see §1 below). Raw `.jsonl` + `.summary.json` for every row are committed in [`bench/runs/`](../bench/runs/) — reproducible with `pnpm exec tsx src/cli.ts run --model <id>`.
+
+| Model | Params | Tasks | Score | Bail-outs | Mean latency |
+|---|---|---:|---:|---:|---:|
+| Qwen 2.5 1.5B Instruct (Ollama) | 1.5B | 100 | 74.0% | 0 | 1.7 s |
+| Qwen 2.5 3B Instruct (Ollama) | 3B | 100 | 79.3% | 0 | 4.1 s |
+| Qwen 2.5 7B Instruct (Ollama) | 7B | 100 | 82.3% | 0 | 15.6 s |
+| Llama 3.1 8B Instruct (Ollama) | 8B | 100 | 82.5% | 5 | 10.0 s |
+| **Qwen 2.5 7B Q4_K_M (llama.cpp, production reference)** | 7B | 100 | **94.5%** | 0 | 5.9 s |
+| Mistral 7B Instruct v0.3 (Ollama) | 7B | 100 | 14.0% | 24 | 27.0 s |
+
+**What this shows.** The Qwen 2.5 family scales cleanly on-device — 1.5B → 3B → 7B at 74 → 79 → 82% — and Llama 3.1 8B reaches 82.5%, all on a 16 GB MacBook with no cloud and no key. The same 7B served and tuned as the production reference (llama.cpp, Q4_K_M) reaches 94.5%; most of the gap between an off-the-shelf `ollama pull` and the reference row is serving, quantization, and sampling config — not raw model capability.
+
+**The honest negative.** Mistral 7B v0.3 scored 14% — and the bail-out detector fired on **24** tasks with code `tool_call_as_text`. Mistral narrated the call in prose (*"the `triage_pull_request` macro will be called with…"*) or emitted it inside a fenced code block, instead of producing a structured tool call. That is exactly the structural failure the bail-out detector exists to catch — the harness flags it instead of scoring a hallucinated success. Not every weak model clears the bar on every SDK contract; we publish the row that flunks rather than dropping it. (Mistral may improve with a tool-calling-tuned build or a chat template tweak; the off-the-shelf `mistral:7b` tag as shipped does not.)
+
+*Sampling note:* the harness sends `temperature: 0` explicitly (it previously fell back to the provider default, e.g. Ollama's 0.8 — noisy for routing and not what methodology specifies). The numbers above are the corrected, methodology-compliant runs.
 
 ## Why no frontier models in our published numbers
 

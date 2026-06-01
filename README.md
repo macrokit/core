@@ -101,7 +101,19 @@ The point of this example is what's *not* in it. No agent loop. No planning prom
 
 Live and open. Apache 2.0, on `main`, running today. Install it, scaffold a project, point it at a local model.
 
-The pattern Macrokit codifies has been running in a private production deployment since early 2026 (an operations tool for users without frontier-API access). Macrokit is the vertical-agnostic extraction of that work into a reusable SDK. The [benchmark](docs/BENCHMARK.md) exercises it on a public maintainer-agent corpus, where a 7B local model scored 94.5% with zero structural failures.
+The pattern Macrokit codifies has been running in a private production deployment since early 2026 (an operations tool for users without frontier-API access). Macrokit is the vertical-agnostic extraction of that work into a reusable SDK.
+
+The [benchmark](docs/BENCHMARK.md) exercises the SDK on a public maintainer-agent corpus (100 tasks, temperature 0). Off-the-shelf **local** models clear the bar:
+
+| Local model | Params | Score | Bail-outs |
+|---|---|---:|---:|
+| Qwen 2.5 1.5B (Ollama) | 1.5B | 74.0% | 0 |
+| Qwen 2.5 3B (Ollama) | 3B | 79.3% | 0 |
+| Qwen 2.5 7B (Ollama) | 7B | 82.3% | 0 |
+| Llama 3.1 8B (Ollama) | 8B | 82.5% | 5 |
+| Qwen 2.5 7B Q4_K_M (production reference) | 7B | **94.5%** | 0 |
+
+No frontier rows — [that's deliberate](docs/BENCHMARK.md#why-no-frontier-models-in-our-published-numbers). Raw runs for every model are in [`bench/runs/`](bench/runs/), and the doc also publishes the one model that *flunks* (Mistral 7B v0.3, 14% — the bail-out detector caught it narrating tool calls instead of making them) so you can see the bar isn't rigged.
 
 Two reference implementations ship in [`examples/`](examples/) — `github-maintainer` and `paper-triage` — so the pattern is demonstrable, not just describable. We don't publish dated roadmaps; we ship to `main` and say what's actually running.
 
