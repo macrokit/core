@@ -1,0 +1,97 @@
+{
+  "header": {
+    "modelId": "llama3.1-8b-ollama",
+    "modelDisplay": "Llama 3.1 8B Instruct (Ollama)",
+    "llmProvider": "ollama",
+    "startedAt": "2026-06-01T08:13:39.637Z",
+    "harnessCommit": "50e54e965740892ef7c48f4b7d025c671e44a5aa",
+    "corpusCommit": "50e54e965740892ef7c48f4b7d025c671e44a5aa",
+    "notes": "Local via Ollama. `ollama pull llama3.1:8b`."
+  },
+  "taskCount": 100,
+  "totalScore": 165,
+  "maxScore": 200,
+  "percent": 82.5,
+  "bucketBreakdown": {
+    "triage_pull_request": {
+      "total": 30,
+      "max": 30,
+      "percent": 100,
+      "count": 15
+    },
+    "triage_issue": {
+      "total": 30,
+      "max": 30,
+      "percent": 100,
+      "count": 15
+    },
+    "generate_release_notes": {
+      "total": 22,
+      "max": 24,
+      "percent": 91.66666666666666,
+      "count": 12
+    },
+    "close_stale_issues": {
+      "total": 19,
+      "max": 24,
+      "percent": 79.16666666666666,
+      "count": 12
+    },
+    "suggest_reviewers": {
+      "total": 20,
+      "max": 24,
+      "percent": 83.33333333333334,
+      "count": 12
+    },
+    "capture_workflow_log": {
+      "total": 16,
+      "max": 16,
+      "percent": 100,
+      "count": 8
+    },
+    "no_macro": {
+      "total": 8,
+      "max": 22,
+      "percent": 36.36363636363637,
+      "count": 11
+    },
+    "ambiguous_multi_intent": {
+      "total": 20,
+      "max": 30,
+      "percent": 66.66666666666666,
+      "count": 15
+    }
+  },
+  "difficultyBreakdown": {
+    "easy_direct": {
+      "total": 48,
+      "max": 50,
+      "percent": 96,
+      "count": 25
+    },
+    "medium_paraphrase": {
+      "total": 42,
+      "max": 48,
+      "percent": 87.5,
+      "count": 24
+    },
+    "hard_implicit": {
+      "total": 37,
+      "max": 40,
+      "percent": 92.5,
+      "count": 20
+    },
+    "hard_distractor": {
+      "total": 38,
+      "max": 62,
+      "percent": 61.29032258064516,
+      "count": 31
+    }
+  },
+  "bailOutCount": 5,
+  "bailOutBreakdown": {
+    "tool_call_as_text": 5
+  },
+  "meanLatencyMs": 9996.55,
+  "finishedAt": "2026-06-01T08:30:19.428Z"
+}

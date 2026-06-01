@@ -1,0 +1,95 @@
+{
+  "header": {
+    "modelId": "qwen2.5-7b-ollama",
+    "modelDisplay": "Qwen 2.5 7B Instruct (Ollama)",
+    "llmProvider": "ollama",
+    "startedAt": "2026-06-01T07:47:35.723Z",
+    "harnessCommit": "50e54e965740892ef7c48f4b7d025c671e44a5aa",
+    "corpusCommit": "50e54e965740892ef7c48f4b7d025c671e44a5aa",
+    "notes": "Local via Ollama. `ollama pull qwen2.5:7b-instruct`. Same model family as the reference qwen-7b-local row, served through Ollama instead of llama.cpp."
+  },
+  "taskCount": 100,
+  "totalScore": 164.5,
+  "maxScore": 200,
+  "percent": 82.25,
+  "bucketBreakdown": {
+    "triage_pull_request": {
+      "total": 30,
+      "max": 30,
+      "percent": 100,
+      "count": 15
+    },
+    "triage_issue": {
+      "total": 28,
+      "max": 30,
+      "percent": 93.33333333333333,
+      "count": 15
+    },
+    "generate_release_notes": {
+      "total": 23,
+      "max": 24,
+      "percent": 95.83333333333334,
+      "count": 12
+    },
+    "close_stale_issues": {
+      "total": 20,
+      "max": 24,
+      "percent": 83.33333333333334,
+      "count": 12
+    },
+    "suggest_reviewers": {
+      "total": 8,
+      "max": 24,
+      "percent": 33.33333333333333,
+      "count": 12
+    },
+    "capture_workflow_log": {
+      "total": 12,
+      "max": 16,
+      "percent": 75,
+      "count": 8
+    },
+    "no_macro": {
+      "total": 20,
+      "max": 22,
+      "percent": 90.9090909090909,
+      "count": 11
+    },
+    "ambiguous_multi_intent": {
+      "total": 23.5,
+      "max": 30,
+      "percent": 78.33333333333333,
+      "count": 15
+    }
+  },
+  "difficultyBreakdown": {
+    "easy_direct": {
+      "total": 40,
+      "max": 50,
+      "percent": 80,
+      "count": 25
+    },
+    "medium_paraphrase": {
+      "total": 41,
+      "max": 48,
+      "percent": 85.41666666666666,
+      "count": 24
+    },
+    "hard_implicit": {
+      "total": 34,
+      "max": 40,
+      "percent": 85,
+      "count": 20
+    },
+    "hard_distractor": {
+      "total": 49.5,
+      "max": 62,
+      "percent": 79.83870967741935,
+      "count": 31
+    }
+  },
+  "bailOutCount": 0,
+  "bailOutBreakdown": {},
+  "meanLatencyMs": 15631.4,
+  "finishedAt": "2026-06-01T08:13:39.097Z"
+}

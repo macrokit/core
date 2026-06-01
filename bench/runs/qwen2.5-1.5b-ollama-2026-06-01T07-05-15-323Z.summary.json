@@ -1,0 +1,95 @@
+{
+  "header": {
+    "modelId": "qwen2.5-1.5b-ollama",
+    "modelDisplay": "Qwen 2.5 1.5B Instruct (Ollama)",
+    "llmProvider": "ollama",
+    "startedAt": "2026-06-01T07:05:15.323Z",
+    "harnessCommit": "50e54e965740892ef7c48f4b7d025c671e44a5aa",
+    "corpusCommit": "50e54e965740892ef7c48f4b7d025c671e44a5aa",
+    "notes": "Local via Ollama. `ollama pull qwen2.5:1.5b-instruct`."
+  },
+  "taskCount": 100,
+  "totalScore": 148,
+  "maxScore": 200,
+  "percent": 74,
+  "bucketBreakdown": {
+    "triage_pull_request": {
+      "total": 24,
+      "max": 30,
+      "percent": 80,
+      "count": 15
+    },
+    "triage_issue": {
+      "total": 19,
+      "max": 30,
+      "percent": 63.33333333333333,
+      "count": 15
+    },
+    "generate_release_notes": {
+      "total": 20,
+      "max": 24,
+      "percent": 83.33333333333334,
+      "count": 12
+    },
+    "close_stale_issues": {
+      "total": 17,
+      "max": 24,
+      "percent": 70.83333333333334,
+      "count": 12
+    },
+    "suggest_reviewers": {
+      "total": 12,
+      "max": 24,
+      "percent": 50,
+      "count": 12
+    },
+    "capture_workflow_log": {
+      "total": 16,
+      "max": 16,
+      "percent": 100,
+      "count": 8
+    },
+    "no_macro": {
+      "total": 22,
+      "max": 22,
+      "percent": 100,
+      "count": 11
+    },
+    "ambiguous_multi_intent": {
+      "total": 18,
+      "max": 30,
+      "percent": 60,
+      "count": 15
+    }
+  },
+  "difficultyBreakdown": {
+    "easy_direct": {
+      "total": 45,
+      "max": 50,
+      "percent": 90,
+      "count": 25
+    },
+    "medium_paraphrase": {
+      "total": 36,
+      "max": 48,
+      "percent": 75,
+      "count": 24
+    },
+    "hard_implicit": {
+      "total": 25,
+      "max": 40,
+      "percent": 62.5,
+      "count": 20
+    },
+    "hard_distractor": {
+      "total": 42,
+      "max": 62,
+      "percent": 67.74193548387096,
+      "count": 31
+    }
+  },
+  "bailOutCount": 0,
+  "bailOutBreakdown": {},
+  "meanLatencyMs": 1723.49,
+  "finishedAt": "2026-06-01T07:08:07.769Z"
+}
