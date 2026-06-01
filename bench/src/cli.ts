@@ -48,6 +48,35 @@ const MODELS: Record<string, ModelConfig> = {
         model: process.env.LLM_MODEL ?? "qwen2.5:7b-instruct",
       }),
   },
+
+  // --- Additional WEAK / LOCAL models (Ollama). No frontier rows (see
+  //     docs/BENCHMARK.md §1). Each is a small, locally-runnable model; the
+  //     point is the spread of weak models clearing the bar, not a frontier
+  //     comparison. Run on a host with Ollama serving these tags. ---
+  "qwen2.5-1.5b-ollama": {
+    id: "qwen2.5-1.5b-ollama",
+    display: "Qwen 2.5 1.5B Instruct (Ollama)",
+    notes: "Local via Ollama. `ollama pull qwen2.5:1.5b-instruct`.",
+    build: () => new OllamaAdapter({ model: "qwen2.5:1.5b-instruct" }),
+  },
+  "qwen2.5-3b-ollama": {
+    id: "qwen2.5-3b-ollama",
+    display: "Qwen 2.5 3B Instruct (Ollama)",
+    notes: "Local via Ollama. `ollama pull qwen2.5:3b-instruct`.",
+    build: () => new OllamaAdapter({ model: "qwen2.5:3b-instruct" }),
+  },
+  "llama3.1-8b-ollama": {
+    id: "llama3.1-8b-ollama",
+    display: "Llama 3.1 8B Instruct (Ollama)",
+    notes: "Local via Ollama. `ollama pull llama3.1:8b`.",
+    build: () => new OllamaAdapter({ model: "llama3.1:8b" }),
+  },
+  "mistral-7b-ollama": {
+    id: "mistral-7b-ollama",
+    display: "Mistral 7B Instruct v0.3 (Ollama)",
+    notes: "Local via Ollama. `ollama pull mistral:7b`.",
+    build: () => new OllamaAdapter({ model: "mistral:7b" }),
+  },
   "claude-sonnet-4": {
     id: "claude-sonnet-4",
     display: "Claude Sonnet 4 (Anthropic API)",
