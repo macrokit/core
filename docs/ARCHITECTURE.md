@@ -50,7 +50,7 @@ Target size for the runtime skeleton: ~300 lines of code. Anything beyond that i
 
 A single interface (`LLMAdapter`) with a small set of methods (`complete`, `completeWithTools`, `embed`) and provider-specific adapters that implement it.
 
-Shipping adapters in the first release:
+Shipping adapters:
 
 - `OpenAICompatibleAdapter` — covers OpenAI, DeepSeek, Qwen API, Zhipu, Kimi, Together, OpenRouter, and any other provider that speaks the OpenAI chat-completions schema. One adapter, configured by base URL and API key.
 - `OllamaAdapter` — talks to a local Ollama server. Streaming-aware.
@@ -197,21 +197,21 @@ To pre-empt the obvious feature requests:
 - **A LangChain-style "agent graph" layer.** Out of scope by design — the whole point of the pattern is to not have one.
 - **A non-TypeScript primary SDK.** The runtime is in TypeScript. A Python port is conceivable post-launch if demand justifies it; we will not ship a Python SDK that lags behind the TS one.
 
-## 7. Where the architecture lands by Week 12
+## 7. What's shipped
 
-Week 12 is the public launch milestone. The architecture above is the target. The shipped-by-launch subset:
+Live and open on `main`:
 
-- `runtime` — feature-complete for the single-user, single-process case.
-- `llm` — three adapters (`OpenAICompatibleAdapter`, `OllamaAdapter`, `LlamaCppAdapter`), bail-out detector with a documented extensibility model.
-- `browser` — Playwright backend only; Chrome extension backend deferred.
+- `runtime` — intent router, macro registry, dispatcher, session log; covers the single-user, single-process case.
+- `llm` — `OpenAICompatibleAdapter`, `OllamaAdapter`, `AnthropicAdapter` (design-time authoring), plus a bail-out detector with a documented extensibility model.
+- `browser` — Playwright backend.
 - `authoring` — `defineMacro`, test harness, recording mode.
-- `reference-data` — loader, SQLite cache, `sync`/`verify`/`pin` commands.
-- `cli` — `init`, `lint`, `gate`, `refdata`.
-- One non-trivial reference implementation in `examples/` against a publicly observable surface.
-- `docs-site` at `macrokit.dev` carrying this document, `THE_PATTERN.md`, the quickstart, and the API reference.
+- `reference-data` — loader, cache, `sync`/`verify`/`pin`.
+- `cli` — `init`, `lint`, `gate` (and `studio`/`mcp` launchers for the local IDE).
+- Two reference implementations in `examples/` (`github-maintainer`, `paper-triage`) against publicly observable surfaces.
+- `macrokit.dev` carrying this document and `THE_PATTERN.md`.
 
-What is *not* in the launch cut: hosted runtime, macro exchange, additional language SDKs, the Chrome-extension backend, distributed/multi-process runtime support, fine-grained per-macro permissioning. Those are post-launch decisions, informed by whichever ones adopters actually need.
+Not built yet (decided by what adopters actually ask for): hosted runtime, additional language SDKs, the Chrome-extension backend, distributed/multi-process runtime support, fine-grained per-macro permissioning.
 
 ---
 
-*Draft v0.1, 2026-05-27. The architecture is fixed in shape but soft in detail; the detail will harden as Weeks 2–10 implementation lands and reveals which assumptions were wrong.*
+*The architecture is fixed in shape; detail hardens as real usage reveals which assumptions were wrong.*

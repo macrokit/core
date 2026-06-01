@@ -4,7 +4,7 @@
 
 **An open-source SDK that lets weak and local LLMs work like frontier models on narrow workflows.**
 
-[macrokit.dev](https://macrokit.dev) · Apache 2.0 · TypeScript · Pre-release
+[macrokit.dev](https://macrokit.dev) · Apache 2.0 · TypeScript · Live
 
 ---
 
@@ -59,7 +59,7 @@ Full argument: `docs/THE_PATTERN.md` §5.
 
 ## 60-second hello world
 
-> The runtime is under active development. The snippet below is the target API for the first release (Week 12). It will work end-to-end at launch; today it compiles and runs the trivial smoke test.
+> This runs today against any OpenAI-compatible endpoint (Ollama shown below). `macrokit init <name>` scaffolds a project around exactly this shape.
 
 ```ts
 import { defineMacro, MacroRegistry } from "@macrokit/authoring";
@@ -94,16 +94,16 @@ The point of this example is what's *not* in it. No agent loop. No planning prom
 - **[`docs/THE_PATTERN.md`](docs/THE_PATTERN.md)** — the pattern, the theorem, the distillation gate, the public/private boundary. Start here.
 - **[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)** — the SDK's component layout and the runtime loop in detail.
 - **[`docs/BENCHMARK.md`](docs/BENCHMARK.md)** — the launch benchmark: methodology, two-run story, honest analysis of misses, and why we don't run frontier rows ourselves.
-- **Quickstart** — landing with the launch (docs site at [macrokit.dev](https://macrokit.dev)).
-- **API reference** — landing with the launch (auto-generated, on the docs site).
+- **Quickstart** — `macrokit init my-app --vertical github`, then run it against a local model (see [60-second hello world](#60-second-hello-world) above and [`examples/`](examples/)).
+- **[macrokit.dev](https://macrokit.dev)** — the project site and how-it-works walkthrough.
 
 ## Status
 
-Pre-release. Targeting public launch in Q3 2026.
+Live and open. Apache 2.0, on `main`, running today. Install it, scaffold a project, point it at a local model.
 
-The pattern Macrokit codifies has been running in a private production deployment since early 2026 (operations tooling for users without frontier-API access). Macrokit is the vertical-agnostic extraction of that work into a reusable SDK. The [`launch benchmark`](docs/BENCHMARK.md) exercises it on a public maintainer-agent corpus: a 7B local model scored 94.5% with zero structural failures.
+The pattern Macrokit codifies has been running in a private production deployment since early 2026 (an operations tool for users without frontier-API access). Macrokit is the vertical-agnostic extraction of that work into a reusable SDK. The [benchmark](docs/BENCHMARK.md) exercises it on a public maintainer-agent corpus, where a 7B local model scored 94.5% with zero structural failures.
 
-We will not publish a roadmap until launch. We will not promise dates. We will ship one substantive non-sensitive reference implementation alongside the launch so the pattern is demonstrable, not just describable.
+Two reference implementations ship in [`examples/`](examples/) — `github-maintainer` and `paper-triage` — so the pattern is demonstrable, not just describable. We don't publish dated roadmaps; we ship to `main` and say what's actually running.
 
 ## License
 
@@ -119,6 +119,6 @@ There are two contribution paths, with different rules.
 
 The registry is the seed of a broader ecosystem we intend to grow: a place to share and discover the vertical macro libraries authors build, so adopting a new vertical can start from proven macros instead of a cold start. If that direction interests you as an early author, say hello via [@macrokitdev](https://x.com/macrokitdev).
 
-**SDK-internal contributions** (changes to `@macrokit/runtime`, `@macrokit/llm`, `@macrokit/browser`, `@macrokit/authoring`, `@macrokit/reference-data`, `@macrokit/cli`) are not yet accepting external PRs while the API surface stabilizes. Issues and discussion are welcome on this repo's tracker. A full contribution guideline + RFC process lands after the first stable minor.
+**SDK-internal contributions** (changes to `@macrokit/runtime`, `@macrokit/llm`, `@macrokit/browser`, `@macrokit/authoring`, `@macrokit/reference-data`, `@macrokit/cli`) currently go through issues and discussion on this repo's tracker rather than direct PRs, while the API surface settles. Open an issue first and we'll talk.
 
 If you are building under the constraints Macrokit is designed for and want to be a design partner, contact via [macrokit.dev](https://macrokit.dev) or [@macrokitdev](https://x.com/macrokitdev) on X.

@@ -205,7 +205,7 @@ The first list is much larger than people first assume — almost any "operation
 
 ## 11. Where Macrokit goes next
 
-Macrokit launches in Q3 2026. The six-package SDK (runtime, LLM adapter layer, browser, authoring kit, reference-data, CLI) is in the repository alongside one non-trivial reference implementation: a multi-surface GitHub maintainer agent driving five macros against the GitHub API plus one browser-driven macro against the GitHub Actions UI. The expanded version of this document — adding evaluation against a pre-registered 100-task benchmark and a related-work section — is deposited as a Zenodo preprint at launch with a citable DOI.
+Macrokit is live and open (Apache 2.0). The six-package SDK (runtime, LLM adapter layer, browser, authoring kit, reference-data, CLI) is in the repository alongside two reference implementations — a multi-surface GitHub maintainer agent driving five macros against the GitHub API plus one browser-driven macro against the GitHub Actions UI, and a paper-triage agent. The expanded version of this document — adding evaluation against a pre-registered 100-task benchmark and a related-work section — is deposited as a Zenodo preprint with a citable DOI.
 
 A pattern is only as durable as the practice that surrounds it. If Macrokit is just a runtime, it is one library among many. If the distillation gate becomes a discipline that teams actually adopt — every session that touches a workflow without a macro encodes one before ending — then over a year or two, the macro libraries that teams accumulate become the operational moat of those teams, the SDK becomes incidental, and the pattern compounds.
 
