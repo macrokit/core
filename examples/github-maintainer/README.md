@@ -4,9 +4,9 @@ A maintainer agent for GitHub repositories, built using **only** the public APIs
 
 1. **Validates the SDK surface** — if anything here reaches past `@macrokit/runtime`, `@macrokit/llm`, `@macrokit/authoring`, `@macrokit/reference-data`, or `@macrokit/browser`, the abstraction is wrong.
 2. **Demonstrates the pattern on a real third-party surface** — GitHub, the daily-driver tool for the launch audience.
-3. **Provides the task corpus for the launch benchmark** — the macros here are what the Days 11–13 model comparison runs against.
+3. **Provides the task corpus for the benchmark** — the macros here are what the multi-model comparison in [`docs/BENCHMARK.md`](../../docs/BENCHMARK.md) runs against.
 
-This started life on Day 4 as a one-macro dogfood (`triage_pull_request`). Days 5–10 extends it into a six-macro maintainer agent across GitHub's REST API plus one browser-driven adjacent surface.
+It began as a one-macro dogfood (`triage_pull_request`) and grew into a six-macro maintainer agent across GitHub's REST API plus one browser-driven adjacent surface.
 
 ## What it does
 
@@ -125,5 +125,5 @@ The private key from `refdata:build` is intentionally not committed — for a re
 ## What's intentionally NOT here
 
 - **No Octokit dependency.** A 200-line fetch-based REST client covers what we need. Adopters with deeper GitHub needs can swap Octokit in by replacing `github-client.ts`; the macros use the typed shapes, not Octokit's surface.
-- **No LLM-driven classification.** The Days 11–13 benchmark compares the same `classify()` function across five model providers running through Macrokit's router. If the classifier itself used an LLM, the benchmark would be measuring two things at once.
+- **No LLM-driven classification.** The benchmark compares the same `classify()` function across multiple models running through Macrokit's router. If the classifier itself used an LLM, the benchmark would be measuring two things at once.
 - **No web-UI driving for actions GitHub exposes via API.** The browser-driven macro (`capture_workflow_log`) exists for a surface where the API is genuinely lacking, not as a generic "do it through the browser" demo.

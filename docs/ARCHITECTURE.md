@@ -2,7 +2,7 @@
 
 *The shape of the SDK and how its pieces fit together.*
 
-**Status:** Draft v0.1 — Week 1 of public development. This document describes the target architecture for the first stable release. Component-by-component implementation lands across Weeks 2–10; what is built today is the runtime skeleton.
+**Status:** Live. The packages described here are built and on `main` — runtime, llm, browser, authoring, reference-data, and cli. This document describes how they fit together.
 
 Read `THE_PATTERN.md` first if you haven't. This document assumes the pattern (intent routing plus macro distillation) and describes the concrete components that implement it.
 
@@ -44,7 +44,7 @@ The smallest package, intentionally. Owns:
 - **`Dispatcher`:** validates arguments against the macro's schema, calls the handler, captures failure context, writes to the session log.
 - **`SessionLog`:** append-only JSONL file under `.macrokit/sessions/`. Every user turn, every tool call, every result. The distillation gate reads this.
 
-Target size for the runtime skeleton: ~300 lines of code. Anything beyond that is scope creep.
+The runtime core is deliberately small (~300 lines). Routing and dispatch are the whole job; anything beyond that is scope creep.
 
 ### 2.2 `llm`
 
@@ -67,7 +67,7 @@ The surface most macros that drive third-party UIs will need.
 Two backends, one interface:
 
 - **Playwright backend (default):** runs in Node, manages browser contexts, supports persistent profiles per "user identity."
-- **Chrome-extension backend:** drives the user's own logged-in Chrome through a small extension. Useful when an adopter wants the macros to operate within an existing browser session rather than a headless context. The extension lives in a separate repository (deferred to Week 10+).
+- **Chrome-extension backend:** drives the user's own logged-in Chrome through a small extension. Useful when an adopter wants the macros to operate within an existing browser session rather than a headless context. The extension lives in a separate repository (planned; not yet released).
 
 Both backends expose the same `BrowserService` API. The two interface primitives that matter:
 

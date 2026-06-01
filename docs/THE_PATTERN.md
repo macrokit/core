@@ -2,7 +2,7 @@
 
 *Intent routing plus macro distillation: how weak and local LLMs reach frontier-model behavior on narrow workflows.*
 
-**Status:** Draft v0.1 — Week 1 of public development. This document doubles as the preprint draft. Citations, related work, and the formal evaluation section are stubs to be filled in before submission.
+**Status:** Live. This is the canonical write-up of the pattern; a companion preprint is published on Zenodo. The evaluation section is backed by the pre-registered, reproducible benchmark in [`docs/BENCHMARK.md`](BENCHMARK.md).
 
 ---
 
@@ -213,4 +213,4 @@ That is the bet.
 
 ---
 
-*Draft v0.1, 2026-05-27. Feedback and pushback welcome at the project's public issue tracker once it opens.*
+*Feedback and pushback welcome on the project's public issue tracker.*
