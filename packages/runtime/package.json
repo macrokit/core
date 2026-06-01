@@ -1,6 +1,7 @@
 {
   "name": "@macrokit/runtime",
   "version": "0.0.1",
+  "publishConfig": { "access": "public" },
   "description": "Macrokit runtime: macro registry, dispatcher, session log, router scaffolding.",
   "license": "Apache-2.0",
   "type": "module",

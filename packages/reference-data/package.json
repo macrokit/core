@@ -1,6 +1,7 @@
 {
   "name": "@macrokit/reference-data",
   "version": "0.0.1",
+  "publishConfig": { "access": "public" },
   "description": "Macrokit reference-data layer: versioned, signed bundles with a SQLite-backed local cache.",
   "license": "Apache-2.0",
   "type": "module",

@@ -1,6 +1,7 @@
 {
   "name": "@macrokit/cli",
   "version": "0.0.1",
+  "publishConfig": { "access": "public" },
   "description": "Macrokit CLI: init, lint, and the distillation gate.",
   "license": "Apache-2.0",
   "type": "module",

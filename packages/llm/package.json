@@ -1,6 +1,7 @@
 {
   "name": "@macrokit/llm",
   "version": "0.0.1",
+  "publishConfig": { "access": "public" },
   "description": "Macrokit LLM adapters: OpenAI-compatible, Ollama, with normalized tool-call shape and bail-out detector.",
   "license": "Apache-2.0",
   "type": "module",
