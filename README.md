@@ -59,11 +59,20 @@ Full argument: `docs/THE_PATTERN.md` §5.
 
 ## 60-second hello world
 
-> This runs today against any OpenAI-compatible endpoint (Ollama shown below). `macrokit init <name>` scaffolds a project around exactly this shape.
+> Runs against any OpenAI-compatible endpoint (Ollama shown below). `macrokit init <name>` scaffolds a project around exactly this shape.
+
+**Install.** The `@macrokit/*` packages run from source today — it's a pnpm workspace. (npm releases are coming; once they land, `npm install @macrokit/runtime @macrokit/llm @macrokit/authoring` replaces the clone step.)
+
+```sh
+git clone https://github.com/macrokit/core.git macrokit && cd macrokit
+pnpm install && pnpm -r build
+```
+
+Then run a reference agent in [`examples/`](examples/), or import the packages from a workspace app:
 
 ```ts
-import { defineMacro, MacroRegistry } from "@macrokit/authoring";
-import { Runtime } from "@macrokit/runtime";
+import { defineMacro } from "@macrokit/authoring";
+import { MacroRegistry, Runtime } from "@macrokit/runtime";
 import { OpenAICompatibleAdapter } from "@macrokit/llm";
 import { z } from "zod";
 
