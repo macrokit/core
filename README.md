@@ -14,6 +14,8 @@ Macrokit is a runtime and SDK for shipping LLM applications under cloud-API cons
 
 It works by moving multi-step reasoning to **design-time**: a strong model (Claude, GPT-4o) encodes a workflow once as a deterministic *macro*. At **runtime**, a weak or local model only has to do **intent classification** — "user wants X → call macro Y." The hard work happens once, offline. The cheap work happens every request.
 
+This recapitulates how brains manage the cost of thinking: a slow, expensive *deliberation* path (System 2 — the strong model) compiles repeated reasoning into a fast, cheap *automatic* path (System 1 — the macro), and the cheap reflex carries the overwhelming majority of the load. A fast cheap reflex and a slow expensive mind, with the reflex carrying the load.
+
 Read **[`docs/THE_PATTERN.md`](docs/THE_PATTERN.md)** for the full argument.
 
 ## Who it's for

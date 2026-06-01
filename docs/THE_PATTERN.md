@@ -21,6 +21,8 @@ This document describes a different response.
 
 If that observation holds, the answer is not to make weak models reason better. The answer is to remove the reasoning requirement at runtime.
 
+This is the architecture brains already use to manage the cost of thinking. Deliberate reasoning is metabolically expensive, so an efficient mind compiles repeated deliberation into cheap automatic reflexes and reserves expensive thinking for the genuinely novel — the System 2 / System 1 split of dual-process theory. Macrokit ports it to LLMs: the strong model is System 2 (slow, expensive, for the novel), a macro is System 1 (fast, cheap, deterministic, for the routine), and the design-time encoding step is *compiled deliberation* — the artificial analog of how the brain chunks a practiced behavior down from costly cortex to cheap basal ganglia. The rest of this document is the engineering that makes that split concrete.
+
 ## 2. The theorem
 
 > **Theorem (informal).** Any workflow a strong model can solve by reasoning step-by-step on a known surface can be encoded as a deterministic, parameterized sequence of tool calls. Once encoded, executing the workflow requires only intent classification — a one-shot routing problem that small models handle reliably.
