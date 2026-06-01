@@ -65,6 +65,14 @@ const MODELS: Record<string, ModelConfig> = {
     notes: "Local via Ollama. `ollama pull qwen2.5:3b-instruct`.",
     build: () => new OllamaAdapter({ model: "qwen2.5:3b-instruct" }),
   },
+  "qwen2.5-7b-ollama": {
+    id: "qwen2.5-7b-ollama",
+    display: "Qwen 2.5 7B Instruct (Ollama)",
+    notes:
+      "Local via Ollama. `ollama pull qwen2.5:7b-instruct`. Same model family as " +
+      "the reference qwen-7b-local row, served through Ollama instead of llama.cpp.",
+    build: () => new OllamaAdapter({ model: "qwen2.5:7b-instruct" }),
+  },
   "llama3.1-8b-ollama": {
     id: "llama3.1-8b-ollama",
     display: "Llama 3.1 8B Instruct (Ollama)",
