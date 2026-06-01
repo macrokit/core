@@ -101,12 +101,16 @@ async function runOneTask(
 
   try {
     // We invoke the router with history=[] so each task is independent.
+    // temperature 0 = greedy, per methodology.md (matches production routing,
+    // which is deterministic). Without this the adapter falls back to the
+    // provider default (e.g. Ollama's 0.8), which is noisy for intent routing
+    // and not what the methodology specifies.
     // Because the router will try to DISPATCH the macro, and the macros
     // expect a real GitHub client (which we don't supply), the dispatch
     // will fail with a structured error. But we only need the routing
     // decision — which we read off `result.dispatched[0].call`. The
     // handler-throw doesn't affect the score.
-    const result = await router.chat(task.prompt, { history: [] });
+    const result = await router.chat(task.prompt, { history: [], temperature: 0 });
     rawText = result.text;
     if (result.dispatched.length > 0) {
       const call = result.dispatched[0]!.call;
