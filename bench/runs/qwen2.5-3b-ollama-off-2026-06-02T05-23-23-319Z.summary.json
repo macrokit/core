@@ -1,0 +1,97 @@
+{
+  "header": {
+    "modelId": "qwen2.5-3b-ollama-off",
+    "modelDisplay": "Qwen 2.5 3B Instruct (Ollama) — MACRO-OFF (primitives)",
+    "llmProvider": "ollama",
+    "startedAt": "2026-06-02T05:23:23.319Z",
+    "harnessCommit": "f85b88b37c21314557360f224d18636077b7664c",
+    "corpusCommit": "f85b88b37c21314557360f224d18636077b7664c",
+    "notes": "Local via Ollama. `ollama pull qwen2.5:3b-instruct`. [condition: macro_off]"
+  },
+  "taskCount": 100,
+  "totalScore": 117,
+  "maxScore": 200,
+  "percent": 58.5,
+  "bucketBreakdown": {
+    "triage_pull_request": {
+      "total": 18,
+      "max": 30,
+      "percent": 60,
+      "count": 15
+    },
+    "triage_issue": {
+      "total": 15,
+      "max": 30,
+      "percent": 50,
+      "count": 15
+    },
+    "generate_release_notes": {
+      "total": 9,
+      "max": 24,
+      "percent": 37.5,
+      "count": 12
+    },
+    "close_stale_issues": {
+      "total": 3,
+      "max": 24,
+      "percent": 12.5,
+      "count": 12
+    },
+    "suggest_reviewers": {
+      "total": 14,
+      "max": 24,
+      "percent": 58.333333333333336,
+      "count": 12
+    },
+    "capture_workflow_log": {
+      "total": 15,
+      "max": 16,
+      "percent": 93.75,
+      "count": 8
+    },
+    "no_macro": {
+      "total": 22,
+      "max": 22,
+      "percent": 100,
+      "count": 11
+    },
+    "ambiguous_multi_intent": {
+      "total": 21,
+      "max": 30,
+      "percent": 70,
+      "count": 15
+    }
+  },
+  "difficultyBreakdown": {
+    "easy_direct": {
+      "total": 31,
+      "max": 50,
+      "percent": 62,
+      "count": 25
+    },
+    "medium_paraphrase": {
+      "total": 21,
+      "max": 48,
+      "percent": 43.75,
+      "count": 24
+    },
+    "hard_implicit": {
+      "total": 22,
+      "max": 40,
+      "percent": 55.00000000000001,
+      "count": 20
+    },
+    "hard_distractor": {
+      "total": 43,
+      "max": 62,
+      "percent": 69.35483870967742,
+      "count": 31
+    }
+  },
+  "bailOutCount": 4,
+  "bailOutBreakdown": {
+    "repeated_tool_call": 4
+  },
+  "meanLatencyMs": 5551.23,
+  "finishedAt": "2026-06-02T05:32:38.580Z"
+}

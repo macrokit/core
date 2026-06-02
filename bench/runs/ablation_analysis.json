@@ -1,0 +1,316 @@
+{
+  "classes": [
+    "triage_pull_request",
+    "triage_issue",
+    "generate_release_notes",
+    "close_stale_issues",
+    "suggest_reviewers",
+    "capture_workflow_log",
+    "no_macro"
+  ],
+  "models": [
+    {
+      "model": "llama3.1-8b-ollama",
+      "display": "Llama 3.1 8B Instruct (Ollama)",
+      "on": {
+        "accuracy": 0.86,
+        "I_nats": 1.513021131952239,
+        "mean_lat_s": 9.99655,
+        "mean_calls": 1.0,
+        "density": 0.15135433043922544,
+        "density_per_call": 1.513021131952239,
+        "n": 100,
+        "ci": {
+          "I_nats": [
+            1.370959952497192,
+            1.6696879943124692
+          ],
+          "density": [
+            0.13053342477628485,
+            0.17448206621748372
+          ],
+          "mean_lat_s": [
+            9.16407575,
+            11.01893625
+          ]
+        }
+      },
+      "off": {
+        "accuracy": 0.54,
+        "I_nats": 0.95834699859665,
+        "mean_lat_s": 15.02208,
+        "mean_calls": 1.05,
+        "density": 0.06379589235289986,
+        "density_per_call": 0.9127114272349047,
+        "n": 100,
+        "ci": {
+          "I_nats": [
+            0.852484769993831,
+            1.1755230693667664
+          ],
+          "density": [
+            0.05519044313546752,
+            0.08077988571318102
+          ],
+          "mean_lat_s": [
+            13.8862795,
+            16.2550465
+          ]
+        }
+      },
+      "density_ratio_on_over_off": 2.3724776761798143,
+      "density_per_call_ratio_on_over_off": 1.657721254280771,
+      "I_ratio_on_over_off": 1.5787821469340677,
+      "ratio_mean": 2.261533293136605,
+      "ratio_ci": [
+        1.8974320412157133,
+        2.708352545796093
+      ]
+    },
+    {
+      "model": "mistral-7b-ollama",
+      "display": "Mistral 7B Instruct v0.3 (Ollama)",
+      "on": {
+        "accuracy": 0.14,
+        "I_nats": 1.0838201365765807e-302,
+        "mean_lat_s": 27.03554,
+        "mean_calls": 1.0,
+        "density": 4.008871790896652e-304,
+        "density_per_call": 1.0838201365765807e-302,
+        "n": 100,
+        "ci": {
+          "I_nats": [
+            -2.0317081350640368e-16,
+            2.2204460492503128e-16
+          ],
+          "density": [
+            -7.658022366932454e-18,
+            8.624293094926491e-18
+          ],
+          "mean_lat_s": [
+            24.490601249999997,
+            29.873651999999996
+          ]
+        }
+      },
+      "off": {
+        "accuracy": 0.14,
+        "I_nats": 1.0838201365765807e-302,
+        "mean_lat_s": 21.20019,
+        "mean_calls": 0.0,
+        "density": 5.112313316892824e-304,
+        "density_per_call": 0.0,
+        "n": 100,
+        "ci": {
+          "I_nats": [
+            -2.0317081350640368e-16,
+            2.2204460492503128e-16
+          ],
+          "density": [
+            -9.384587725319787e-18,
+            1.0978249910292988e-17
+          ],
+          "mean_lat_s": [
+            19.039667750000003,
+            23.329109499999998
+          ]
+        }
+      },
+      "density_ratio_on_over_off": 0.78416003527209,
+      "density_per_call_ratio_on_over_off": null,
+      "I_ratio_on_over_off": 1.0,
+      "ratio_mean": 0.783497051140625,
+      "ratio_ci": [
+        0.6918603689584093,
+        0.8834457038946851
+      ]
+    },
+    {
+      "model": "qwen2.5-1.5b-ollama",
+      "display": "Qwen 2.5 1.5B Instruct (Ollama)",
+      "on": {
+        "accuracy": 0.79,
+        "I_nats": 1.2772050595908162,
+        "mean_lat_s": 1.72349,
+        "mean_calls": 1.0,
+        "density": 0.741057423942591,
+        "density_per_call": 1.2772050595908162,
+        "n": 100,
+        "ci": {
+          "I_nats": [
+            1.1130936112536145,
+            1.5032329011044925
+          ],
+          "density": [
+            0.6099074528438202,
+            0.9275596164226111
+          ],
+          "mean_lat_s": [
+            1.5028299999999999,
+            1.9730662499999998
+          ]
+        }
+      },
+      "off": {
+        "accuracy": 0.53,
+        "I_nats": 0.7889689810417988,
+        "mean_lat_s": 5.37635,
+        "mean_calls": 0.79,
+        "density": 0.1467480690508986,
+        "density_per_call": 0.9986949127111376,
+        "n": 100,
+        "ci": {
+          "I_nats": [
+            0.655563275774542,
+            0.9902575951130298
+          ],
+          "density": [
+            0.06147415779081158,
+            0.41193462228133204
+          ],
+          "mean_lat_s": [
+            2.1665242499999997,
+            11.582029999999996
+          ]
+        }
+      },
+      "density_ratio_on_over_off": 5.049861498930934,
+      "density_per_call_ratio_on_over_off": 1.2788741019252943,
+      "I_ratio_on_over_off": 1.6188279771206253,
+      "ratio_mean": 5.1290439824801215,
+      "ratio_ci": [
+        1.8251472178713548,
+        12.500365533649116
+      ]
+    },
+    {
+      "model": "qwen2.5-3b-ollama",
+      "display": "Qwen 2.5 3B Instruct (Ollama)",
+      "on": {
+        "accuracy": 0.87,
+        "I_nats": 1.561415493108028,
+        "mean_lat_s": 4.11883,
+        "mean_calls": 1.0,
+        "density": 0.3790919977537378,
+        "density_per_call": 1.561415493108028,
+        "n": 100,
+        "ci": {
+          "I_nats": [
+            1.4134532976862002,
+            1.711115367047412
+          ],
+          "density": [
+            0.2952988246632843,
+            0.48764460017841277
+          ],
+          "mean_lat_s": [
+            3.2842594999999997,
+            5.2201604999999995
+          ]
+        }
+      },
+      "off": {
+        "accuracy": 0.66,
+        "I_nats": 1.0305151663862986,
+        "mean_lat_s": 5.551229999999999,
+        "mean_calls": 1.05,
+        "density": 0.18563726712571785,
+        "density_per_call": 0.9814430156059986,
+        "n": 100,
+        "ci": {
+          "I_nats": [
+            0.8929502472795707,
+            1.2563102193893654
+          ],
+          "density": [
+            0.15691967074921456,
+            0.2379380360890289
+          ],
+          "mean_lat_s": [
+            4.806632,
+            6.351507499999999
+          ]
+        }
+      },
+      "density_ratio_on_over_off": 2.042111498533363,
+      "density_per_call_ratio_on_over_off": 1.5909385142895143,
+      "I_ratio_on_over_off": 1.515179537418585,
+      "ratio_mean": 2.0012328460569817,
+      "ratio_ci": [
+        1.456081165389488,
+        2.6526856372917202
+      ]
+    },
+    {
+      "model": "qwen2.5-7b-ollama",
+      "display": "Qwen 2.5 7B Instruct (Ollama)",
+      "on": {
+        "accuracy": 0.84,
+        "I_nats": 1.515032017145763,
+        "mean_lat_s": 15.6314,
+        "mean_calls": 1.0,
+        "density": 0.09692234970289053,
+        "density_per_call": 1.515032017145763,
+        "n": 100,
+        "ci": {
+          "I_nats": [
+            1.380399135146306,
+            1.6703193228057434
+          ],
+          "density": [
+            0.08654701150443367,
+            0.1086171515760727
+          ],
+          "mean_lat_s": [
+            14.341761499999999,
+            17.082936499999995
+          ]
+        }
+      },
+      "off": {
+        "accuracy": 0.69,
+        "I_nats": 1.2256682441093811,
+        "mean_lat_s": 9.092600000000001,
+        "mean_calls": 1.17,
+        "density": 0.13479843434324407,
+        "density_per_call": 1.047579695819984,
+        "n": 100,
+        "ci": {
+          "I_nats": [
+            1.0901845250068765,
+            1.4062328185144546
+          ],
+          "density": [
+            0.11359077269817758,
+            0.16545884424518698
+          ],
+          "mean_lat_s": [
+            8.05704575,
+            10.25069825
+          ]
+        }
+      },
+      "density_ratio_on_over_off": 0.7190168800929264,
+      "density_per_call_ratio_on_over_off": 1.446221249983167,
+      "I_ratio_on_over_off": 1.2360865384471513,
+      "ratio_mean": 0.7071534320475885,
+      "ratio_ci": [
+        0.5955251852747944,
+        0.8359421587084277
+      ]
+    }
+  ],
+  "unpaired": [
+    {
+      "model": "qwen-7b-local",
+      "display": "Qwen 2.5 7B Instruct Q4_K_M (llama-server on China Mac)",
+      "accuracy": 0.96,
+      "I_nats": 1.7791391665704832,
+      "mean_lat_s": 5.85252,
+      "mean_calls": 1.0,
+      "density": 0.3039954013946955,
+      "density_per_call": 1.7791391665704832,
+      "n": 100
+    }
+  ]
+}

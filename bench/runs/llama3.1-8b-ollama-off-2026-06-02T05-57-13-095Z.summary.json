@@ -1,0 +1,97 @@
+{
+  "header": {
+    "modelId": "llama3.1-8b-ollama-off",
+    "modelDisplay": "Llama 3.1 8B Instruct (Ollama) — MACRO-OFF (primitives)",
+    "llmProvider": "ollama",
+    "startedAt": "2026-06-02T05:57:13.095Z",
+    "harnessCommit": "f85b88b37c21314557360f224d18636077b7664c",
+    "corpusCommit": "f85b88b37c21314557360f224d18636077b7664c",
+    "notes": "Local via Ollama. `ollama pull llama3.1:8b`. [condition: macro_off]"
+  },
+  "taskCount": 100,
+  "totalScore": 96,
+  "maxScore": 200,
+  "percent": 48,
+  "bucketBreakdown": {
+    "triage_pull_request": {
+      "total": 20,
+      "max": 30,
+      "percent": 66.66666666666666,
+      "count": 15
+    },
+    "triage_issue": {
+      "total": 16,
+      "max": 30,
+      "percent": 53.333333333333336,
+      "count": 15
+    },
+    "generate_release_notes": {
+      "total": 14,
+      "max": 24,
+      "percent": 58.333333333333336,
+      "count": 12
+    },
+    "close_stale_issues": {
+      "total": 3,
+      "max": 24,
+      "percent": 12.5,
+      "count": 12
+    },
+    "suggest_reviewers": {
+      "total": 6,
+      "max": 24,
+      "percent": 25,
+      "count": 12
+    },
+    "capture_workflow_log": {
+      "total": 16,
+      "max": 16,
+      "percent": 100,
+      "count": 8
+    },
+    "no_macro": {
+      "total": 4,
+      "max": 22,
+      "percent": 18.181818181818183,
+      "count": 11
+    },
+    "ambiguous_multi_intent": {
+      "total": 17,
+      "max": 30,
+      "percent": 56.666666666666664,
+      "count": 15
+    }
+  },
+  "difficultyBreakdown": {
+    "easy_direct": {
+      "total": 29,
+      "max": 50,
+      "percent": 57.99999999999999,
+      "count": 25
+    },
+    "medium_paraphrase": {
+      "total": 19,
+      "max": 48,
+      "percent": 39.58333333333333,
+      "count": 24
+    },
+    "hard_implicit": {
+      "total": 24,
+      "max": 40,
+      "percent": 60,
+      "count": 20
+    },
+    "hard_distractor": {
+      "total": 24,
+      "max": 62,
+      "percent": 38.70967741935484,
+      "count": 31
+    }
+  },
+  "bailOutCount": 1,
+  "bailOutBreakdown": {
+    "tool_call_as_text": 1
+  },
+  "meanLatencyMs": 15022.08,
+  "finishedAt": "2026-06-02T06:22:15.406Z"
+}

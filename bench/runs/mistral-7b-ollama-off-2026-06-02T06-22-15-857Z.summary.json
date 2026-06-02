@@ -1,0 +1,97 @@
+{
+  "header": {
+    "modelId": "mistral-7b-ollama-off",
+    "modelDisplay": "Mistral 7B Instruct v0.3 (Ollama) — MACRO-OFF (primitives)",
+    "llmProvider": "ollama",
+    "startedAt": "2026-06-02T06:22:15.857Z",
+    "harnessCommit": "f85b88b37c21314557360f224d18636077b7664c",
+    "corpusCommit": "f85b88b37c21314557360f224d18636077b7664c",
+    "notes": "Local via Ollama. `ollama pull mistral:7b`. [condition: macro_off]"
+  },
+  "taskCount": 100,
+  "totalScore": 28,
+  "maxScore": 200,
+  "percent": 14.000000000000002,
+  "bucketBreakdown": {
+    "triage_pull_request": {
+      "total": 0,
+      "max": 30,
+      "percent": 0,
+      "count": 15
+    },
+    "triage_issue": {
+      "total": 0,
+      "max": 30,
+      "percent": 0,
+      "count": 15
+    },
+    "generate_release_notes": {
+      "total": 0,
+      "max": 24,
+      "percent": 0,
+      "count": 12
+    },
+    "close_stale_issues": {
+      "total": 0,
+      "max": 24,
+      "percent": 0,
+      "count": 12
+    },
+    "suggest_reviewers": {
+      "total": 0,
+      "max": 24,
+      "percent": 0,
+      "count": 12
+    },
+    "capture_workflow_log": {
+      "total": 0,
+      "max": 16,
+      "percent": 0,
+      "count": 8
+    },
+    "no_macro": {
+      "total": 22,
+      "max": 22,
+      "percent": 100,
+      "count": 11
+    },
+    "ambiguous_multi_intent": {
+      "total": 6,
+      "max": 30,
+      "percent": 20,
+      "count": 15
+    }
+  },
+  "difficultyBreakdown": {
+    "easy_direct": {
+      "total": 6,
+      "max": 50,
+      "percent": 12,
+      "count": 25
+    },
+    "medium_paraphrase": {
+      "total": 6,
+      "max": 48,
+      "percent": 12.5,
+      "count": 24
+    },
+    "hard_implicit": {
+      "total": 0,
+      "max": 40,
+      "percent": 0,
+      "count": 20
+    },
+    "hard_distractor": {
+      "total": 16,
+      "max": 62,
+      "percent": 25.806451612903224,
+      "count": 31
+    }
+  },
+  "bailOutCount": 19,
+  "bailOutBreakdown": {
+    "tool_call_as_text": 19
+  },
+  "meanLatencyMs": 21200.19,
+  "finishedAt": "2026-06-02T06:57:35.978Z"
+}
