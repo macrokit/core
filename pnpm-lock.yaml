@@ -35,6 +35,9 @@ importers:
       '@macrokit/runtime':
         specifier: workspace:*
         version: link:../packages/runtime
+      zod:
+        specifier: ^3.23.8
+        version: 3.25.76
     devDependencies:
       tsx:
         specifier: ^4.19.0

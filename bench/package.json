@@ -14,7 +14,8 @@
     "@macrokit/authoring": "workspace:*",
     "@macrokit/llm": "workspace:*",
     "@macrokit/runtime": "workspace:*",
-    "@macrokit-example/github-maintainer": "workspace:*"
+    "@macrokit-example/github-maintainer": "workspace:*",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "tsx": "^4.19.0",

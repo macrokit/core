@@ -55,6 +55,13 @@ export interface TaskResult {
   latencyMs: number;
   rawText: string;
   errorMessage?: string;
+  /**
+   * MACRO-OFF condition only: the ordered primitive ops the model called, and
+   * the intent decoded from them via the frozen rule. For macro-OFF, `actualTool`
+   * is set to `derivedIntent` so the shared scorer/label-space applies.
+   */
+  trajectory?: string[];
+  derivedIntent?: string;
 }
 
 export interface RunHeader {

@@ -164,26 +164,38 @@ async function runOne(args: string[]): Promise<number> {
     return 2;
   }
 
+  // --condition macro_on (default) | macro_off (the ablation; see
+  // MACRO_ABLATION_PREREGISTRATION.md). macro_off artifacts get a "-off" id
+  // suffix so they sit beside the macro-ON runs without colliding.
+  const conditionFlag = flag(args, "--condition") ?? "macro_on";
+  if (conditionFlag !== "macro_on" && conditionFlag !== "macro_off") {
+    process.stderr.write(`--condition must be macro_on or macro_off (got "${conditionFlag}").\n`);
+    return 2;
+  }
+  const condition = conditionFlag as "macro_on" | "macro_off";
+  const isOff = condition === "macro_off";
+
   process.stdout.write(`Loading tasks from bench/tasks/...\n`);
   const tasks = loadAllTasks(resolve(BENCH_ROOT, "tasks"));
   process.stdout.write(`Loaded ${tasks.length} tasks.\n`);
 
   const adapter = cfg.build();
   const header: RunHeader = {
-    modelId: cfg.id,
-    modelDisplay: cfg.display,
+    modelId: isOff ? `${cfg.id}-off` : cfg.id,
+    modelDisplay: isOff ? `${cfg.display} — MACRO-OFF (primitives)` : cfg.display,
     llmProvider: adapter.provider,
     startedAt: new Date().toISOString(),
     harnessCommit: gitHead(BENCH_ROOT) ?? undefined,
     corpusCommit: gitHead(BENCH_ROOT) ?? undefined,
-    ...(cfg.notes ? { notes: cfg.notes } : {}),
+    notes: `${cfg.notes ? cfg.notes + " " : ""}[condition: ${condition}]`,
   };
-  process.stdout.write(`\nModel: ${cfg.display}\nStarted: ${header.startedAt}\n\n`);
+  process.stdout.write(`\nModel: ${header.modelDisplay}\nCondition: ${condition}\nStarted: ${header.startedAt}\n\n`);
 
   const summary = await runBenchmark({
     adapter,
     header,
     tasks,
+    condition,
     outDir: resolve(BENCH_ROOT, "runs"),
     onProgress: (i, n, r) => {
       const mark =
@@ -232,7 +244,11 @@ const HELP = `macrokit/bench — launch benchmark runner
 
 Usage:
   pnpm run -- list-models
-  pnpm run -- run --model <id>
+  pnpm run -- run --model <id> [--condition macro_on|macro_off]
+
+  --condition macro_off runs the macro ablation: the model sees the low-level
+  primitives instead of the encoded macros and must compose the workflow itself
+  (see bench/MACRO_ABLATION_PREREGISTRATION.md). Artifacts get a "-off" suffix.
 
 Models: see \`list-models\`. The on-device model "qwen-7b-local" needs
 a running llama-server (see methodology.md §2 + bench/README.md).

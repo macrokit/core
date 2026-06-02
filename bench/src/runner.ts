@@ -16,12 +16,19 @@ import {
   triagePullRequest,
 } from "@macrokit-example/github-maintainer/src/macros/index.js";
 import { scoreTask } from "./score.js";
+import {
+  buildPrimitiveRegistry,
+  classifyTrajectory,
+  MACRO_OFF_SYSTEM_EXTRA,
+} from "./ablation-primitives.js";
 import type {
   RunHeader,
   RunSummary,
   Task,
   TaskResult,
 } from "./types.js";
+
+export type Condition = "macro_on" | "macro_off";
 
 /**
  * Build a registry with the maintainer-agent macros registered. The macros'
@@ -43,11 +50,14 @@ export interface RunOptions {
   header: RunHeader;
   tasks: ReadonlyArray<Task>;
   outDir: string;
+  /** macro_on (default, the encoded macros) | macro_off (low-level primitives). */
+  condition?: Condition;
   onProgress?: (i: number, n: number, result: TaskResult) => void;
 }
 
 export async function runBenchmark(opts: RunOptions): Promise<RunSummary> {
   const { adapter, header, tasks, outDir, onProgress } = opts;
+  const condition: Condition = opts.condition ?? "macro_on";
   mkdirSync(outDir, { recursive: true });
   const stamp = header.startedAt.replace(/[:.]/g, "-");
   const runPath = join(outDir, `${header.modelId}-${stamp}.jsonl`);
@@ -55,9 +65,13 @@ export async function runBenchmark(opts: RunOptions): Promise<RunSummary> {
 
   // Write the run header as the first line so a partial run still has
   // model+config metadata attached.
-  writeFileSync(runPath, JSON.stringify({ type: "header", ...header }) + "\n");
+  writeFileSync(runPath, JSON.stringify({ type: "header", condition, ...header }) + "\n");
 
-  const registry = buildRegistry();
+  // macro-ON: the 6 encoded workflow macros, one routing call.
+  // macro-OFF: the low-level primitives, multi-step composition.
+  const registry = condition === "macro_off" ? buildPrimitiveRegistry() : buildRegistry();
+  const maxIterations = condition === "macro_off" ? 5 : 1;
+  const systemPromptExtra = condition === "macro_off" ? MACRO_OFF_SYSTEM_EXTRA : undefined;
   const log = new SessionLog();
   const dispatcher = new Dispatcher({ registry, log });
 
@@ -65,7 +79,11 @@ export async function runBenchmark(opts: RunOptions): Promise<RunSummary> {
 
   for (let i = 0; i < tasks.length; i++) {
     const task = tasks[i]!;
-    const result = await runOneTask(task, adapter, registry, dispatcher, log);
+    const result = await runOneTask(task, adapter, registry, dispatcher, log, {
+      condition,
+      maxIterations,
+      systemPromptExtra,
+    });
     results.push(result);
     appendFileSync(runPath, JSON.stringify({ type: "task", ...result }) + "\n");
     onProgress?.(i + 1, tasks.length, result);
@@ -82,6 +100,7 @@ async function runOneTask(
   registry: MacroRegistry,
   dispatcher: Dispatcher,
   log: SessionLog,
+  opts: { condition: Condition; maxIterations: number; systemPromptExtra?: string },
 ): Promise<TaskResult> {
   // Fresh router per task so history doesn't leak across prompts.
   const router = new IntentRouter({
@@ -89,7 +108,8 @@ async function runOneTask(
     adapter,
     dispatcher,
     log,
-    maxIterations: 1, // we only care about the first routing decision
+    maxIterations: opts.maxIterations,
+    ...(opts.systemPromptExtra ? { systemPromptExtra: opts.systemPromptExtra } : {}),
   });
 
   const start = Date.now();
@@ -98,27 +118,33 @@ async function runOneTask(
   let bailOutCode: string | null = null;
   let rawText = "";
   let errorMessage: string | undefined;
+  let trajectory: string[] | undefined;
+  let derivedIntent: string | undefined;
 
   try {
-    // We invoke the router with history=[] so each task is independent.
-    // temperature 0 = greedy, per methodology.md (matches production routing,
-    // which is deterministic). Without this the adapter falls back to the
-    // provider default (e.g. Ollama's 0.8), which is noisy for intent routing
-    // and not what the methodology specifies.
-    // Because the router will try to DISPATCH the macro, and the macros
-    // expect a real GitHub client (which we don't supply), the dispatch
-    // will fail with a structured error. But we only need the routing
-    // decision — which we read off `result.dispatched[0].call`. The
-    // handler-throw doesn't affect the score.
+    // history=[] so each task is independent; temperature 0 = greedy (methodology).
+    // macro-ON: maxIterations 1, read the single routing decision off dispatched[0].
+    // macro-OFF: maxIterations 5, the model composes primitives; we collect the
+    //   full trajectory and decode it to an intent via the frozen rule. Handlers
+    //   return stub data so the loop proceeds (the ablation scores the planning
+    //   decision, not handler correctness — same as macro-ON).
     const result = await router.chat(task.prompt, { history: [], temperature: 0 });
     rawText = result.text;
-    if (result.dispatched.length > 0) {
+    if (result.bailOuts.length > 0) {
+      bailOutCode = result.bailOuts[0]!.code;
+    }
+    if (opts.condition === "macro_off") {
+      trajectory = result.dispatched.map((d) => d.call.name);
+      derivedIntent = classifyTrajectory(trajectory);
+      actualTool = derivedIntent === "no_macro" ? null : derivedIntent;
+      // args from the call whose op the decode keyed on (best-effort, not scored
+      // in the ablation's intent-level accuracy).
+      const keyed = result.dispatched.find((d) => d.call.name);
+      actualArgs = keyed?.call.args;
+    } else if (result.dispatched.length > 0) {
       const call = result.dispatched[0]!.call;
       actualTool = call.name;
       actualArgs = call.args;
-    }
-    if (result.bailOuts.length > 0) {
-      bailOutCode = result.bailOuts[0]!.code;
     }
   } catch (err) {
     errorMessage = err instanceof Error ? err.message : String(err);
@@ -142,6 +168,8 @@ async function runOneTask(
     latencyMs,
     rawText,
     ...(errorMessage ? { errorMessage } : {}),
+    ...(trajectory ? { trajectory } : {}),
+    ...(derivedIntent ? { derivedIntent } : {}),
   };
 }
 
