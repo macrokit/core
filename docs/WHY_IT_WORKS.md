@@ -42,12 +42,20 @@ efficient: the reflex maximizes value per joule.
 
 ## The evidence
 
-The preprint tests this directly. Across a ladder of local models of increasing capability, it measures
-`I(X;Y)` and compute per call on a fixed decision task, and finds that **the cheapest model delivers the most
-`I(X;Y)` per second of compute** — the value-per-joule point, on real models. (See the preprint's "real
-agents" section, result R3.) It also finds that `I(X;Y)` tracks a model's *realized capability*, not its
-parameter count — which is the formal reason a small, well-targeted runtime model can match a much larger one
-on a narrow task.
+**[`MACRO_ABLATION.md`](./MACRO_ABLATION.md) is the direct test of this claim.** A pre-registered, within-model
+ablation on the 100-task corpus runs each local model twice — once with the encoded macros (macro-ON), once
+with only the low-level primitives so it must reason the workflow itself (macro-OFF) — and measures `I(X;Y)`
+and compute in both. Encoding the workflow as a macro **raised `I(X;Y)` for every model that routes
+(1.24–1.62×)** and **raised value-density per call for every such model (1.28–1.66×)**; on wall-clock
+information-per-second it delivered **2.0–5.1× for the 1.5B/3B/8B models** (one model inverted on the noisy
+wall-clock axis — reported, not hidden). It is a demonstration on one task, not a law.
+
+The preprint tests the scale side of the same picture. Across a ladder of local models of increasing
+capability, it measures `I(X;Y)` and compute per call on a fixed decision task, and finds that **the cheapest
+model delivers the most `I(X;Y)` per second of compute** — the value-per-joule point, on real models. (See the
+preprint's "real agents" section, result R3.) It also finds that `I(X;Y)` tracks a model's *realized
+capability*, not its parameter count — which is the formal reason a small, well-targeted runtime model can
+match a much larger one on a narrow task.
 
 ## Honest scope
 
