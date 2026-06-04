@@ -3,7 +3,7 @@
 > *Optional reading.* The [Macrokit pattern](./THE_PATTERN.md) is justified empirically — weak, cheap models
 > match frontier capability on narrow, repetitive workflows once the multi-step reasoning is moved to
 > design-time. This page gives the *formal* account of **why** that works, drawn from the preprint
-> [*A Mathematical Theory of Value*](https://doi.org/10.5281/zenodo.20487042) (Qian, 2026). You do not need any
+> [*A Mathematical Theory of Value*](https://doi.org/10.5281/zenodo.20487041) (Qian, 2026). You do not need any
 > of this to use Macrokit; it is here for readers who want the underlying reason.
 
 ## The one quantity: value per joule
@@ -66,5 +66,5 @@ Macrokit already validates empirically — not because Macrokit depends on the t
 
 ## Further reading
 
-- Qian, C. (2026). *A Mathematical Theory of Value.* Zenodo. [10.5281/zenodo.20487042](https://doi.org/10.5281/zenodo.20487042)
+- Qian, C. (2026). *A Mathematical Theory of Value.* Zenodo (concept DOI — resolves to the latest version). [10.5281/zenodo.20487041](https://doi.org/10.5281/zenodo.20487041)
 - [THE_PATTERN.md](./THE_PATTERN.md) — the Macrokit pattern and the North Star it comes from.
