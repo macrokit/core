@@ -5,6 +5,7 @@ import { AnthropicAdapter, OllamaAdapter, OpenAICompatibleAdapter } from "@macro
 import type { LLMAdapter } from "@macrokit/runtime";
 import { loadAllTasks } from "./load-tasks.js";
 import { runBenchmark } from "./runner.js";
+import { loadOutcomeTasks, runOutcome } from "./outcome-runner.js";
 import type { RunHeader } from "./types.js";
 
 /**
@@ -148,8 +149,55 @@ async function main(argv: string[]): Promise<number> {
   if (cmd === "run") {
     return await runOne(argv.slice(3));
   }
+  if (cmd === "run-outcome") {
+    return await runOutcomeCmd(argv.slice(3));
+  }
   process.stderr.write(`unknown command: ${cmd}\n\n${HELP}`);
   return 2;
+}
+
+async function runOutcomeCmd(args: string[]): Promise<number> {
+  const modelId = flag(args, "--model");
+  if (!modelId) {
+    process.stderr.write("--model <id> required.\n");
+    return 2;
+  }
+  const cfg = MODELS[modelId];
+  if (!cfg) {
+    process.stderr.write(`unknown model "${modelId}". Try \`list-models\`.\n`);
+    return 2;
+  }
+  const conditionFlag = flag(args, "--condition") ?? "macro_on";
+  if (conditionFlag !== "macro_on" && conditionFlag !== "macro_off") {
+    process.stderr.write(`--condition must be macro_on or macro_off.\n`);
+    return 2;
+  }
+  const condition = conditionFlag as "macro_on" | "macro_off";
+  const suffix = condition === "macro_off" ? "-iv-off" : "-iv";
+
+  const tasks = loadOutcomeTasks(resolve(BENCH_ROOT, "outcome-tasks", "outcome-corpus.jsonl"));
+  process.stdout.write(`Loaded ${tasks.length} outcome tasks.\n`);
+  const adapter = cfg.build();
+  const header: RunHeader = {
+    modelId: `${cfg.id}${suffix}`,
+    modelDisplay: `${cfg.display} — INDEPENDENT-VALUE (${condition})`,
+    llmProvider: adapter.provider,
+    startedAt: new Date().toISOString(),
+    harnessCommit: gitHead(BENCH_ROOT) ?? undefined,
+    corpusCommit: gitHead(BENCH_ROOT) ?? undefined,
+    notes: `${cfg.notes ? cfg.notes + " " : ""}[independent_value: ${condition}]`,
+  };
+  process.stdout.write(`\nModel: ${header.modelDisplay}\nStarted: ${header.startedAt}\n\n`);
+
+  const { meanValue } = await runOutcome({
+    adapter, header, tasks, condition, outDir: resolve(BENCH_ROOT, "runs"),
+    onProgress: (i, n, r) => {
+      const pad = String(i).padStart(2, " ");
+      process.stdout.write(`[${pad}/${n}] ${r.taskId} gold=${r.goldIntent.padEnd(20)} routed=${String(r.routedIntent).padEnd(20)} V=${r.value.toFixed(2)} ${(r.latencyMs/1000).toFixed(2)}s\n`);
+    },
+  });
+  process.stdout.write(`\n${"=".repeat(50)}\n${header.modelDisplay}\nmean independent value V = ${meanValue.toFixed(4)}\n`);
+  return 0;
 }
 
 async function runOne(args: string[]): Promise<number> {
