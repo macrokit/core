@@ -32,10 +32,13 @@ You should *not* look at Macrokit if your application's value comes from genuine
 
 ## How it differs
 
+The short version: every framework here lets the model *reason at runtime*; Macrokit *removes* runtime reasoning so a weak/local model can carry it — and ships the evidence that it does. Off-the-shelf 1.5B–8B models clear a pre-registered [100-task benchmark](docs/BENCHMARK.md) (74–82.5%), and a [pre-registered ablation](docs/MACRO_ABLATION.md) shows encoding the workflow delivers more useful work per unit of compute than making the same model reason it live.
+
 - **Not an agent framework.** Agent frameworks compete on letting LLMs *reason*. Macrokit competes by *eliminating* runtime reasoning. Different philosophy. (See `docs/THE_PATTERN.md` §9.)
 - **Not a skills or prompt format.** A *skill* tells a strong model how to think. A *macro* is the compiled, deterministic result of that thinking — it runs on weak and local models with no reasoning at runtime. Macros can call MCP tools as primitives; Macrokit sits *above* MCP, not against it.
 - **Not a model.** BYO-model. Ships adapters for OpenAI-compatible APIs, Ollama, and llama.cpp out of the box.
 - **Not RPA.** RPA records UI clicks at the pixel level. Macros are recorded at the semantic level — typed tool calls with named arguments — and are diff-reviewable code.
+- **Not a save-a-chain convenience.** Macrokit's *distillation gate* flags every workflow you run without a macro and proposes one on recurrence — so the macro library compounds by discipline, not by remembering to save. The accumulated library, not the runtime, is the moat.
 - **Not a no-code platform.** Authoring a macro assumes a developer plus a strong model in the loop. End users see only the chat interface.
 
 ## What you get
