@@ -103,6 +103,14 @@ latency measurement. We did not re-run to "fix" it; the row stands.
   intent routing, not a universal law. The decode rule (pre-registration §2) is a
   fixed, lossy map from primitive trajectory to intent; a different decode could
   shift the macro-OFF numbers. It was frozen before the runs.
+- **The raw `I`-lift is partly definitional — addressed separately.** `I(X;Y)`
+  here is read off the routing confusion matrix, the same object the macro
+  improves, so the raw-information half of this result is partly circular. The
+  robust half is the *per-joule* lift. A companion experiment,
+  [`INDEPENDENT_VALUE.md`](./INDEPENDENT_VALUE.md), scores each task against a
+  **hand-authored end-state independent of the routing matrix** and shows (a)
+  router `I(X;Y)` predicts that independent outcome and (b) macro-ON raises
+  independent value-per-call 5–10× — the non-circular companion to this row.
 
 ## Bottom line
 

@@ -50,6 +50,16 @@ and compute in both. Encoding the workflow as a macro **raised `I(X;Y)` for ever
 information-per-second it delivered **2.0–5.1× for the 1.5B/3B/8B models** (one model inverted on the noisy
 wall-clock axis — reported, not hidden). It is a demonstration on one task, not a law.
 
+**[`INDEPENDENT_VALUE.md`](./INDEPENDENT_VALUE.md) addresses the circularity in that test.** The ablation's
+`I(X;Y)` is read off the routing confusion matrix — the same object the macro improves — so its raw-information
+lift is partly definitional. A pre-registered companion scores each task against a **hand-authored end-state
+independent of the routing matrix** and finds that router `I(X;Y)` **predicts that independent outcome**
+(Pearson r = 0.997 over five models; r = 0.816 with the one non-routing model removed) and that **macro-ON
+raises independent value-per-call 5.0–10.0×** within every model that routes. A design-time by-product of the
+same substrate — a **VOI pruner** — uses that independent signal to rank a macro's ingredients by marginal
+value and flag the ~0-value ones for pruning (it cut one redundant primitive call in each of three macros,
+raising value-density 50–100%). Still one task family, discrete outcomes — a demonstration, not a law.
+
 The preprint tests the scale side of the same picture. Across a ladder of local models of increasing
 capability, it measures `I(X;Y)` and compute per call on a fixed decision task, and finds that **the cheapest
 model delivers the most `I(X;Y)` per second of compute** — the value-per-joule point, on real models. (See the

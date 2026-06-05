@@ -1,0 +1,141 @@
+{
+  "macro": "triage_pull_request",
+  "goldIntent": "triage_pull_request",
+  "baselineCalls": 2,
+  "n": 7,
+  "itemIds": [
+    "IVPR01",
+    "IVPR02",
+    "IVPR03",
+    "IVPR04",
+    "IVPR05",
+    "IVPR06",
+    "IVPR07"
+  ],
+  "baseline": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "ingredients": [
+    {
+      "id": "primitive:getPullRequestFiles",
+      "kind": "primitive",
+      "cost": 1,
+      "ablated": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "delta": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "field:pr.title",
+      "kind": "field",
+      "cost": 0,
+      "ablated": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "delta": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "id": "field:pr.body",
+      "kind": "field",
+      "cost": 0,
+      "ablated": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "delta": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "field:pr.draft",
+      "kind": "field",
+      "cost": 0,
+      "ablated": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "delta": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "field:pr.existing_labels",
+      "kind": "field",
+      "cost": 0,
+      "ablated": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "delta": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

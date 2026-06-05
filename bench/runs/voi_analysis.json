@@ -1,0 +1,184 @@
+[
+  {
+    "macro": "suggest_reviewers",
+    "n": 4,
+    "base_mean": 1.0,
+    "calls_before": 3,
+    "calls_after": 2,
+    "density_before": 0.3333333333333333,
+    "density_after": 0.5,
+    "density_gain_pct": 50.0,
+    "pruned_calls": 1,
+    "rows": [
+      {
+        "id": "primitive:getCodeowners",
+        "kind": "primitive",
+        "cost": 1,
+        "dV": 1.0,
+        "ci": [
+          1.0,
+          1.0
+        ],
+        "prune": false
+      },
+      {
+        "id": "primitive:getPullRequestFiles",
+        "kind": "primitive",
+        "cost": 1,
+        "dV": 1.0,
+        "ci": [
+          1.0,
+          1.0
+        ],
+        "prune": false
+      },
+      {
+        "id": "primitive:getPullRequest(author-exclude)",
+        "kind": "primitive",
+        "cost": 1,
+        "dV": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "prune": true
+      }
+    ]
+  },
+  {
+    "macro": "triage_issue",
+    "n": 5,
+    "base_mean": 0.6,
+    "calls_before": 2,
+    "calls_after": 1,
+    "density_before": 0.3,
+    "density_after": 0.6,
+    "density_gain_pct": 100.0,
+    "pruned_calls": 1,
+    "rows": [
+      {
+        "id": "field:issue.title",
+        "kind": "field",
+        "cost": 0,
+        "dV": 0.4,
+        "ci": [
+          0.0,
+          0.8
+        ],
+        "prune": false
+      },
+      {
+        "id": "primitive:listOpenIssues",
+        "kind": "primitive",
+        "cost": 1,
+        "dV": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "prune": true
+      },
+      {
+        "id": "field:issue.body",
+        "kind": "field",
+        "cost": 0,
+        "dV": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "prune": true
+      },
+      {
+        "id": "field:issue.existing_labels",
+        "kind": "field",
+        "cost": 0,
+        "dV": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "prune": true
+      },
+      {
+        "id": "field:issue.comments_count",
+        "kind": "field",
+        "cost": 0,
+        "dV": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "prune": true
+      }
+    ]
+  },
+  {
+    "macro": "triage_pull_request",
+    "n": 7,
+    "base_mean": 1.0,
+    "calls_before": 2,
+    "calls_after": 1,
+    "density_before": 0.5,
+    "density_after": 1.0,
+    "density_gain_pct": 100.0,
+    "pruned_calls": 1,
+    "rows": [
+      {
+        "id": "field:pr.title",
+        "kind": "field",
+        "cost": 0,
+        "dV": 0.2857142857142857,
+        "ci": [
+          0.0,
+          0.7142857142857143
+        ],
+        "prune": false
+      },
+      {
+        "id": "primitive:getPullRequestFiles",
+        "kind": "primitive",
+        "cost": 1,
+        "dV": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "prune": true
+      },
+      {
+        "id": "field:pr.body",
+        "kind": "field",
+        "cost": 0,
+        "dV": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "prune": true
+      },
+      {
+        "id": "field:pr.draft",
+        "kind": "field",
+        "cost": 0,
+        "dV": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "prune": true
+      },
+      {
+        "id": "field:pr.existing_labels",
+        "kind": "field",
+        "cost": 0,
+        "dV": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "prune": true
+      }
+    ]
+  }
+]

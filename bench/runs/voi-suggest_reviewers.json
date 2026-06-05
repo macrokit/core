@@ -1,0 +1,71 @@
+{
+  "macro": "suggest_reviewers",
+  "goldIntent": "suggest_reviewers",
+  "baselineCalls": 3,
+  "n": 4,
+  "itemIds": [
+    "IVRV01",
+    "IVRV02",
+    "IVRV03",
+    "IVRV04"
+  ],
+  "baseline": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "ingredients": [
+    {
+      "id": "primitive:getCodeowners",
+      "kind": "primitive",
+      "cost": 1,
+      "ablated": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "delta": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "primitive:getPullRequestFiles",
+      "kind": "primitive",
+      "cost": 1,
+      "ablated": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "delta": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "primitive:getPullRequest(author-exclude)",
+      "kind": "primitive",
+      "cost": 1,
+      "ablated": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "delta": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

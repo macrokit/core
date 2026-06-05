@@ -1,0 +1,19 @@
+{"type":"header","condition":"macro_on","experiment":"independent_value","modelId":"qwen2.5-3b-ollama-iv","modelDisplay":"Qwen 2.5 3B Instruct (Ollama) — INDEPENDENT-VALUE (macro_on)","llmProvider":"ollama","startedAt":"2026-06-05T07:08:15.372Z","harnessCommit":"a2c754cc570911339469cb4097a65ff486ba4f19","corpusCommit":"a2c754cc570911339469cb4097a65ff486ba4f19","notes":"Local via Ollama. `ollama pull qwen2.5:3b-instruct`. [independent_value: macro_on]"}
+{"type":"task","taskId":"IVPR01","goldIntent":"triage_pull_request","routedIntent":"triage_pull_request","value":1,"latencyMs":7679,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVPR02","goldIntent":"triage_pull_request","routedIntent":"triage_pull_request","value":1,"latencyMs":1938,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVPR03","goldIntent":"triage_pull_request","routedIntent":"triage_pull_request","value":1,"latencyMs":2046,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVPR04","goldIntent":"triage_pull_request","routedIntent":"triage_pull_request","value":1,"latencyMs":1944,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVPR05","goldIntent":"triage_pull_request","routedIntent":"triage_pull_request","value":1,"latencyMs":1926,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVPR06","goldIntent":"triage_pull_request","routedIntent":"triage_pull_request","value":1,"latencyMs":1964,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVPR07","goldIntent":"triage_pull_request","routedIntent":"triage_pull_request","value":1,"latencyMs":1932,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVIS01","goldIntent":"triage_issue","routedIntent":"triage_issue","value":1,"latencyMs":1894,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVIS02","goldIntent":"triage_issue","routedIntent":"triage_issue","value":1,"latencyMs":2009,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVIS03","goldIntent":"triage_issue","routedIntent":"triage_issue","value":0,"latencyMs":1867,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVIS04","goldIntent":"triage_issue","routedIntent":"triage_issue","value":0,"latencyMs":1890,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVIS05","goldIntent":"triage_issue","routedIntent":"triage_issue","value":1,"latencyMs":1987,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVRV01","goldIntent":"suggest_reviewers","routedIntent":"suggest_reviewers","value":1,"latencyMs":1920,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVRV02","goldIntent":"suggest_reviewers","routedIntent":"suggest_reviewers","value":1,"latencyMs":1959,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVRV03","goldIntent":"suggest_reviewers","routedIntent":"suggest_reviewers","value":1,"latencyMs":1945,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVRV04","goldIntent":"suggest_reviewers","routedIntent":"suggest_reviewers","value":1,"latencyMs":1941,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVNM01","goldIntent":"no_macro","routedIntent":null,"value":1,"latencyMs":1399,"calls":0,"rawText":"I'm sorry, but I don't have a tool for fetching weather information. Could you please provide me with another request or task?"}
+{"type":"task","taskId":"IVNM02","goldIntent":"no_macro","routedIntent":"generate_release_notes","value":0,"latencyMs":2193,"calls":1,"rawText":""}

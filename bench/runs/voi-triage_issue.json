@@ -1,0 +1,117 @@
+{
+  "macro": "triage_issue",
+  "goldIntent": "triage_issue",
+  "baselineCalls": 2,
+  "n": 5,
+  "itemIds": [
+    "IVIS01",
+    "IVIS02",
+    "IVIS03",
+    "IVIS04",
+    "IVIS05"
+  ],
+  "baseline": [
+    1,
+    1,
+    0,
+    0,
+    1
+  ],
+  "ingredients": [
+    {
+      "id": "primitive:listOpenIssues",
+      "kind": "primitive",
+      "cost": 1,
+      "ablated": [
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "delta": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "field:issue.title",
+      "kind": "field",
+      "cost": 0,
+      "ablated": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "delta": [
+        0,
+        1,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "id": "field:issue.body",
+      "kind": "field",
+      "cost": 0,
+      "ablated": [
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "delta": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "field:issue.existing_labels",
+      "kind": "field",
+      "cost": 0,
+      "ablated": [
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "delta": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "field:issue.comments_count",
+      "kind": "field",
+      "cost": 0,
+      "ablated": [
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "delta": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}
