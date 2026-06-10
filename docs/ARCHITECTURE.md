@@ -66,7 +66,7 @@ Shipping adapters:
 
 Provider tool-call schemas differ in small but breaking ways (function-call wrapping, tool-result message shape, streaming-event format). The package normalizes them to one internal shape so the runtime can be provider-agnostic. The adapters are the only code that knows which provider is in use.
 
-**The bail-out detector lives here**, because every adapter passes its raw response through it before returning to the runtime. The detector pattern-matches the failure modes weak models exhibit when out of their depth — tool calls emitted as plain text, calls to nonexistent tools, repeated identical calls (loops), prose-shaped output where a tool call was expected. **What ships today is *detection*** — the events are flagged on the turn result. *Acting* on a fire is only partial: if a fallback adapter is configured, the failing turn can **escalate** to it; **repair (re-prompt with the schema) is not yet implemented**, and **with no fallback configured the runtime currently still dispatches/returns the flagged output** (a known gap — `router.ts` — being closed; do not rely on the detector to *block* bad output yet). The detector's rule set is small, documented, and extensible per deployment. We resist letting it become a soft-AGI scoring system.
+**The bail-out detector lives here**, because every adapter passes its raw response through it before returning to the runtime. The detector pattern-matches the failure modes weak models exhibit when out of their depth — tool calls emitted as plain text, calls to nonexistent tools, repeated identical calls (loops), prose-shaped output where a tool call was expected. **What ships today is *detection* + *halt/escalate*** — the events are flagged on the turn result, and on a fire the runtime acts: if a fallback adapter is configured, the failing turn **escalates** to it; **with no fallback, the turn HALTS** (`bailedOut: true`) — it does **not** dispatch the flagged calls or return the flagged text as a normal answer, so bad output isn't silently shipped. **Repair (re-prompt with the schema) is not yet implemented** — that's the remaining "act" path. The detector's rule set is small, documented, and extensible per deployment. We resist letting it become a soft-AGI scoring system.
 
 ### 2.3 `browser`
 
@@ -152,7 +152,7 @@ A single user turn, end to end:
      - user message
 4. LLMAdapter.completeWithTools(prompt, tools) is called.
 5. Raw response passes through the bail-out detector.
-       on fire: detect + flag (escalate if a fallback is configured; repair = planned)
+       on fire: detect + flag → escalate if fallback, else HALT (bailedOut); repair = planned
        on pass: continue
 6. If the response is a tool call:
        a. Dispatcher validates args against macro.schema.

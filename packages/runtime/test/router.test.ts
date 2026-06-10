@@ -161,6 +161,27 @@ describe("IntentRouter (via Runtime.chat)", () => {
     expect(weak.calls).toHaveLength(2);
   });
 
+  it("halts (does not ship bad output) when bail-out fires and no fallback is configured", async () => {
+    // weak emits a tool call as TEXT — bail-out fires, no fallback → the turn
+    // must HALT: the prose is not returned as a normal answer and nothing is
+    // dispatched. (Previously this shipped the flagged output silently.)
+    const weak = new FakeAdapter([
+      { text: '{"tool":"echo","args":{"text":"hi"}}', toolCalls: [], finishReason: "stop" },
+      finalResult("should-not-reach"),
+    ]);
+    const runtime = new Runtime({
+      registry: new MacroRegistry().register(echo),
+      llm: weak,
+    });
+    const result = await runtime.chat("say hi");
+    expect(result.bailOuts).toHaveLength(1);
+    expect(result.bailOuts[0]?.code).toBe("tool_call_as_text");
+    expect(result.bailedOut).toBe(true);
+    expect(result.dispatched).toHaveLength(0);
+    expect(result.text).not.toBe("should-not-reach");
+    expect(weak.calls).toHaveLength(1); // halted after the first bad result
+  });
+
   it("respects maxIterations and reports exhausted=true", async () => {
     const adapter = new FakeAdapter([
       toolCallResult("echo", { text: "a" }),

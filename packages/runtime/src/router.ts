@@ -50,6 +50,13 @@ export interface ChatResult {
   history: ChatMessage[];
   /** Whether the loop exhausted maxIterations without producing a final answer. */
   exhausted: boolean;
+  /**
+   * True when the turn was halted by a bail-out with no fallback configured —
+   * the flagged output was NOT dispatched or returned as a normal answer.
+   * `text` carries the bail-out reason; the caller should handle it explicitly
+   * (escalate, retry, surface an error) rather than treat `text` as a result.
+   */
+  bailedOut?: boolean;
 }
 
 /**
@@ -140,9 +147,24 @@ export class IntentRouter {
             subtype: "escalated",
             to: this.fallback.provider,
           });
+        } else {
+          // No fallback configured: do NOT dispatch the flagged tool calls or
+          // return the flagged text as a normal answer — that silently ships bad
+          // output (a tool-call-as-text returned as prose, an unknown/looping call
+          // dispatched). Halt the turn and surface the bail-out so the caller
+          // handles it explicitly.
+          this.log.append({ type: "assistant", text: "", subtype: "bailed_out" });
+          return {
+            text:
+              detection.hint ??
+              `Model output failed the bail-out check (${detection.code}) and no fallback adapter is configured.`,
+            dispatched,
+            bailOuts,
+            history,
+            exhausted: false,
+            bailedOut: true,
+          };
         }
-        // If no fallback, we use the original result and continue. The
-        // upstream caller can read bailOuts and decide what to do next turn.
       }
 
       // If the model emitted tool calls, dispatch them.
