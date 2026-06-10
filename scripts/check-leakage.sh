@@ -75,9 +75,12 @@ SELF_EXCLUDE_PATHS="scripts/check-leakage.sh scripts/check-leakage.test.sh .gith
 # Matched as fixed strings (grep -F).
 # -----------------------------------------------------------------------------
 ALLOWLIST_SUBSTRINGS=(
-  "Deakee Technology"                        # PREPRINT.md author affiliation (byline)
-  "founder, [Deakee](https://deakee.com)"    # LAUNCH_ESSAY.md author byline
+  # The Deakee author-byline allowlist was REMOVED 2026-06-10 (owner decision):
+  # the affiliation is scrubbed to "Cheng Qian, Macrokit" for consistency with the
+  # Value preprint's blank affiliation + strict Sacred Rule #1. `deakee` is now
+  # enforced everywhere (it remains in the private deny-terms).
   "Apple Silicon"                            # hardware platform, not a brand-list leak
+  "Apple's modern programming language"      # a model's benchmark answer about Swift (bench/runs data, not authored)
 )
 
 # Drop any line (from stdin) that contains an allowlisted fixed substring.

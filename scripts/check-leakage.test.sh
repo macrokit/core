@@ -173,9 +173,9 @@ index 1111..2222 100644
 '
 run_case 0 "${DELETION_DIFF}" "deletions of banned terms do not trigger"
 
-# Allowlist: a line carrying an allowlisted fixed substring (author byline)
-# must NOT trigger even though it contains a deny-listed token (Deakee).
-ALLOWLIST_DIFF='diff --git a/docs/PREPRINT.md b/docs/PREPRINT.md
+# The Deakee author-byline allowlist was REMOVED (owner decision 2026-06-10):
+# the byline now MUST trigger like any other deakee mention — no exemption.
+BYLINE_DIFF='diff --git a/docs/PREPRINT.md b/docs/PREPRINT.md
 index 1111..2222 100644
 --- a/docs/PREPRINT.md
 +++ b/docs/PREPRINT.md
@@ -183,7 +183,7 @@ index 1111..2222 100644
  line
 +**Author:** Cheng Qian, Deakee Technology / Macrokit
 '
-run_case 0 "${ALLOWLIST_DIFF}" "allowlisted author byline (Deakee Technology) does not trigger"
+run_case 1 "${BYLINE_DIFF}" "Deakee author byline now triggers (allowlist removed)"
 
 # Allowlist is scoped: the SAME token outside the allowlisted phrase still fails.
 NONALLOWLIST_DIFF='diff --git a/docs/foo.md b/docs/foo.md

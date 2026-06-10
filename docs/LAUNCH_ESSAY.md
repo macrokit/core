@@ -95,4 +95,4 @@ Apache 2.0. No telemetry. No phone-home. Built for users who can't or won't depe
 
 [macrokit.dev](https://macrokit.dev) · [github.com/macrokit](https://github.com/macrokit) · [@macrokitdev](https://x.com/macrokitdev) on X · [Preprint (Zenodo)](https://doi.org/10.5281/zenodo.20412771)
 
-— *Cheng Qian, founder, [Deakee](https://deakee.com). Macrokit is the vertical-agnostic extraction of an architecture proven in production by an unrelated operations tool we run privately.*
+— *Cheng Qian. Macrokit is the vertical-agnostic extraction of an architecture proven in production by an unrelated operations tool we run privately.*
