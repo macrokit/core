@@ -5,7 +5,7 @@ import {
   captureWorkflowLog, closeStaleIssues, generateReleaseNotes,
   suggestReviewersMacro, triageIssue, triagePullRequest,
 } from "@macrokit-example/github-maintainer/src/macros/index.js";
-import { buildPrimitiveRegistry, classifyTrajectory, MACRO_OFF_SYSTEM_EXTRA } from "./ablation-primitives.js";
+import { buildFixturedPrimitiveRegistry, classifyTrajectory, MACRO_OFF_SYSTEM_EXTRA } from "./ablation-primitives.js";
 import {
   makeFixtureClient, FixtureGitHubClient, scoreOutcomeOn, scoreOutcomeOff, type OutcomeTask,
 } from "./fixture-client.js";
@@ -69,9 +69,13 @@ export async function runOutcome(opts: OutcomeRunOptions): Promise<{ meanValue: 
 async function runOne(task: OutcomeTask, adapter: LLMAdapter, condition: Condition): Promise<OutcomeResult> {
   const log = new SessionLog();
   const fixture = new FixtureGitHubClient(task.fixture);
-  const registry = condition === "macro_off" ? buildPrimitiveRegistry() : buildMacroRegistry();
-  // macro-ON executes the real macro against the fixture client; macro-OFF runs
-  // the stub primitives (we read the end-state from the model's calls + text).
+  const offSink: { labels: string[]; action?: string } = { labels: [] };
+  // FIX 2026-06-10 (harness asymmetry erratum): macro-OFF now uses FIXTURE-BACKED
+  // primitives — each returns the same per-item data macro-ON gets — so the ON/OFF
+  // value comparison is fair. Previously macro-OFF got empty tool surfaces + stub
+  // primitives and was structurally starved. NOT yet re-run; needs a corrected
+  // pre-registration + bench-host run + independent re-verification before use.
+  const registry = condition === "macro_off" ? buildFixturedPrimitiveRegistry(task.fixture, offSink) : buildMacroRegistry();
   const toolSurfaces = condition === "macro_off" ? {} : { github: fixture };
   const dispatcher = new Dispatcher({ registry, log, toolSurfaces });
   const router = new IntentRouter({
@@ -93,14 +97,7 @@ async function runOne(task: OutcomeTask, adapter: LLMAdapter, condition: Conditi
       const names = res.dispatched.map((d) => d.call.name);
       const decoded = classifyTrajectory(names);
       routedIntent = decoded;
-      const addLabels: string[] = [];
-      for (const d of res.dispatched) {
-        if (d.call.name === "gh_add_labels") {
-          const l = (d.call.args as { labels?: unknown }).labels;
-          if (Array.isArray(l)) addLabels.push(...l.map(String));
-        }
-      }
-      value = scoreOutcomeOff(task, decoded, [...addLabels, ...fixture.addedLabels], rawText);
+      value = scoreOutcomeOff(task, decoded, offSink.labels, rawText);
     } else {
       const d0 = res.dispatched[0];
       routedIntent = d0 ? d0.call.name : null;

@@ -68,6 +68,54 @@ export function classifyTrajectory(toolsCalled: ReadonlyArray<string>): string {
   return "no_macro";
 }
 
+/**
+ * FIX (2026-06-10) for the independent-value experiment's harness asymmetry.
+ * The ABLATION primitives above return hardcoded stubs — correct for the
+ * ablation (it scores the *routing decision*, which is data-independent), but
+ * WRONG for the independent-value experiment (which scores the *end-state*, so
+ * macro-OFF needs the same per-item data macro-ON gets). These primitives are
+ * **fixture-backed**: each returns the OutcomeFixture's real per-item data, so
+ * macro-OFF can genuinely attempt the workflow and the ON/OFF value comparison
+ * is fair. `sink.labels` collects label writes so the produced end-state is
+ * observable for scoring.
+ *
+ * ⚠️ NOT YET RE-RUN. Using this requires: (1) a corrected pre-registration that
+ * discloses the fix + the prediction, committed before the run; (2) a fresh run
+ * on the bench host; (3) INDEPENDENT re-verification of fairness (read the
+ * execution path, not the prereg text) before any number is reported. Do not
+ * report a result from this without all three.
+ */
+export function buildFixturedPrimitiveRegistry(
+  fx: import("./fixture-client.js").OutcomeFixture,
+  sink: { labels: string[]; action?: string },
+): MacroRegistry {
+  const reg = new MacroRegistry();
+  const fprim = (
+    name: string,
+    description: string,
+    shape: z.ZodRawShape,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    handler: (a: any) => Promise<unknown>,
+  ): void => {
+    reg.register(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      defineMacro<any, any>({ name, intent: description, category: "utility", schema: z.object(shape), handler }),
+    );
+  };
+  fprim("gh_get_pull", "Fetch one pull request's fields: title, body, author, base/head refs, file/line counts.", { ...repo, number: z.number().int() }, async () => fx.pr ?? null);
+  fprim("gh_get_pull_files", "List the files changed in a pull request, with per-file status and line counts.", { ...repo, number: z.number().int() }, async () => fx.files ?? []);
+  fprim("gh_get_issue", "Fetch one issue's fields: title, body, author, labels, comment count, timestamps.", { ...repo, number: z.number().int() }, async () => fx.issue ?? null);
+  fprim("gh_list_open_issues", "List open issues in a repository (number, title, labels, updated_at).", { ...repo }, async () => fx.openIssues ?? []);
+  fprim("gh_get_issue_comments", "List the comments on one issue.", { ...repo, number: z.number().int() }, async () => []);
+  fprim("gh_compare_commits", "Compare two refs and return the commit list between them (sha, message, author).", { ...repo, base: z.string(), head: z.string() }, async () => []);
+  fprim("gh_get_codeowners", "Fetch and parse the repository's CODEOWNERS file into (pattern, owners) entries.", { ...repo }, async () => fx.codeowners ?? []);
+  fprim("gh_add_labels", "Add labels to an issue or pull request.", { ...repo, number: z.number().int(), labels: z.array(z.string()) }, async (a: { labels: string[] }) => { sink.labels.push(...a.labels); return { ok: true }; });
+  fprim("gh_close_issue", "Close an issue, optionally with a reason.", { ...repo, number: z.number().int(), reason: z.string().optional() }, async () => { sink.action = "close"; return { ok: true }; });
+  fprim("gh_comment_on_issue", "Post a comment on an issue or pull request.", { ...repo, number: z.number().int(), body: z.string() }, async () => { sink.action = "comment"; return { ok: true }; });
+  fprim("gh_get_actions_run_log", "Fetch the rendered log text of a GitHub Actions workflow run.", { ...repo, runId: z.number().int().optional() }, async () => ({ log: "" }));
+  return reg;
+}
+
 export const MACRO_OFF_SYSTEM_EXTRA = [
   "There is NO pre-built workflow or high-level action available — only the low-level GitHub",
   "primitives listed above. To handle the user's request, decide which primitive operations are",
