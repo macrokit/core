@@ -155,3 +155,38 @@ describe("loadSessionLog + findSessionLogs", () => {
     expect(found.some((p) => p.endsWith("skip.txt"))).toBe(false);
   });
 });
+
+describe("isEncoded — documented un-encoded-workflow semantics", () => {
+  it("does NOT flag a turn that chained 3+ already-encoded macros", () => {
+    const entries = userTurn("triage everything", [
+      { tool: "triage_pull_request", args: { n: 1 } },
+      { tool: "triage_issue", args: { n: 2 } },
+      { tool: "suggest_reviewers", args: { n: 3 } },
+    ]);
+    const isEncoded = (name: string) =>
+      new Set(["triage_pull_request", "triage_issue", "suggest_reviewers"]).has(name);
+    expect(analyzeSession("s", entries, { isEncoded })).toHaveLength(0);
+  });
+
+  it("DOES flag a turn that did 3+ raw primitives (workflow without a macro)", () => {
+    const entries = userTurn("triage by hand", [
+      { tool: "gh_get_pull", args: { n: 1 } },
+      { tool: "gh_get_pull_files", args: { n: 1 } },
+      { tool: "gh_add_labels", args: { n: 1, labels: ["x"] } },
+    ]);
+    const isEncoded = (_name: string) => false; // none of these are encoded macros
+    const v = analyzeSession("s", entries, { isEncoded });
+    expect(v).toHaveLength(1);
+  });
+
+  it("counts only the un-encoded calls toward the threshold", () => {
+    const entries = userTurn("mixed", [
+      { tool: "triage_pull_request", args: { n: 1 } }, // encoded — ignored
+      { tool: "gh_get_pull", args: { n: 1 } },
+      { tool: "gh_get_pull_files", args: { n: 1 } },
+    ]);
+    const isEncoded = (name: string) => name === "triage_pull_request";
+    // only 2 raw calls -> below threshold 3 -> no violation
+    expect(analyzeSession("s", entries, { isEncoded })).toHaveLength(0);
+  });
+});

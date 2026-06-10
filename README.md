@@ -56,7 +56,7 @@ The genuinely novel piece of Macrokit is not the runtime. The runtime is enginee
 
 > Every session that touches a workflow without an existing macro must encode that workflow as a macro before ending.
 
-`macrokit gate` reads the runtime's session log and flags any user turn that dispatched three or more distinct tool calls — a multi-step sequence that's a candidate for encoding — and suggests a name, schema, and stub handler for a macro that captures it. (Today the flag is by count; distinguishing already-encoded macros from raw primitives via the `categoryOf` hook is implemented in the library but not yet wired from the CLI.) Wire it into your CI and the macro library compounds at the rate the team uses the system — instead of becoming a graveyard of one-off helpers like most tool collections do.
+`macrokit gate` reads the runtime's session log and flags any user turn that ran three or more distinct **un-encoded** tool calls — a workflow done *without* a macro — and suggests a name, schema, and stub handler for the macro that captures it. It discovers your project's encoded macros from `./macros` (override with `--macros <dir>`), so a turn that merely chained existing macros is *not* flagged; if no macro set is found it falls back to counting all distinct calls. Wire it into your CI and the macro library compounds at the rate the team uses the system — instead of becoming a graveyard of one-off helpers like most tool collections do.
 
 Full argument: `docs/THE_PATTERN.md` §5.
 

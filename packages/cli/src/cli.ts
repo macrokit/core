@@ -1,5 +1,5 @@
 import { resolve } from "node:path";
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import {
   analyzeSession,
   findSessionLogs,
@@ -206,6 +206,26 @@ function runLintPackage(pkgPath: string): number {
 // gate
 // ---------------------------------------------------------------------------
 
+/**
+ * Best-effort discovery of the project's encoded-macro names from its `macros/`
+ * dir, via the one-macro-per-file `defineMacro({ name: "..." })` convention.
+ * Lets the gate flag only UN-encoded (raw-primitive) sequences — the documented
+ * distillation-gate semantics — instead of any 3+ tool-call turn.
+ */
+function loadEncodedMacroNames(macrosDir: string): Set<string> {
+  const names = new Set<string>();
+  if (!existsSync(macrosDir)) return names;
+  for (const f of readdirSync(macrosDir)) {
+    if (!/\.(ts|js|mjs)$/.test(f)) continue;
+    let src = "";
+    try { src = readFileSync(join(macrosDir, f), "utf8"); } catch { continue; }
+    const re = /defineMacro\s*(?:<[^>]*>)?\s*\(\s*\{[\s\S]*?name\s*:\s*["'`]([^"'`]+)["'`]/g;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(src)) !== null) names.add(m[1]!);
+  }
+  return names;
+}
+
 function runGate(args: string[]): number {
   const root = resolve(args.find((a) => !a.startsWith("--")) ?? ".macrokit/sessions");
   const threshold = Number(flagValue(args, "--threshold") ?? 3);
@@ -219,11 +239,25 @@ function runGate(args: string[]): number {
     return 2;
   }
 
+  // Discover encoded macros so the gate flags only un-encoded (raw-primitive)
+  // sequences. --macros <dir> overrides; defaults to ./macros.
+  const macrosDir = resolve(flagValue(args, "--macros") ?? "macros");
+  const encoded = loadEncodedMacroNames(macrosDir);
+  const gateOpts = encoded.size > 0
+    ? { threshold, isEncoded: (name: string) => encoded.has(name) }
+    : { threshold };
+  if (encoded.size === 0 && !json) {
+    process.stderr.write(
+      `macrokit gate: no macros found at ${macrosDir} — running in count mode ` +
+        `(flags any ${threshold}+ tool-call turn). Pass --macros <dir> to flag only un-encoded workflows.\n`,
+    );
+  }
+
   const sessionFiles = findSessionLogs(root);
   const allViolations: GateViolation[] = [];
   for (const file of sessionFiles) {
     const entries = loadSessionLog(file);
-    allViolations.push(...analyzeSession(file, entries, { threshold }));
+    allViolations.push(...analyzeSession(file, entries, gateOpts));
   }
 
   if (json) {

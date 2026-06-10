@@ -53,6 +53,16 @@ export interface GateOptions {
    * containing only domain macros are weighted higher in suggestions.
    */
   categoryOf?: (name: string) => "domain" | "utility" | undefined;
+  /**
+   * Optional "is this name an already-encoded macro?" predicate. When provided
+   * (the CLI builds it from the project's registered macros), ONLY un-encoded
+   * calls — raw primitives, i.e. a workflow done *without* a macro — count
+   * toward the gate. This is the documented distillation-gate semantics
+   * (THE_PATTERN.md §5): flag the un-encoded workflow so it gets encoded; do
+   * NOT flag a turn that merely chained existing macros. Without it, the gate
+   * falls back to counting all distinct calls (legacy behavior).
+   */
+  isEncoded?: (name: string) => boolean;
 }
 
 const DEFAULT_THRESHOLD = 3;
@@ -70,8 +80,14 @@ export function analyzeSession(
     // Count distinct macros (de-duped by name+args). A loop of one macro is
     // a different concern (repeated_tool_call bail-out), not a distillation
     // gate concern.
+    const isEncoded = opts.isEncoded;
     const distinct = new Set<string>();
     for (const tc of turn.toolCalls) {
+      // When we can tell encoded macros from raw primitives, only RAW (un-encoded)
+      // calls count — a turn that chained existing macros is not an un-encoded
+      // workflow and must not be flagged. Without the predicate, count all
+      // distinct calls (legacy behavior).
+      if (isEncoded && isEncoded(tc.name)) continue;
       distinct.add(`${tc.name}|${tc.argsHash}`);
     }
     if (distinct.size >= threshold) {
