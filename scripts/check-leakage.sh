@@ -57,13 +57,15 @@ SELF_EXCLUDE=(
   ":(exclude)scripts/check-leakage.sh"
   ":(exclude)scripts/check-leakage.test.sh"
   ":(exclude).github/workflows/leakage-scan.yml"
-  # Frozen pre-registered benchmark artifacts (append-only data, not authored
-  # prose). The corpus + recorded run outputs are immutable, so they're
-  # excluded by explicit decision rather than edited.
-  ":(exclude)bench/runs/*"
-  ":(exclude)bench/tasks/*"
+  # NOTE: bench/runs/ + bench/tasks/ are NO LONGER excluded. They were, on an
+  # immutability rationale — but that let an authored leak ("China Mac", host
+  # details) slip through in the run-header `modelDisplay`/`notes` fields
+  # (found by external review 2026-06-10). Frozen *scores* are immutable; the
+  # authored *metadata* must still be clean, so these are now scanned. A genuine
+  # boundary leak overrides artifact immutability — flag it, then scrub the
+  # metadata (not the scores).
 )
-SELF_EXCLUDE_PATHS="scripts/check-leakage.sh scripts/check-leakage.test.sh .github/workflows/leakage-scan.yml bench/runs/ bench/tasks/"
+SELF_EXCLUDE_PATHS="scripts/check-leakage.sh scripts/check-leakage.test.sh .github/workflows/leakage-scan.yml"
 
 # -----------------------------------------------------------------------------
 # Line-content allowlist. Unlike SELF_EXCLUDE (whole-file), this exempts
@@ -121,6 +123,9 @@ HARD_FAIL_TERMS=(
   "marketplace"
   "supplier"
   "dropship"
+  # Infra/host identifiers that must not appear in public artifacts
+  "china mac"
+  "china-mac"
 )
 
 # Private deny-terms (the Sacred Rule #1 product/personal-handle identifiers) are

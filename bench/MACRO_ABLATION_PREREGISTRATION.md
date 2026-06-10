@@ -107,7 +107,7 @@ than the density ratio; the density gap is where the claim lives.
 ## 6. Models
 
 At minimum the set already run macro-ON: `qwen2.5-1.5b`, `qwen2.5-3b`, `qwen2.5-7b`, `llama3.1-8b`,
-`mistral-7b` (all Ollama, on the 16 GB China-Mac host via the benchmark's SSH pattern). The ladder
+`mistral-7b` (all Ollama, on a local 16 GB Ollama host). The ladder
 may be extended toward the value-v2 set (`qwen2.5:0.5b`, `llama3.2:1b/3b`, `gemma2:2b`, `phi3.5`)
 if those pull and fit cheaply. **Fallback:** a model that won't pull/load/adapt is excluded and
 **named with the reason** in `MACRO_ABLATION.md` — never silently dropped. Analysis requires

@@ -32,7 +32,7 @@ const MODELS: Record<string, ModelConfig> = {
     notes:
       "Production on-device model of the private reference deployment. SHA256 " +
       "65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423. " +
-      "Served via llama.cpp build b9354 at 127.0.0.1:18080 via SSH tunnel.",
+      "Local llama.cpp host (build b9354, loopback).",
     build: () =>
       new OpenAICompatibleAdapter({
         baseUrl: process.env.MACROKIT_BENCH_LOCAL_URL ?? "http://127.0.0.1:18080/v1",

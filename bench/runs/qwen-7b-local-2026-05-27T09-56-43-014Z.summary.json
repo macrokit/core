@@ -1,12 +1,12 @@
 {
   "header": {
     "modelId": "qwen-7b-local",
-    "modelDisplay": "Qwen 2.5 7B Instruct Q4_K_M (llama-server on China Mac)",
+    "modelDisplay": "Qwen 2.5 7B Instruct Q4_K_M (local llama.cpp host)",
     "llmProvider": "llama-server",
     "startedAt": "2026-05-27T09:56:43.014Z",
     "harnessCommit": "d3e38e14aecb5f02e29e3dd5cfd378dfbf1afe97",
     "corpusCommit": "d3e38e14aecb5f02e29e3dd5cfd378dfbf1afe97",
-    "notes": "Production on-device model of the private reference deployment. SHA256 65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423. Served via llama.cpp build b9354 at 127.0.0.1:18080 via SSH tunnel."
+    "notes": "Local llama.cpp host (build b9354, loopback). Model SHA256 65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423."
   },
   "taskCount": 100,
   "totalScore": 189,
