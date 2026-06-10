@@ -1,5 +1,21 @@
 # Independent value — does the information quantity predict a task outcome it isn't defined from?
 
+> ## ⛔ ERRATUM — results withdrawn pending re-run (2026-06-10)
+> An external review found a **harness asymmetry that invalidates the headline lift**. In
+> [`bench/src/outcome-runner.ts:75`](../bench/src/outcome-runner.ts) the **macro-OFF** condition was run
+> with **empty tool surfaces** (`toolSurfaces = {}`, stub primitives), while **macro-ON** received the
+> per-item fixture (`{ github: fixture }`). The two conditions therefore did **not** have matched
+> information access — contradicting this doc's own "same corpus, fixtured client" claim and the
+> pre-registration. The macro-OFF value floor (0.11–0.17) is **structural** (the model was starved of the
+> per-item data the gold requires), so the **5–10× ON/OFF lift is predetermined by the harness, not
+> measured**, and the "value collapses despite correct routing" reading is an artifact of the same defect.
+>
+> **What stands and what doesn't:** Claim 2 (the ON/OFF lift) and the headline are **withdrawn**. Claim 1
+> (router `I(X;Y)` correlating with `V`) is also affected, since macro-ON `V` is measured against a
+> condition that was never a fair baseline. **Nothing in the Results/What-it-shows/Bottom-line sections
+> below should be cited until the experiment is re-run** with the fixture wired into macro-OFF and
+> independently re-verified. The text is left in place, struck through in spirit, for the audit trail.
+
 **This is an experiment reported as evidence, not a law.** One task family
 (`github-maintainer`), one ~18-item fixtured corpus, five local models, discrete
 outcomes. It is a demonstration; it is explicitly not a proof and not a
