@@ -74,6 +74,24 @@ Root cause was in `@macrokit/runtime`'s tool-spec rendering: zod schemas weren't
 
 The model's capability was never the bottleneck. The SDK's communication of arg names was. This is on us; finding it before launch is exactly what a pre-registered benchmark + raw-output publishing is *for*.
 
+> **Provenance erratum (2026-06-10).** The 94.5% reproduces deterministically from the committed raw
+> artifacts (the scorer is fixed; `gold` never enters prompts) and the fix it depends on is real — but two
+> provenance caveats apply to the "verify the git log" claim, surfaced by external review:
+> - **The run-2 artifact mis-records its commit.** The run-2 `summary.json` header carries
+>   `harnessCommit: d3e38e14` — the **pre-fix** Run-1 commit. The zod→JSON-Schema fix landed ~12 minutes
+>   later in [`6424cc7`](https://github.com/macrokit/core/commit/6424cc7). Run 2 was executed with the fix
+>   in the working tree but tagged with a commit that does not contain it, so checking out the recorded
+>   commit reproduces 53.5%, not 94.5%. The prose above attributes the fix to `6424cc7` correctly; the
+>   artifact *header* is what's stale.
+> - **The history was rewritten after publication.** The repo history was rewritten with `git filter-repo`
+>   on 2026-05-31 (a Sacred-Rule-#1 scrub) — after the v2 preprint was deposited. Commit hashes/timestamps
+>   are therefore reconstructed; the v2 PDF cites pre-rewrite hashes that no longer resolve. The relative
+>   orderings (prereg → run 1 → fix → run 2) still hold in the current history, but the audit trail is
+>   reconstructed, not original. A corrected v3 will re-cite current hashes and disclose the rewrite.
+>
+> The number stands; the provenance metadata did not, and we say so plainly — which is what a pre-registered,
+> raw-output-published benchmark is *for*.
+
 ### Per-bucket and per-difficulty breakdown (run 2)
 
 | Bucket | Run 1 | Run 2 |

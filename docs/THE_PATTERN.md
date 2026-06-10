@@ -120,7 +120,7 @@ Macrokit's prescription:
 
 > **The distillation gate.** Every session that touches a workflow without an existing macro must encode that workflow as a macro before ending. The session does not end successfully if the encoding step is skipped.
 
-In practice the gate is enforced by tooling. The runtime writes a session log: every tool call, every user turn, every result. The `macrokit gate` CLI reads the log and flags sessions where three or more raw tool calls happened in a row for a workflow that has no macro:
+In practice the gate is enforced by tooling. The runtime writes a session log: every tool call, every user turn, every result. The `macrokit gate` CLI reads the log and flags user turns where three or more distinct tool calls happened — a multi-step sequence that is a candidate for encoding as a single macro:
 
 ```
 $ macrokit gate
@@ -134,6 +134,8 @@ Encode this sequence as a macro before ending the session.
 Suggested name: triage_open_issues_for_user(user_id)
 Suggested schema: { user_id: string, label: string = "needs-triage" }
 ```
+
+> **Implementation status (honest).** The shipped `macrokit gate` flags by *count* — three or more distinct tool calls in a turn. It does not yet distinguish a sequence of *already-encoded macros* from one of *raw primitives that should be encoded*; the `categoryOf` hook that would make that distinction exists in the library but is not wired from the CLI. So today the gate surfaces candidate sequences (and can flag a turn that legitimately chained existing macros); the "only flag un-encoded workflows" refinement is the next step. The cultural mechanism below is the goal the tooling is converging on, stated as the design intent — not yet fully realized in the CLI.
 
 The cultural shift the gate produces is the *whole point*. Without it, the macro library is a thing some people on the team write when they remember. With it, every session that does work also encodes work — the library compounds at the rate the team uses the system.
 

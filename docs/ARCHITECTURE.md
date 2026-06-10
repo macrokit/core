@@ -2,7 +2,13 @@
 
 *The shape of the SDK and how its pieces fit together.*
 
-**Status:** Live. The packages described here are built and on `main` — runtime, llm, browser, authoring, reference-data, and cli. This document describes how they fit together.
+**Status:** Live core, with some **target-architecture** sections not yet shipped. The six packages exist
+on `main` and the runtime/router/dispatcher/registry, the OpenAI-compatible + Ollama adapters, the
+bail-out *detector*, `defineMacro()`, the browser primitives, and `macrokit init / lint / gate` are real and
+tested. The following described here are **NOT yet implemented** (target shape, called out inline too):
+the `LlamaCppAdapter`, adapter streaming, an `embed` method, bail-out **repair/escalate** (only *detection*
+ships — see the runtime note), the `macrokit refdata` CLI, interactive `macrokit init`, pluggable/remote
+registry storage, and fsync'd session logs. Treat unmarked claims as shipped and marked ones as planned.
 
 Read `THE_PATTERN.md` first if you haven't. This document assumes the pattern (intent routing plus macro distillation) and describes the concrete components that implement it.
 
@@ -29,7 +35,7 @@ core/packages/
 ├── browser/          # annotated-screenshot + action-menu, Playwright by default
 ├── authoring/        # defineMacro(), test harness, recording mode, schema helpers
 ├── reference-data/   # versioned reference-data loader, signed bundles, SQLite cache
-└── cli/              # `macrokit init / lint / gate / refdata`
+└── cli/              # `macrokit init / lint / gate` (+ `studio`/`mcp` launchers; `refdata` planned)
 ```
 
 Each package has a single, narrow responsibility. The packages compose by import — nothing in the runtime knows about the browser package; nothing in the LLM package knows about the authoring helpers. Adopters install only what they need.
@@ -39,7 +45,7 @@ Each package has a single, narrow responsibility. The packages compose by import
 The smallest package, intentionally. Owns:
 
 - **Type definitions:** `Macro`, `MacroRegistry`, `IntentRouter`, `Dispatcher`, `ToolCall`, `ToolResult`, `SessionLog`.
-- **`MacroRegistry`:** in-memory by default, `register(macro)`, `lookup(name)`, `dispatch(toolCall)`. Pluggable storage (an organization with thousands of macros may back it with a remote service).
+- **`MacroRegistry`:** in-memory, `register(macro)`, `lookup(name)`, `dispatch(toolCall)`. (Pluggable/remote-backed storage for orgs with thousands of macros is a design intent, not a shipped interface — today it's in-memory only.)
 - **`IntentRouter`:** given a registry, a model adapter, and a user request, produces a tool call or a free-form response. Owns the per-turn prompt builder.
 - **`Dispatcher`:** validates arguments against the macro's schema, calls the handler, captures failure context, writes to the session log.
 - **`SessionLog`:** append-only JSONL file under `.macrokit/sessions/`. Every user turn, every tool call, every result. The distillation gate reads this.
@@ -53,12 +59,14 @@ A single interface (`LLMAdapter`) with a small set of methods (`complete`, `comp
 Shipping adapters:
 
 - `OpenAICompatibleAdapter` — covers OpenAI, DeepSeek, Qwen API, Zhipu, Kimi, Together, OpenRouter, and any other provider that speaks the OpenAI chat-completions schema. One adapter, configured by base URL and API key.
-- `OllamaAdapter` — talks to a local Ollama server. Streaming-aware.
-- `LlamaCppAdapter` — in-process via `node-llama-cpp` bindings, or out-of-process via the `llama-server` HTTP shim.
+- `OllamaAdapter` — talks to a local Ollama server. (Streaming: planned, not shipped.)
+- `LlamaCppAdapter` — **planned, not shipped.** llama.cpp models are reachable today via the
+  OpenAI-compatible adapter pointed at a `llama-server` HTTP endpoint (this is how the benchmark's reference
+  7B was served); a dedicated in-process `node-llama-cpp` adapter is future work.
 
 Provider tool-call schemas differ in small but breaking ways (function-call wrapping, tool-result message shape, streaming-event format). The package normalizes them to one internal shape so the runtime can be provider-agnostic. The adapters are the only code that knows which provider is in use.
 
-**The bail-out detector lives here**, because every adapter passes its raw response through it before returning to the runtime. The detector pattern-matches the failure modes weak models exhibit when out of their depth — tool calls emitted as plain text, calls to nonexistent tools, repeated identical calls (loops), prose-shaped output where a tool call was expected. On a fire, the detector either repairs (re-prompt with the schema), escalates (to a configured fallback adapter — typically a frontier API for the failing turn), or returns a structured error. The detector's rule set is small, documented, and extensible per deployment. We resist letting it become a soft-AGI scoring system.
+**The bail-out detector lives here**, because every adapter passes its raw response through it before returning to the runtime. The detector pattern-matches the failure modes weak models exhibit when out of their depth — tool calls emitted as plain text, calls to nonexistent tools, repeated identical calls (loops), prose-shaped output where a tool call was expected. **What ships today is *detection*** — the events are flagged on the turn result. *Acting* on a fire is only partial: if a fallback adapter is configured, the failing turn can **escalate** to it; **repair (re-prompt with the schema) is not yet implemented**, and **with no fallback configured the runtime currently still dispatches/returns the flagged output** (a known gap — `router.ts` — being closed; do not rely on the detector to *block* bad output yet). The detector's rule set is small, documented, and extensible per deployment. We resist letting it become a soft-AGI scoring system.
 
 ### 2.3 `browser`
 
@@ -110,7 +118,7 @@ Many macro libraries carry data alongside code: lookup tables, vocabulary lists,
 
 - **Loader:** reads CSV/JSON files into typed records, schema-validated via `zod`.
 - **Local cache:** SQLite-backed, with TTL, under the OS-appropriate application-data directory.
-- **CLI command:** `macrokit refdata sync <name>` pulls a signed bundle from a URL the project configures (an S3 path, a static-hosting URL, anything that serves HTTPS). Signatures are verified locally before the bundle replaces the cached copy.
+- **CLI command (planned, not shipped):** `macrokit refdata sync <name>` would pull a signed bundle from a URL the project configures (an S3 path, a static-hosting URL, anything that serves HTTPS), verifying signatures locally before the bundle replaces the cached copy. The `reference-data` *library* ships; the `refdata` CLI lifecycle is future work.
 - **Versioning:** each bundle is a semver release. Downgrade and pinning are first-class.
 
 This package is intentionally generic. It does not assume what's in the data. The reference deployments will exercise it (a recruiting reference impl will likely ship a `roles_taxonomy` bundle; a paper-triage one will ship a `venues_taxonomy`). The generic loader is the contribution; the data is each adopter's.
@@ -119,11 +127,13 @@ This package is intentionally generic. It does not assume what's in the data. Th
 
 The user-facing entry points.
 
-- **`macrokit init`** — scaffolds a new project. Interactive: asks vertical name, primary model provider (OpenAI-compatible / Ollama / llama.cpp), browser-needed (yes/no). Produces a working "hello world" repo with one trivial macro, the runtime wired up, and a passing test.
+- **`macrokit init`** — scaffolds a new project (`init <name> --vertical <X>`) with a `macrokit.json`
+  manifest, `macros/`, `primitives/`, and `fixtures/`. (The interactive provider/browser prompts described
+  here are planned; today it takes flags.) Produces a working scaffold with the runtime wired up.
 - **`macrokit lint`** — static checks on a project's macros: missing tests, missing intent strings, schema/handler argument mismatches, banned patterns (e.g. handlers that call the model again — almost always a sign the macro should have been split).
   - **`macrokit lint --pkg <path>`** — same lint binary, different mode: validate a *standalone community macro package* against the structural bar in [`CONTRIBUTING_MACROS.md`](../CONTRIBUTING_MACROS.md). Four checks — `@macrokit/authoring` declared as peerDependency, at least one `defineMacro()` with all four required fields exported, at least one test/fixture file, `README.md` at the root. Used by registry-PR reviewers and by adopters self-checking before opening a listing PR. Exits 1 on any failure for CI use.
 - **`macrokit gate`** — the distillation-gate enforcer. Reads `.macrokit/sessions/*.jsonl`. Flags sessions where three or more raw tool calls happened in a row for a workflow that does not have a macro. Prints suggested macro names, schemas, and a stub handler signature. CI-friendly: exits non-zero when violations exist, so the gate can be wired into the merge checks of a team that wants to enforce the discipline. (Pattern reference: `THE_PATTERN.md` §5.)
-- **`macrokit refdata <sync | verify | pin>`** — the reference-data lifecycle.
+- **`macrokit refdata <sync | verify | pin>`** — the reference-data lifecycle. *(Planned; the `reference-data` library ships, the CLI does not yet.)*
 
 The CLI is where most adopters will spend the most time, so its UX matters disproportionately. We treat it as a product, not as glue.
 
@@ -142,7 +152,7 @@ A single user turn, end to end:
      - user message
 4. LLMAdapter.completeWithTools(prompt, tools) is called.
 5. Raw response passes through the bail-out detector.
-       on fire: repair / escalate / structured error
+       on fire: detect + flag (escalate if a fallback is configured; repair = planned)
        on pass: continue
 6. If the response is a tool call:
        a. Dispatcher validates args against macro.schema.
@@ -157,7 +167,7 @@ A single user turn, end to end:
 7. If the response is free-form text:
        a. Returned to the user as the assistant turn.
        b. Appended to session log.
-8. Session log is fsync'd before returning.
+8. Session log is written (append-only JSONL) before returning. *(Durable fsync-on-write: planned, not yet implemented.)*
 ```
 
 A few things this loop deliberately does *not* do.

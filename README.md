@@ -38,7 +38,7 @@ The short version: every framework here lets the model *reason at runtime*; Macr
 - **Not a skills or prompt format.** A *skill* tells a strong model how to think. A *macro* is the compiled, deterministic result of that thinking — it runs on weak and local models with no reasoning at runtime. Macros can call MCP tools as primitives; Macrokit sits *above* MCP, not against it.
 - **Not a model.** BYO-model. Ships adapters for OpenAI-compatible APIs, Ollama, and llama.cpp out of the box.
 - **Not RPA.** RPA records UI clicks at the pixel level. Macros are recorded at the semantic level — typed tool calls with named arguments — and are diff-reviewable code.
-- **Not a save-a-chain convenience.** Macrokit's *distillation gate* flags every workflow you run without a macro and proposes one on recurrence — so the macro library compounds by discipline, not by remembering to save. The accumulated library, not the runtime, is the moat.
+- **Not a save-a-chain convenience.** Macrokit's *distillation gate* surfaces multi-step sequences worth encoding and proposes a macro for them — so the macro library compounds by discipline, not by remembering to save. The accumulated library, not the runtime, is the moat.
 - **Not a no-code platform.** Authoring a macro assumes a developer plus a strong model in the loop. End users see only the chat interface.
 
 ## What you get
@@ -56,7 +56,7 @@ The genuinely novel piece of Macrokit is not the runtime. The runtime is enginee
 
 > Every session that touches a workflow without an existing macro must encode that workflow as a macro before ending.
 
-`macrokit gate` reads the runtime's session log and flags any session that did three or more raw tool calls in a row without dispatching a macro. It suggests a name, schema, and stub handler for the missing macro. Wire it into your CI and the macro library compounds at the rate the team uses the system — instead of becoming a graveyard of one-off helpers like most tool collections do.
+`macrokit gate` reads the runtime's session log and flags any user turn that dispatched three or more distinct tool calls — a multi-step sequence that's a candidate for encoding — and suggests a name, schema, and stub handler for a macro that captures it. (Today the flag is by count; distinguishing already-encoded macros from raw primitives via the `categoryOf` hook is implemented in the library but not yet wired from the CLI.) Wire it into your CI and the macro library compounds at the rate the team uses the system — instead of becoming a graveyard of one-off helpers like most tool collections do.
 
 Full argument: `docs/THE_PATTERN.md` §5.
 
