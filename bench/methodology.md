@@ -112,7 +112,7 @@ Two derived metrics, reported but not headline:
 - **Bail-out rate:** % of tasks where the Macrokit bail-out detector fired (model emitted tool call as text, called an unknown tool, looped, etc.). Lower is better. The detector's classification is logged per task.
 - **Mean latency per request:** wall-clock seconds from `complete()` call to result.
 
-The raw model output (full assistant message + tool_calls JSON) is logged per task to `bench/runs/<model-id>-<timestamp>.jsonl`. **Every run is published — even failed ones.** Anyone wanting to audit can replay the harness against the same corpus.
+The raw model output (full assistant message + tool_calls JSON) is logged per task to `bench/runs/<model-id>-<timestamp>.jsonl`. **Every scored run is published — including failed ones.** (Stated as "every run" in earlier revisions; a set of discarded exploratory Ollama runs at the wrong sampling temperature — 0.8, against the pre-registered temperature 0 — was never scored and never committed, so the claim is now scoped to what was always true of the scored runs.) Anyone wanting to audit can replay the harness against the same corpus.
 
 ## 6. Half-credit policy on ambiguous tasks
 
@@ -177,13 +177,13 @@ Seven tasks scored below full (3 × `tool_only` losing 1 point each + 4 × `miss
 
 | Task | Verdict | Corpus issue | If half-credit had applied |
 |---|---|---|---|
-| SR010 | `miss` | Notes field reads *"triage_pull_request is an acceptable alternative — but we only register one expected here per scoring rules."* The corpus author identified an acceptable second answer but did **not** add an `alternative` field, so the scorer (correctly) scored as zero. The model picked the acceptable alternative. | `half` (1 of 2) |
-| SR011 | `miss` | Identical pattern (*"label PR 7 in macrokit/website and pick reviewers"*); notes flag triage_pull_request as acceptable alternative; no `alternative` field. Model picked the alternative. | `half` (1 of 2) |
+| SR010 | `miss` | Notes field reads *"triage_pull_request is an acceptable alternative — but we only register one expected here per scoring rules."* The corpus author identified an acceptable second answer but did **not** add an `alternative` field, so the scorer (correctly) scored as zero. The model picked the acceptable alternative. | `half` (1.5 of 2: 0.5 tool + 1.0 args — the model's args match the alternative's) |
+| SR011 | `miss` | Identical pattern (*"label PR 7 in macrokit/website and pick reviewers"*); notes flag triage_pull_request as acceptable alternative; no `alternative` field. Model picked the alternative. | `half` (1.5 of 2: same scorer semantics) |
 
 **Rubric clarification — applies to runs 3+, NOT retroactively to runs 1 or 2.**
 
 > Half-credit applies on any task — regardless of bucket — whose `notes` field explicitly identifies an acceptable alternative tool. The `alternative` field SHOULD be populated for any such task; if it is absent but the notes describe an alternative, the corpus author SHOULD add the field in a separate corpus-amendment commit before the next run. Run 2 scores are not adjusted.
 
-For transparency: if SR010 and SR011 had received half-credit at run time, the run 2 headline would have been **191/200 = 95.5%** instead of 189/200 = 94.5%. We publish the lower number because the pre-registered rule was what produced it.
+For transparency: if SR010 and SR011 had received half-credit at run time, the run 2 headline would have been **192/200 = 96.0%** instead of 189/200 = 94.5%. (Earlier revisions of this note said 95.5%, assuming `half` is worth 1 point; the scorer's actual `half` verdict awards 0.5 `tool_score` plus full `args_score` when the args match the alternative's — verified by running `scoreTask` on the artifact rows — i.e. 1.5 points each. Reconciled with PREPRINT.md §5.7/§10 and BENCHMARK.md.) We publish the lower number because the pre-registered rule was what produced it.
 
 **Pattern that emerged:** the model's dominant failure mode on this corpus is **conservative arg omission** (defaulting to safer values like `apply: false`, omitting optional fields entirely) rather than tool mis-selection. Tool selection is solid; the remaining surface area for improvement is making the system prompt or schema rendering pin "explicit verb in prompt → explicit boolean in args" more clearly. Documented for future SDK work, not changed for this run.

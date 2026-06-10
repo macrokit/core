@@ -2,6 +2,7 @@
 
 **Author:** Cheng Qian, Macrokit
 **Status:** Published at Zenodo. DOI (all versions): [10.5281/zenodo.20412771](https://doi.org/10.5281/zenodo.20412771)
+**Version:** v3 — carries corrections and disclosures from an external review of v2. **Read §10 (Errata & audit-trail) first** if you are auditing this paper's claims; every substantive change from v2 is listed there.
 **Repository:** [github.com/macrokit/core](https://github.com/macrokit/core) (commit pinned at submission)
 **License of accompanying code:** Apache 2.0
 
@@ -10,6 +11,8 @@
 Most production LLM applications today face a forced choice between *frontier-API models* (capable, expensive, network-dependent) and *weak or local models* (cheap, private, fragile). The dominant response in 2024–2026 has been to push the weak side: train smaller models to reason better, scaffold the reasoning loop with agent frameworks, and accept the resulting brittleness as a cost of doing business.
 
 We describe an alternative architecture, **intent routing plus macro distillation**, that obviates this choice for a large and useful class of workloads. The observation is that production LLM applications repeatedly execute narrow, parameterizable workflows on opaque external surfaces. The corresponding runtime problem is not multi-step reasoning — at which weak models fail — but intent classification, at which they succeed reliably. By moving each workflow's encoding to *design-time*, with a strong model supervising a developer, and confining the *runtime* LLM to routing user requests against a registry of pre-encoded macros, we produce a system in which the runtime model can be a small local LLM with no measurable capability cost on the routed workloads.
+
+The architecture recapitulates how biological cognition manages the cost of thinking. A macro is **learned automaticity** — the analog of a System-1 reflex: fast, cheap, deterministic, acquired (not innate), and reserved for the routine. The strong design-time model is **deliberation** — System 2: slow, expensive, flexible, reserved for novelty. Efficient cognitive systems compile repeated deliberation into cheap automatic behavior and hold deliberation in reserve; Macrokit ports that division of labor to LLM systems, with the cheap path carrying the bulk of the request volume. The analogy is structural, not decorative, and §2.5 states where it breaks.
 
 We report results from a pre-registered 100-task benchmark across six maintainer-agent macros. A 7-billion-parameter local model running on a 16-GB consumer laptop (Qwen 2.5 7B Instruct Q4_K_M, ~4.4 GB) achieves **94.5%** intent-routing accuracy with zero structural failures. We argue that the benchmark's load-bearing finding is not the headline number but the methodological one: an earlier configuration of the same SDK and same model scored 53.5%, and the gap was entirely attributable to a fixable choice about how the SDK rendered tool argument names to the model. The model's capability was not the bottleneck.
 
@@ -70,9 +73,15 @@ Second, observability: a deterministic handler is debuggable, reviewable in a pu
 
 ### 2.4 The bail-out detector
 
-Even with the architecture confined to single-step routing, weak models occasionally produce failure modes that should not propagate to handlers: emitting structured tool calls as plain text in the message body, inventing tool names not present in the registry, repeating the same tool call with the same arguments two turns in a row, or returning prose where the caller required a tool call. We implement a **bail-out detector** in the runtime (`@macrokit/runtime/src/bail-out-detector.ts`) that pattern-matches these failure shapes and either repairs the call, escalates to a configured fallback adapter, or returns a structured error.
+Even with the architecture confined to single-step routing, weak models occasionally produce failure modes that should not propagate to handlers: emitting structured tool calls as plain text in the message body, inventing tool names not present in the registry, repeating the same tool call with the same arguments two turns in a row, or returning prose where the caller required a tool call. We implement a **bail-out detector** that pattern-matches these failure shapes. What ships is **detection plus halt-or-escalate**: when the detector fires, the runtime escalates the failing turn to a configured fallback adapter if one exists; with no fallback configured, the turn **halts** with a structured `bailedOut` result — flagged output is not dispatched and not returned as a normal answer. **Repair (re-prompting the model with the schema) is not implemented**; v2 of this paper described the detector as able to "repair the call," which overstated the shipped behavior (see §10, item 6).
 
 The detector's rule set is small, documented, and extensible per deployment. In the §5 benchmark it fired zero times across 200 model invocations (two runs of 100 tasks each), suggesting that on routed workloads, structured tool-call generation by Qwen-class 7B models is reliable enough that the detector is a safety net rather than a primary control surface.
+
+### 2.5 The cognitive analogy, stated precisely
+
+The pattern's two halves map onto the two-system account of cognition, and the mapping does explanatory work. A macro is not innate instinct; it is **acquired automaticity** — the analog of a habit or expert skill. A behavior starts as effortful deliberation; repeated enough, the brain chunks it and migrates it from expensive deliberate control to cheap automatic execution. The **distillation gate** (§3) is the engineered version of that chunking trigger: recurrence, not aspiration, is what forces compilation. The cost asymmetry of §2.1 — deliberate once, run cheaply forever — is the same argument an energy-budgeted brain makes.
+
+The analogy also *predicts the architecture's failure mode rather than excusing it*. Automaticity is fast but brittle: habits misfire when the environment shifts. Macros rot the same way (surface drift, §6), and the correct response is the same in both systems — when the automatic path fails, return to deliberation (the bail-out detector of §2.4 is exactly that trigger). Where the analogy breaks: brains chunk continuously and unconsciously, while the gate is a discrete, tooling-enforced step; and a macro's handler is inspectable code, which no biological habit is. We use the analogy as a design compass, not as evidence.
 
 ---
 
@@ -128,13 +137,15 @@ The corpus comprises 100 hand-crafted natural-language requests against a six-ma
 - 11 `no_macro` tasks (the correct response is free-text, not a tool call)
 - 15 `ambiguous_multi_intent` tasks (multiple plausible interpretations; canonical answer pinned, alternative documented for half-credit)
 
+A coverage disclosure on the last bucket: the half-credit policy requires a machine-readable `alternative` field on the task, and only **4 of the 15** ambiguous tasks (AM001, AM002, AM006, AM015) carry one. The remaining 11 document their ambiguity in free-text notes only, which the scorer cannot award against. The pre-registered half-credit policy was therefore *operative* for roughly a quarter of the bucket it was designed for. The error is in the conservative direction — affected tasks could only have scored higher, not lower — but a corpus revision should carry the field on every task whose notes name an acceptable alternative. Two tasks outside this bucket have the same defect with measured consequences (SR010/SR011, §5.7).
+
 Difficulty bands within each bucket are: `easy_direct`, `medium_paraphrase`, `hard_implicit`, `hard_distractor`. The full task list with notes is in [`bench/tasks/`](../bench/tasks/).
 
 ### 5.3 The model
 
 Qwen 2.5 7B Instruct, Q4_K_M GGUF quantization, ~4.4 GB on disk. SHA256 `65b8fcd92af6b4fefa935c625d1ac27ea29dcb6ee14589c55a8f115ceaaa1423`. Served via `llama-server` (llama.cpp build b9354) on a 16 GB M1 MacBook with Metal acceleration. Hyperparameters: `temperature=0` (greedy), `max_tokens=512`, `-c 8192` (context), `--cache-type-k q8_0`, `--cache-type-v q8_0`, `-np 1`, `--mlock`. These match the production deployment described in §1.
 
-We chose this model because it is the production model of the private deployment that originated the architecture. We did not run additional models for the published results. We discuss this choice in §7.
+We chose this model because it is the production model of the private deployment that originated the architecture. We did not run additional models **at the time this benchmark was frozen and first published**; that sentence is now scoped historically. Since the v2 deposit, the repository's [`docs/BENCHMARK.md`](BENCHMARK.md) carries a five-model table on the same frozen corpus at temperature 0 — Qwen 2.5 1.5B / 3B / 7B via Ollama at 74.0 / 79.3 / 82.3%, Llama 3.1 8B at 82.5%, and an honest negative (Mistral 7B v0.3 at 14%, a tool-call-plumbing failure caught by the bail-out detector). The headline claims of this paper rest on the original pre-registered run reported here; the multi-model table is corroborating context, with its raw artifacts committed alongside. We discuss the no-cloud-rows choice in §7.
 
 ### 5.4 Scoring
 
@@ -170,13 +181,13 @@ Per-difficulty breakdown:
 
 A first run of the same model on the same corpus, with the same harness but *before* a single SDK fix described below, scored **53.5%** (107.0 / 200). The fix is documented at commit `6424cc7` of the public repository. The shipped change is twelve lines in `@macrokit/authoring/src/define-macro.ts`: zod schemas are now automatically converted to JSON Schema (via `zod-to-json-schema`) and attached to each macro's `schema.jsonSchema` field. The runtime's `IntentRouter` previously fell back to a permissive `{ type: "object" }` rendering when no JSON Schema was attached; that fallback was what the model saw on run 1.
 
-Inspecting the raw run-1 outputs reveals that *every* miss was the same failure mode: the model selected the correct macro but produced argument names that were plausible variants of, but not equal to, the schema's actual argument names. `repo_owner` and `repo_name` instead of `owner` and `repo`; `pr_number` instead of `number`; `from_ref` and `to_ref` instead of `base` and `head`; `workflow_run_id` instead of `runId`. The model was guessing reasonable names because the actual names were not in its tool spec.
+Inspecting the raw run-1 outputs reveals that the **dominant failure mode — 83 of the 88 tasks that lost points** — was a single shape: the model selected the correct macro but produced argument names that were plausible variants of, but not equal to, the schema's actual argument names. `repo_owner` and `repo_name` instead of `owner` and `repo`; `pr_number` instead of `number`; `from_ref` and `to_ref` instead of `base` and `head`; `workflow_run_id` instead of `runId`. The model was guessing reasonable names because the actual names were not in its tool spec. The remaining **five misses were wrong-tool selections** (SR010, SR011, NM009, AM008, AM012), not argument-name variants; v2 of this paper said "*every* miss," which overstated the uniformity (see §10, item 5). The split is verifiable from the committed run-1 artifact.
 
 We argue this is the methodologically important finding of the paper. The model's *capability* on routed workloads was sufficient for the application in both runs; what changed between runs was a single SDK configuration concerning how argument names are communicated to the runtime LLM. The 41-percentage-point lift between runs represents what an SDK is for: making model capability addressable. Reporting only the second run would have obscured this; reporting both runs makes the actionable lesson visible.
 
 ### 5.7 Audit of misses
 
-Seven tasks did not score full credit on run 2. Two are scoring artifacts: tasks `SR010` and `SR011` were correctly classified as `ambiguous_multi_intent` in their inline notes but were neglected to be given `alternative` fields in their JSON, which the scorer requires to award half-credit. Under proper half-credit accounting, the model would receive +0.5 on each — yielding 95.0% rather than 94.5%. We report the published number (94.5%) and the could-have-been number (95.0%) alongside; per pre-registration discipline, we did not edit the corpus after running. Full per-miss audit in [`docs/BENCHMARK.md`](BENCHMARK.md).
+Seven tasks did not score full credit on run 2. Two are scoring artifacts: tasks `SR010` and `SR011` were flagged as multi-intent in their inline notes but were neglected to be given `alternative` fields in their JSON, which the scorer requires to award half-credit. The model picked exactly the documented alternative (`triage_pull_request`) with exactly the right arguments. Under the scorer's actual half-credit semantics — verified by running `scoreTask` on the artifact rows with the alternative field present — a half verdict awards 0.5 `tool_score` plus full `args_score` when the arguments match the alternative's, i.e. **+1.5 points per task**, yielding **192 / 200 = 96.0%** rather than 94.5%. (v2 of this paper stated 95.0% by assuming +0.5 per task, and the repository's methodology note stated 95.5% by assuming +1.0; both under-counted the scorer's behavior — see §10, item 4.) We report the published number (94.5%) and the scorer-verified counterfactual (96.0%) alongside; per pre-registration discipline, we did not edit the corpus after running. Full per-miss audit in [`docs/BENCHMARK.md`](BENCHMARK.md).
 
 The remaining five misses split into two categories: (i) three `close_stale_issues` tasks where the model defaulted `apply: false` rather than the corpus-author-intended `apply: true` — a cautious model behavior on destructive operations that is arguably correct in production; (ii) two tasks (`NM010` and `AM012`) where the model misread template-or-batch requests as actionable single-item invocations.
 
@@ -228,6 +239,36 @@ For the application class we describe, frontier-API inference is not the natural
 
 ---
 
+## 10. Errata & audit-trail (v2 → v3)
+
+This paper's central methodological commitment is that its claims be auditable from the public repository. An external review of v2 found places where that commitment was not met — some material, none affecting the headline number's reproducibility from the raw artifacts, all worth stating in the paper's own voice rather than a changelog. This section is the complete list of substantive corrections in v3. Nothing here is buried elsewhere.
+
+**1. The repository history was rewritten after the v2 deposit.** On 2026-05-31 the public repository's history was rewritten with `git filter-repo` (a content-hygiene scrub), *after* v2 of this paper was deposited. Every commit hash and timestamp in the current history is therefore **reconstructed, not original**. The relative ordering that the pre-registration argument depends on — pre-registration → run 1 → SDK fix → run 2 — still holds in the rewritten history, but a reader can no longer verify it against the hashes v2 cited. We should have disclosed the rewrite at the time; v3 does.
+
+**2. The v2 PDF cited commit hashes that no longer resolve.** v2 referenced pre-rewrite hashes `1ac076e` (pre-registration) and `5de35d3` (SDK fix). Both now dangle. The same commits in the current history are **`ff843b1`** (pre-registration: methodology + tasks + harness) and **`6424cc7`** (the zod→JSON-Schema fix). All hashes in v3, including the Reproducibility table, are current post-rewrite hashes.
+
+**3. The run-2 artifact mis-records its commit.** The run-2 `summary.json` header records `harnessCommit: d3e38e14` — the **pre-fix** run-1 commit. Run 2 was executed with the fix present in the working tree but tagged with a commit that does not contain it; checking out the recorded commit reproduces **53.5%, not 94.5%**. The 94.5% reproduces deterministically from the committed raw artifacts with the fix (`6424cc7`) applied; the artifact's provenance *metadata* is what was wrong, and we leave the frozen artifact unedited rather than rewrite raw data. (Mirrors the provenance erratum in `docs/BENCHMARK.md`.)
+
+**4. The SR010/SR011 counterfactual was under-counted — twice.** v2 stated that proper half-credit on the two mis-authored ambiguous tasks would yield 95.0%; the repository's methodology note said 95.5%. Both were computed from assumed semantics rather than the scorer's actual ones. Running the scorer on the artifact rows with the missing `alternative` field present awards **+1.5 per task** (0.5 `tool_score` + full `args_score`, since the model's arguments match the alternative's), giving **192 / 200 = 96.0%**. The published headline remains 94.5% — the pre-registered rule produced it and the corpus was not edited post-hoc — but the counterfactual is now stated correctly and consistently across this paper, `BENCHMARK.md`, and `methodology.md` (§5.7).
+
+**5. "Every miss" overstated run-1's uniformity.** v2 §5.6 claimed *every* run-1 miss was an argument-name variant. The artifact shows **83 of 88**; the other five (SR010, SR011, NM009, AM008, AM012) were wrong-tool selections. The argument about what the SDK fix demonstrates survives — the dominant failure mode was the fixable one — but the word "every" was wrong (§5.6).
+
+**6. The bail-out detector cannot "repair the call."** v2 §2.4 described the detector as able to repair, escalate, or return a structured error. No repair path exists. What ships is detection plus halt-or-escalate: escalate if a fallback adapter is configured, otherwise the turn halts with a structured `bailedOut` result. v2's wording described a target design as shipped behavior (§2.4; mirrors the corrected `ARCHITECTURE.md`).
+
+**7. Half-credit coverage in the ambiguous bucket was incomplete and undisclosed.** Only 4 of 15 `ambiguous_multi_intent` tasks carry the machine-readable `alternative` field the policy requires; the policy was operative for roughly a quarter of its bucket. Conservative in direction, but a coverage gap the paper should have stated (§5.2).
+
+**8. "We did not run additional models" went stale.** True at the benchmark freeze; the repository now carries a five-model table on the same corpus. §5.3 scopes the original sentence historically and points to it.
+
+**9. The v2 PDF self-cited the wrong DOI.** v2's PDF printed the v1 *version* DOI (`…20412772`) instead of the *concept* DOI (`10.5281/zenodo.20412771`) that resolves to the latest version. The v3 PDF cites the concept DOI.
+
+**10. "Every run is published" was too strong.** The repository's methodology stated that every run is published, even failed ones. A set of discarded exploratory Ollama runs at the wrong sampling temperature (0.8, against the pre-registered temperature 0) was never committed. The methodology now reads "every *scored* run is published," which is what was always true of the runs this paper reports.
+
+**11. Author metadata.** The byline is normalized to "Cheng Qian, Macrokit," and the Zenodo affiliation field for v3 is intentionally blank (v2's record carried a former affiliation that is no longer accurate).
+
+The pattern across these items: the *numbers* survive audit — 94.5% reproduces from frozen raw artifacts with a fixed scorer — and the *provenance narrative* around them was looser than a pre-registration paper is entitled to be. The corrections above are what an audit-first methodology owes its readers when the audit finds something.
+
+---
+
 ## Reproducibility
 
 | Asset | Location |
@@ -240,6 +281,8 @@ For the application class we describe, frontier-API inference is not the natural
 | llama.cpp build | `b9354` |
 | Pre-registration commit | [`ff843b1`](https://github.com/macrokit/core/commit/ff843b1) |
 | SDK fix commit (run-2-enabling) | [`6424cc7`](https://github.com/macrokit/core/commit/6424cc7) |
+
+Hashes are from the **post-rewrite** history (see §10, items 1–3): the repository history was rewritten on 2026-05-31, so these are reconstructed identifiers, current as of v3. The run-2 artifact header's recorded commit is stale (§10, item 3); trust the raw artifact contents plus `6424cc7`, not the header's `harnessCommit` field.
 
 ## Acknowledgments
 
