@@ -50,12 +50,15 @@ and compute in both. Encoding the workflow as a macro **raised `I(X;Y)` for ever
 information-per-second it delivered **2.0–5.1× for the 1.5B/3B/8B models** (one model inverted on the noisy
 wall-clock axis — reported, not hidden). It is a demonstration on one task, not a law.
 
-**A companion experiment ([`INDEPENDENT_VALUE.md`](./INDEPENDENT_VALUE.md)) aimed to test the above against a
-task outcome scored independently of the routing matrix — but its headline results are WITHDRAWN (erratum
-2026-06-10).** An external review found the two conditions did not have matched tool access (macro-OFF was run
-with empty tool surfaces), so the reported ON/OFF lift was a harness artifact, not a measurement. The
-experiment is being re-run with the defect fixed; until then, treat the macro ablation above as the standing
-evidence and do not cite the independent-value numbers. See the erratum at the top of that doc.
+**A companion experiment ([`INDEPENDENT_VALUE.md`](./INDEPENDENT_VALUE.md)) tests the above against a task
+outcome scored independently of the routing matrix.** Its first run was withdrawn (a harness asymmetry — macro-OFF
+ran with empty tool surfaces — inflated the lift); it was re-run with the defect fixed and a fresh
+pre-registration. The **corrected** result (2026-06-19): router `I(X;Y)` predicts the independent outcome
+(Pearson r = 0.997 over five models; r = 0.816 among the four routers), and a macro raises independent
+value-per-call **~2.1–2.8×** over a *fair* macro-OFF baseline within every routing model (all CIs above 1) —
+about **half** the withdrawn run's 5–10×, which was the artifact. The macro advantage is real and survives a
+fair baseline, but it is a ~2× value-per-call effect on this corpus, not an order of magnitude. Pending
+independent adversarial re-verification.
 
 The preprint tests the scale side of the same picture. Across a ladder of local models of increasing
 capability, it measures `I(X;Y)` and compute per call on a fixed decision task, and finds that **the cheapest

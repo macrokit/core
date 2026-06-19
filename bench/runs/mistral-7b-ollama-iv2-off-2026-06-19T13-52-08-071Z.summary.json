@@ -1,0 +1,17 @@
+{
+  "header": {
+    "modelId": "mistral-7b-ollama-iv2-off",
+    "modelDisplay": "Mistral 7B Instruct v0.3 (Ollama) — INDEPENDENT-VALUE (macro_off)",
+    "llmProvider": "ollama",
+    "startedAt": "2026-06-19T13:52:08.071Z",
+    "harnessCommit": "ef9eef717a1af88ad9d6f6ee02b1793a6c034c25",
+    "corpusCommit": "ef9eef717a1af88ad9d6f6ee02b1793a6c034c25",
+    "notes": "Local via Ollama. `ollama pull mistral:7b`. [independent_value: macro_off]"
+  },
+  "condition": "macro_off",
+  "experiment": "independent_value",
+  "taskCount": 18,
+  "meanValue": 0.16666666666666666,
+  "meanLatencyMs": 28306.666666666668,
+  "finishedAt": "2026-06-19T14:00:37.648Z"
+}

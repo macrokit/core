@@ -1,0 +1,17 @@
+{
+  "header": {
+    "modelId": "qwen2.5-7b-ollama-iv2-off",
+    "modelDisplay": "Qwen 2.5 7B Instruct (Ollama) — INDEPENDENT-VALUE (macro_off)",
+    "llmProvider": "ollama",
+    "startedAt": "2026-06-19T13:28:27.344Z",
+    "harnessCommit": "ef9eef717a1af88ad9d6f6ee02b1793a6c034c25",
+    "corpusCommit": "ef9eef717a1af88ad9d6f6ee02b1793a6c034c25",
+    "notes": "Local via Ollama. `ollama pull qwen2.5:7b-instruct`. Same model family as the reference qwen-7b-local row, served through Ollama instead of llama.cpp. [independent_value: macro_off]"
+  },
+  "condition": "macro_off",
+  "experiment": "independent_value",
+  "taskCount": 18,
+  "meanValue": 0.3888888888888889,
+  "meanLatencyMs": 17347.61111111111,
+  "finishedAt": "2026-06-19T13:33:39.658Z"
+}

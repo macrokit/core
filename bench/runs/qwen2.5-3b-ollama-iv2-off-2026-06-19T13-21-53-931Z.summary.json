@@ -1,0 +1,17 @@
+{
+  "header": {
+    "modelId": "qwen2.5-3b-ollama-iv2-off",
+    "modelDisplay": "Qwen 2.5 3B Instruct (Ollama) — INDEPENDENT-VALUE (macro_off)",
+    "llmProvider": "ollama",
+    "startedAt": "2026-06-19T13:21:53.931Z",
+    "harnessCommit": "ef9eef717a1af88ad9d6f6ee02b1793a6c034c25",
+    "corpusCommit": "ef9eef717a1af88ad9d6f6ee02b1793a6c034c25",
+    "notes": "Local via Ollama. `ollama pull qwen2.5:3b-instruct`. [independent_value: macro_off]"
+  },
+  "condition": "macro_off",
+  "experiment": "independent_value",
+  "taskCount": 18,
+  "meanValue": 0.4444444444444444,
+  "meanLatencyMs": 12580.777777777777,
+  "finishedAt": "2026-06-19T13:25:40.439Z"
+}

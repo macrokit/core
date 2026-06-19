@@ -1,0 +1,1553 @@
+{
+  "experiment": "independent_value_rerun",
+  "seeds": {
+    "claim1": 1102,
+    "claim2": 7,
+    "B_claim1": 5000,
+    "B_claim2": 2000,
+    "router_I_floor": 0.05
+  },
+  "sources": {
+    "qwen2.5-1.5b-ollama": "qwen2.5-1.5b-ollama-iv2-off-2026-06-19T13-19-30-438Z.jsonl",
+    "qwen2.5-3b-ollama": "qwen2.5-3b-ollama-iv2-2026-06-19T13-20-44-491Z.jsonl",
+    "mistral-7b-ollama": "mistral-7b-ollama-iv2-off-2026-06-19T13-52-08-071Z.jsonl",
+    "llama3.1-8b-ollama": "llama3.1-8b-ollama-iv2-off-2026-06-19T13-36-08-492Z.jsonl",
+    "qwen2.5-7b-ollama": "qwen2.5-7b-ollama-iv2-2026-06-19T13-25-40-760Z.jsonl"
+  },
+  "models": [
+    {
+      "model": "llama3.1-8b-ollama",
+      "on": {
+        "I": 1.3014810683874343,
+        "V": 0.8333333333333334,
+        "s": 8.233944444444445,
+        "calls": 0.9444444444444444,
+        "V_per_s": 0.10120706290356316,
+        "V_per_call": 0.8823529411764707,
+        "n": 18
+      },
+      "off": {
+        "I": 1.0090642979137272,
+        "V": 0.3888888888888889,
+        "s": 30.904722222222222,
+        "calls": 1.0555555555555556,
+        "V_per_s": 0.012583477893525801,
+        "V_per_call": 0.3684210526315789,
+        "n": 18
+      },
+      "V_per_call_ratio_on_over_off": 2.3949579831932777,
+      "V_per_call_ratio_ci": [
+        1.4542613636363635,
+        5.195506535947712
+      ],
+      "V_per_s_ratio_on_over_off": 8.042852998186946,
+      "V_per_s_ratio_ci": [
+        5.266564137376933,
+        17.066323934202348
+      ]
+    },
+    {
+      "model": "mistral-7b-ollama",
+      "on": {
+        "I": 6.358666398930777e-302,
+        "V": 0.1111111111111111,
+        "s": 22.363055555555555,
+        "calls": 0.0,
+        "V_per_s": 0.004968512054852373,
+        "V_per_call": 0.0,
+        "n": 18
+      },
+      "off": {
+        "I": 6.358666398930777e-302,
+        "V": 0.16666666666666666,
+        "s": 28.30666666666667,
+        "calls": 0.0,
+        "V_per_s": 0.005887894488930757,
+        "V_per_call": 0.0,
+        "n": 18
+      },
+      "V_per_call_ratio_on_over_off": null,
+      "V_per_call_ratio_ci": [
+        NaN,
+        NaN
+      ],
+      "V_per_s_ratio_on_over_off": 0.8438520873961272,
+      "V_per_s_ratio_ci": [
+        0.0,
+        1.4987482563409948
+      ]
+    },
+    {
+      "model": "qwen2.5-1.5b-ollama",
+      "on": {
+        "I": 1.1474483615963353,
+        "V": 0.7777777777777778,
+        "s": 2.5056666666666665,
+        "calls": 0.7777777777777778,
+        "V_per_s": 0.31040752073078803,
+        "V_per_call": 1.0,
+        "n": 18
+      },
+      "off": {
+        "I": 0.9305422741428049,
+        "V": 0.3888888888888889,
+        "s": 4.094055555555555,
+        "calls": 0.8333333333333334,
+        "V_per_s": 0.0949886692087444,
+        "V_per_call": 0.4666666666666667,
+        "n": 18
+      },
+      "V_per_call_ratio_on_over_off": 2.142857142857143,
+      "V_per_call_ratio_ci": [
+        1.3927464580873672,
+        4.643452380952378
+      ],
+      "V_per_s_ratio_on_over_off": 3.267837346459137,
+      "V_per_s_ratio_ci": [
+        1.6318606374545495,
+        8.567250125934011
+      ]
+    },
+    {
+      "model": "qwen2.5-3b-ollama",
+      "on": {
+        "I": 1.3014810683874343,
+        "V": 0.8333333333333334,
+        "s": 3.8381666666666665,
+        "calls": 0.9444444444444444,
+        "V_per_s": 0.21711754744018413,
+        "V_per_call": 0.8823529411764707,
+        "n": 18
+      },
+      "off": {
+        "I": 0.9596116154630575,
+        "V": 0.4444444444444444,
+        "s": 12.580777777777778,
+        "calls": 1.3888888888888888,
+        "V_per_s": 0.03532726293198619,
+        "V_per_call": 0.32,
+        "n": 18
+      },
+      "V_per_call_ratio_on_over_off": 2.757352941176471,
+      "V_per_call_ratio_ci": [
+        1.4999242424242425,
+        5.778333333333331
+      ],
+      "V_per_s_ratio_on_over_off": 6.145892136002432,
+      "V_per_s_ratio_ci": [
+        3.60300478536785,
+        13.290857032066603
+      ]
+    },
+    {
+      "model": "qwen2.5-7b-ollama",
+      "on": {
+        "I": 1.3014810683874343,
+        "V": 0.8888888888888888,
+        "s": 9.235277777777778,
+        "calls": 0.8888888888888888,
+        "V_per_s": 0.09624928564983305,
+        "V_per_call": 1.0,
+        "n": 18
+      },
+      "off": {
+        "I": 1.0366279688586069,
+        "V": 0.3888888888888889,
+        "s": 17.34761111111111,
+        "calls": 0.9444444444444444,
+        "V_per_s": 0.022417431794963767,
+        "V_per_call": 0.411764705882353,
+        "n": 18
+      },
+      "V_per_call_ratio_on_over_off": 2.4285714285714284,
+      "V_per_call_ratio_ci": [
+        1.5999999999999996,
+        5.278186274509802
+      ],
+      "V_per_s_ratio_on_over_off": 4.293501884165702,
+      "V_per_s_ratio_ci": [
+        2.602433956353278,
+        9.79490592551568
+      ]
+    }
+  ],
+  "claim1": {
+    "pearson_r": 0.9973956744061053,
+    "ci": [
+      0.7905694150420953,
+      1.0
+    ],
+    "n_models": 5,
+    "models": [
+      "llama3.1-8b-ollama",
+      "mistral-7b-ollama",
+      "qwen2.5-1.5b-ollama",
+      "qwen2.5-3b-ollama",
+      "qwen2.5-7b-ollama"
+    ],
+    "I": [
+      1.3014810683874343,
+      6.358666398930777e-302,
+      1.1474483615963353,
+      1.3014810683874343,
+      1.3014810683874343
+    ],
+    "V": [
+      0.8333333333333334,
+      0.1111111111111111,
+      0.7777777777777778,
+      0.8333333333333334,
+      0.8888888888888888
+    ],
+    "among_routers_r": 0.8164965809277265,
+    "among_routers_n": 4,
+    "dropped_non_routing": [
+      "mistral-7b-ollama"
+    ]
+  },
+  "claim2": [
+    {
+      "model": "llama3.1-8b-ollama",
+      "on": {
+        "I": 1.3014810683874343,
+        "V": 0.8333333333333334,
+        "s": 8.233944444444445,
+        "calls": 0.9444444444444444,
+        "V_per_s": 0.10120706290356316,
+        "V_per_call": 0.8823529411764707,
+        "n": 18
+      },
+      "off": {
+        "I": 1.0090642979137272,
+        "V": 0.3888888888888889,
+        "s": 30.904722222222222,
+        "calls": 1.0555555555555556,
+        "V_per_s": 0.012583477893525801,
+        "V_per_call": 0.3684210526315789,
+        "n": 18
+      },
+      "V_per_call_ratio_on_over_off": 2.3949579831932777,
+      "V_per_call_ratio_ci": [
+        1.4542613636363635,
+        5.195506535947712
+      ],
+      "V_per_s_ratio_on_over_off": 8.042852998186946,
+      "V_per_s_ratio_ci": [
+        5.266564137376933,
+        17.066323934202348
+      ]
+    },
+    {
+      "model": "mistral-7b-ollama",
+      "on": {
+        "I": 6.358666398930777e-302,
+        "V": 0.1111111111111111,
+        "s": 22.363055555555555,
+        "calls": 0.0,
+        "V_per_s": 0.004968512054852373,
+        "V_per_call": 0.0,
+        "n": 18
+      },
+      "off": {
+        "I": 6.358666398930777e-302,
+        "V": 0.16666666666666666,
+        "s": 28.30666666666667,
+        "calls": 0.0,
+        "V_per_s": 0.005887894488930757,
+        "V_per_call": 0.0,
+        "n": 18
+      },
+      "V_per_call_ratio_on_over_off": null,
+      "V_per_call_ratio_ci": [
+        NaN,
+        NaN
+      ],
+      "V_per_s_ratio_on_over_off": 0.8438520873961272,
+      "V_per_s_ratio_ci": [
+        0.0,
+        1.4987482563409948
+      ]
+    },
+    {
+      "model": "qwen2.5-1.5b-ollama",
+      "on": {
+        "I": 1.1474483615963353,
+        "V": 0.7777777777777778,
+        "s": 2.5056666666666665,
+        "calls": 0.7777777777777778,
+        "V_per_s": 0.31040752073078803,
+        "V_per_call": 1.0,
+        "n": 18
+      },
+      "off": {
+        "I": 0.9305422741428049,
+        "V": 0.3888888888888889,
+        "s": 4.094055555555555,
+        "calls": 0.8333333333333334,
+        "V_per_s": 0.0949886692087444,
+        "V_per_call": 0.4666666666666667,
+        "n": 18
+      },
+      "V_per_call_ratio_on_over_off": 2.142857142857143,
+      "V_per_call_ratio_ci": [
+        1.3927464580873672,
+        4.643452380952378
+      ],
+      "V_per_s_ratio_on_over_off": 3.267837346459137,
+      "V_per_s_ratio_ci": [
+        1.6318606374545495,
+        8.567250125934011
+      ]
+    },
+    {
+      "model": "qwen2.5-3b-ollama",
+      "on": {
+        "I": 1.3014810683874343,
+        "V": 0.8333333333333334,
+        "s": 3.8381666666666665,
+        "calls": 0.9444444444444444,
+        "V_per_s": 0.21711754744018413,
+        "V_per_call": 0.8823529411764707,
+        "n": 18
+      },
+      "off": {
+        "I": 0.9596116154630575,
+        "V": 0.4444444444444444,
+        "s": 12.580777777777778,
+        "calls": 1.3888888888888888,
+        "V_per_s": 0.03532726293198619,
+        "V_per_call": 0.32,
+        "n": 18
+      },
+      "V_per_call_ratio_on_over_off": 2.757352941176471,
+      "V_per_call_ratio_ci": [
+        1.4999242424242425,
+        5.778333333333331
+      ],
+      "V_per_s_ratio_on_over_off": 6.145892136002432,
+      "V_per_s_ratio_ci": [
+        3.60300478536785,
+        13.290857032066603
+      ]
+    },
+    {
+      "model": "qwen2.5-7b-ollama",
+      "on": {
+        "I": 1.3014810683874343,
+        "V": 0.8888888888888888,
+        "s": 9.235277777777778,
+        "calls": 0.8888888888888888,
+        "V_per_s": 0.09624928564983305,
+        "V_per_call": 1.0,
+        "n": 18
+      },
+      "off": {
+        "I": 1.0366279688586069,
+        "V": 0.3888888888888889,
+        "s": 17.34761111111111,
+        "calls": 0.9444444444444444,
+        "V_per_s": 0.022417431794963767,
+        "V_per_call": 0.411764705882353,
+        "n": 18
+      },
+      "V_per_call_ratio_on_over_off": 2.4285714285714284,
+      "V_per_call_ratio_ci": [
+        1.5999999999999996,
+        5.278186274509802
+      ],
+      "V_per_s_ratio_on_over_off": 4.293501884165702,
+      "V_per_s_ratio_ci": [
+        2.602433956353278,
+        9.79490592551568
+      ]
+    }
+  ],
+  "audit": {
+    "llama3.1-8b-ollama": {
+      "on": {
+        "confusion_labels": [
+          "generate_release_notes",
+          "no_macro",
+          "suggest_reviewers",
+          "triage_issue",
+          "triage_pull_request"
+        ],
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            5,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "V_per_item": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "task_ids": [
+          "IVPR01",
+          "IVPR02",
+          "IVPR03",
+          "IVPR04",
+          "IVPR05",
+          "IVPR06",
+          "IVPR07",
+          "IVIS01",
+          "IVIS02",
+          "IVIS03",
+          "IVIS04",
+          "IVIS05",
+          "IVRV01",
+          "IVRV02",
+          "IVRV03",
+          "IVRV04",
+          "IVNM01",
+          "IVNM02"
+        ],
+        "routed": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "no_macro",
+          "generate_release_notes"
+        ],
+        "gold": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "no_macro",
+          "no_macro"
+        ]
+      },
+      "off": {
+        "confusion_labels": [
+          "no_macro",
+          "suggest_reviewers",
+          "triage_issue",
+          "triage_pull_request"
+        ],
+        "confusion": [
+          [
+            1,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            3,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            5,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "V_per_item": [
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "task_ids": [
+          "IVPR01",
+          "IVPR02",
+          "IVPR03",
+          "IVPR04",
+          "IVPR05",
+          "IVPR06",
+          "IVPR07",
+          "IVIS01",
+          "IVIS02",
+          "IVIS03",
+          "IVIS04",
+          "IVIS05",
+          "IVRV01",
+          "IVRV02",
+          "IVRV03",
+          "IVRV04",
+          "IVNM01",
+          "IVNM02"
+        ],
+        "routed": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "triage_pull_request",
+          "no_macro",
+          "suggest_reviewers"
+        ],
+        "gold": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "no_macro",
+          "no_macro"
+        ]
+      }
+    },
+    "mistral-7b-ollama": {
+      "on": {
+        "confusion_labels": [
+          "no_macro",
+          "suggest_reviewers",
+          "triage_issue",
+          "triage_pull_request"
+        ],
+        "confusion": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            0,
+            0,
+            0
+          ],
+          [
+            5,
+            0,
+            0,
+            0
+          ],
+          [
+            7,
+            0,
+            0,
+            0
+          ]
+        ],
+        "V_per_item": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "task_ids": [
+          "IVPR01",
+          "IVPR02",
+          "IVPR03",
+          "IVPR04",
+          "IVPR05",
+          "IVPR06",
+          "IVPR07",
+          "IVIS01",
+          "IVIS02",
+          "IVIS03",
+          "IVIS04",
+          "IVIS05",
+          "IVRV01",
+          "IVRV02",
+          "IVRV03",
+          "IVRV04",
+          "IVNM01",
+          "IVNM02"
+        ],
+        "routed": [
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro"
+        ],
+        "gold": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "no_macro",
+          "no_macro"
+        ]
+      },
+      "off": {
+        "confusion_labels": [
+          "no_macro",
+          "suggest_reviewers",
+          "triage_issue",
+          "triage_pull_request"
+        ],
+        "confusion": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            0,
+            0,
+            0
+          ],
+          [
+            5,
+            0,
+            0,
+            0
+          ],
+          [
+            7,
+            0,
+            0,
+            0
+          ]
+        ],
+        "V_per_item": [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "task_ids": [
+          "IVPR01",
+          "IVPR02",
+          "IVPR03",
+          "IVPR04",
+          "IVPR05",
+          "IVPR06",
+          "IVPR07",
+          "IVIS01",
+          "IVIS02",
+          "IVIS03",
+          "IVIS04",
+          "IVIS05",
+          "IVRV01",
+          "IVRV02",
+          "IVRV03",
+          "IVRV04",
+          "IVNM01",
+          "IVNM02"
+        ],
+        "routed": [
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro",
+          "no_macro"
+        ],
+        "gold": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "no_macro",
+          "no_macro"
+        ]
+      }
+    },
+    "qwen2.5-1.5b-ollama": {
+      "on": {
+        "confusion_labels": [
+          "no_macro",
+          "suggest_reviewers",
+          "triage_issue",
+          "triage_pull_request"
+        ],
+        "confusion": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            5,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "V_per_item": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "task_ids": [
+          "IVPR01",
+          "IVPR02",
+          "IVPR03",
+          "IVPR04",
+          "IVPR05",
+          "IVPR06",
+          "IVPR07",
+          "IVIS01",
+          "IVIS02",
+          "IVIS03",
+          "IVIS04",
+          "IVIS05",
+          "IVRV01",
+          "IVRV02",
+          "IVRV03",
+          "IVRV04",
+          "IVNM01",
+          "IVNM02"
+        ],
+        "routed": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "no_macro",
+          "suggest_reviewers",
+          "no_macro",
+          "suggest_reviewers",
+          "no_macro",
+          "no_macro"
+        ],
+        "gold": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "no_macro",
+          "no_macro"
+        ]
+      },
+      "off": {
+        "confusion_labels": [
+          "no_macro",
+          "suggest_reviewers",
+          "triage_issue",
+          "triage_pull_request"
+        ],
+        "confusion": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            5,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "V_per_item": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "task_ids": [
+          "IVPR01",
+          "IVPR02",
+          "IVPR03",
+          "IVPR04",
+          "IVPR05",
+          "IVPR06",
+          "IVPR07",
+          "IVIS01",
+          "IVIS02",
+          "IVIS03",
+          "IVIS04",
+          "IVIS05",
+          "IVRV01",
+          "IVRV02",
+          "IVRV03",
+          "IVRV04",
+          "IVNM01",
+          "IVNM02"
+        ],
+        "routed": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "no_macro",
+          "triage_pull_request",
+          "triage_pull_request",
+          "suggest_reviewers",
+          "no_macro",
+          "no_macro"
+        ],
+        "gold": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "no_macro",
+          "no_macro"
+        ]
+      }
+    },
+    "qwen2.5-3b-ollama": {
+      "on": {
+        "confusion_labels": [
+          "generate_release_notes",
+          "no_macro",
+          "suggest_reviewers",
+          "triage_issue",
+          "triage_pull_request"
+        ],
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            5,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "V_per_item": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        "task_ids": [
+          "IVPR01",
+          "IVPR02",
+          "IVPR03",
+          "IVPR04",
+          "IVPR05",
+          "IVPR06",
+          "IVPR07",
+          "IVIS01",
+          "IVIS02",
+          "IVIS03",
+          "IVIS04",
+          "IVIS05",
+          "IVRV01",
+          "IVRV02",
+          "IVRV03",
+          "IVRV04",
+          "IVNM01",
+          "IVNM02"
+        ],
+        "routed": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "no_macro",
+          "generate_release_notes"
+        ],
+        "gold": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "no_macro",
+          "no_macro"
+        ]
+      },
+      "off": {
+        "confusion_labels": [
+          "no_macro",
+          "suggest_reviewers",
+          "triage_issue",
+          "triage_pull_request"
+        ],
+        "confusion": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            3,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            4,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "V_per_item": [
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "task_ids": [
+          "IVPR01",
+          "IVPR02",
+          "IVPR03",
+          "IVPR04",
+          "IVPR05",
+          "IVPR06",
+          "IVPR07",
+          "IVIS01",
+          "IVIS02",
+          "IVIS03",
+          "IVIS04",
+          "IVIS05",
+          "IVRV01",
+          "IVRV02",
+          "IVRV03",
+          "IVRV04",
+          "IVNM01",
+          "IVNM02"
+        ],
+        "routed": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "triage_pull_request",
+          "no_macro",
+          "no_macro"
+        ],
+        "gold": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "no_macro",
+          "no_macro"
+        ]
+      }
+    },
+    "qwen2.5-7b-ollama": {
+      "on": {
+        "confusion_labels": [
+          "no_macro",
+          "suggest_reviewers",
+          "triage_issue",
+          "triage_pull_request"
+        ],
+        "confusion": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            4,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            5,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "V_per_item": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "task_ids": [
+          "IVPR01",
+          "IVPR02",
+          "IVPR03",
+          "IVPR04",
+          "IVPR05",
+          "IVPR06",
+          "IVPR07",
+          "IVIS01",
+          "IVIS02",
+          "IVIS03",
+          "IVIS04",
+          "IVIS05",
+          "IVRV01",
+          "IVRV02",
+          "IVRV03",
+          "IVRV04",
+          "IVNM01",
+          "IVNM02"
+        ],
+        "routed": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "no_macro",
+          "no_macro"
+        ],
+        "gold": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "no_macro",
+          "no_macro"
+        ]
+      },
+      "off": {
+        "confusion_labels": [
+          "close_stale_issues",
+          "no_macro",
+          "suggest_reviewers",
+          "triage_issue",
+          "triage_pull_request"
+        ],
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            2
+          ],
+          [
+            1,
+            0,
+            0,
+            4,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "V_per_item": [
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "task_ids": [
+          "IVPR01",
+          "IVPR02",
+          "IVPR03",
+          "IVPR04",
+          "IVPR05",
+          "IVPR06",
+          "IVPR07",
+          "IVIS01",
+          "IVIS02",
+          "IVIS03",
+          "IVIS04",
+          "IVIS05",
+          "IVRV01",
+          "IVRV02",
+          "IVRV03",
+          "IVRV04",
+          "IVNM01",
+          "IVNM02"
+        ],
+        "routed": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "close_stale_issues",
+          "triage_pull_request",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "triage_pull_request",
+          "no_macro",
+          "no_macro"
+        ],
+        "gold": [
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_pull_request",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "triage_issue",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "suggest_reviewers",
+          "no_macro",
+          "no_macro"
+        ]
+      }
+    }
+  }
+}

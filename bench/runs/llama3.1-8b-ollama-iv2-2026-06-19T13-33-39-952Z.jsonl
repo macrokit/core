@@ -1,0 +1,19 @@
+{"type":"header","condition":"macro_on","experiment":"independent_value","modelId":"llama3.1-8b-ollama-iv2","modelDisplay":"Llama 3.1 8B Instruct (Ollama) — INDEPENDENT-VALUE (macro_on)","llmProvider":"ollama","startedAt":"2026-06-19T13:33:39.952Z","harnessCommit":"ef9eef717a1af88ad9d6f6ee02b1793a6c034c25","corpusCommit":"ef9eef717a1af88ad9d6f6ee02b1793a6c034c25","notes":"Local via Ollama. `ollama pull llama3.1:8b`. [independent_value: macro_on]"}
+{"type":"task","taskId":"IVPR01","goldIntent":"triage_pull_request","routedIntent":"triage_pull_request","value":1,"latencyMs":36140,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVPR02","goldIntent":"triage_pull_request","routedIntent":"triage_pull_request","value":1,"latencyMs":6840,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVPR03","goldIntent":"triage_pull_request","routedIntent":"triage_pull_request","value":1,"latencyMs":6954,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVPR04","goldIntent":"triage_pull_request","routedIntent":"triage_pull_request","value":1,"latencyMs":7087,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVPR05","goldIntent":"triage_pull_request","routedIntent":"triage_pull_request","value":1,"latencyMs":6679,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVPR06","goldIntent":"triage_pull_request","routedIntent":"triage_pull_request","value":1,"latencyMs":6782,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVPR07","goldIntent":"triage_pull_request","routedIntent":"triage_pull_request","value":1,"latencyMs":6799,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVIS01","goldIntent":"triage_issue","routedIntent":"triage_issue","value":1,"latencyMs":6695,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVIS02","goldIntent":"triage_issue","routedIntent":"triage_issue","value":1,"latencyMs":6634,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVIS03","goldIntent":"triage_issue","routedIntent":"triage_issue","value":0,"latencyMs":6777,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVIS04","goldIntent":"triage_issue","routedIntent":"triage_issue","value":0,"latencyMs":6862,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVIS05","goldIntent":"triage_issue","routedIntent":"triage_issue","value":1,"latencyMs":6283,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVRV01","goldIntent":"suggest_reviewers","routedIntent":"suggest_reviewers","value":1,"latencyMs":6779,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVRV02","goldIntent":"suggest_reviewers","routedIntent":"suggest_reviewers","value":1,"latencyMs":6859,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVRV03","goldIntent":"suggest_reviewers","routedIntent":"suggest_reviewers","value":1,"latencyMs":6754,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVRV04","goldIntent":"suggest_reviewers","routedIntent":"suggest_reviewers","value":1,"latencyMs":6793,"calls":1,"rawText":""}
+{"type":"task","taskId":"IVNM01","goldIntent":"no_macro","routedIntent":null,"value":1,"latencyMs":2159,"calls":0,"rawText":"No macro matches the user's request."}
+{"type":"task","taskId":"IVNM02","goldIntent":"no_macro","routedIntent":"generate_release_notes","value":0,"latencyMs":8335,"calls":1,"rawText":""}

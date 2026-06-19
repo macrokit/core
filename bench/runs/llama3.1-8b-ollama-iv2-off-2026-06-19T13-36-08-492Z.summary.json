@@ -1,0 +1,17 @@
+{
+  "header": {
+    "modelId": "llama3.1-8b-ollama-iv2-off",
+    "modelDisplay": "Llama 3.1 8B Instruct (Ollama) — INDEPENDENT-VALUE (macro_off)",
+    "llmProvider": "ollama",
+    "startedAt": "2026-06-19T13:36:08.492Z",
+    "harnessCommit": "ef9eef717a1af88ad9d6f6ee02b1793a6c034c25",
+    "corpusCommit": "ef9eef717a1af88ad9d6f6ee02b1793a6c034c25",
+    "notes": "Local via Ollama. `ollama pull llama3.1:8b`. [independent_value: macro_off]"
+  },
+  "condition": "macro_off",
+  "experiment": "independent_value",
+  "taskCount": 18,
+  "meanValue": 0.3888888888888889,
+  "meanLatencyMs": 30904.722222222223,
+  "finishedAt": "2026-06-19T13:45:24.830Z"
+}

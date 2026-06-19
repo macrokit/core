@@ -110,7 +110,10 @@ latency measurement. We did not re-run to "fix" it; the row stands.
   [`INDEPENDENT_VALUE.md`](./INDEPENDENT_VALUE.md), scores each task against a
   **hand-authored end-state independent of the routing matrix** and shows (a)
   router `I(X;Y)` predicts that independent outcome and (b) macro-ON raises
-  independent value-per-call 5–10× — the non-circular companion to this row.
+  independent value-per-call **~2.1–2.8×** over a *fair* macro-OFF baseline — the
+  non-circular companion to this row. (An earlier version of that companion reported
+  5–10×; it was withdrawn for a harness asymmetry and re-run — the corrected lift is
+  about half, and it is the number to cite.)
 
 ## Bottom line
 

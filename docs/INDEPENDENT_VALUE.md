@@ -1,29 +1,36 @@
 # Independent value — does the information quantity predict a task outcome it isn't defined from?
 
-> ## ⛔ ERRATUM — results withdrawn pending re-run (2026-06-10)
-> An external review found a **harness asymmetry that invalidates the headline lift**. In
-> [`bench/src/outcome-runner.ts:75`](../bench/src/outcome-runner.ts) the **macro-OFF** condition was run
-> with **empty tool surfaces** (`toolSurfaces = {}`, stub primitives), while **macro-ON** received the
-> per-item fixture (`{ github: fixture }`). The two conditions therefore did **not** have matched
-> information access — contradicting this doc's own "same corpus, fixtured client" claim and the
-> pre-registration. The macro-OFF value floor (0.11–0.17) is **structural** (the model was starved of the
-> per-item data the gold requires), so the **5–10× ON/OFF lift is predetermined by the harness, not
-> measured**, and the "value collapses despite correct routing" reading is an artifact of the same defect.
+> ## ✅ CORRECTED RE-RUN (2026-06-19) — the withdrawn lift is replaced with the measured one
+> A first version of this experiment (the `*-iv-*` runs) was **withdrawn**: an external review found a
+> harness asymmetry in which **macro-OFF** ran with empty tool surfaces + hardcoded **stub** primitives
+> while **macro-ON** got the real per-item fixture. The two arms did not have matched information access,
+> so macro-OFF's value floor (0.11–0.17) was a **structural artifact** and the reported **5–10× ON/OFF
+> lift was predetermined by the harness, not measured**.
 >
-> **What stands and what doesn't:** Claim 2 (the ON/OFF lift) and the headline are **withdrawn**. Claim 1
-> (router `I(X;Y)` correlating with `V`) is also affected, since macro-ON `V` is measured against a
-> condition that was never a fair baseline. **Nothing in the Results/What-it-shows/Bottom-line sections
-> below should be cited until the experiment is re-run** with the fixture wired into macro-OFF and
-> independently re-verified. The text is left in place, struck through in spirit, for the audit trail.
+> That defect is fixed (commit `5af609a`: `buildFixturedPrimitiveRegistry` — macro-OFF primitives now
+> return the **same per-item fixture data** macro-ON gets) and the experiment was **re-run from a fresh
+> pre-registration** ([`INDEPENDENT_VALUE_RERUN_PREREGISTRATION.md`](../bench/INDEPENDENT_VALUE_RERUN_PREREGISTRATION.md),
+> committed `b507345` before any corrected run; artifacts are `bench/runs/*-iv2-*`, kept separate from the
+> withdrawn `*-iv-*` record).
+>
+> **The corrected result, reported below, is smaller and we say so plainly:** with a fair baseline,
+> macro-OFF reaches `V` ≈ 0.39–0.44 (not 0.11–0.17), and the macro-ON advantage is **~2.1–2.8× per call,
+> not 5–10×** — the withdrawn lift was roughly **double** the real one. The core claim survives (macro-ON
+> still beats a *fair* macro-OFF on every routing model, all CIs above 1); the magnitude does not. The
+> sections below are the corrected (`-iv2-`) numbers. This result is pending independent adversarial
+> re-verification; the raw confusion matrices, per-item `V` vectors, and bootstrap seeds are dumped to
+> [`bench/runs/iv2_analysis.json`](../bench/runs/iv2_analysis.json) to make that easy.
 
 **This is an experiment reported as evidence, not a law.** One task family
 (`github-maintainer`), one ~18-item fixtured corpus, five local models, discrete
 outcomes. It is a demonstration; it is explicitly not a proof and not a
-"conservation law." The pre-registration that fixed the independent-value
-definition, the fixtures + hand-authored gold, the scoring rule, both conditions,
-both predictions, and the statistical procedure *before any run* is committed at
-[`../bench/INDEPENDENT_VALUE_PREREGISTRATION.md`](../bench/INDEPENDENT_VALUE_PREREGISTRATION.md)
-(its commit precedes the first `bench/runs/*-iv-*` commit — the audit trail).
+"conservation law." The corrected re-run is pre-registered at
+[`../bench/INDEPENDENT_VALUE_RERUN_PREREGISTRATION.md`](../bench/INDEPENDENT_VALUE_RERUN_PREREGISTRATION.md)
+(commit `b507345`, which precedes the first `bench/runs/*-iv2-*` artifact — the audit
+trail); it supersedes the original
+[`INDEPENDENT_VALUE_PREREGISTRATION.md`](../bench/INDEPENDENT_VALUE_PREREGISTRATION.md). The
+rerun prereg states the honest prior up front: with a fair baseline the lift **may shrink
+or vanish, and that is a fine, publishable outcome.** It shrank; we report it.
 
 ## Why this experiment exists — the circularity it addresses
 
@@ -74,12 +81,16 @@ the fixture) and **MACRO-OFF** (only the 11 low-level primitives, up to 5 router
 steps; the model must compose the workflow itself, and `V` is read from its
 trajectory + final text by the frozen extraction rule).
 
-## Results
+## Results (corrected re-run, `*-iv2-*`)
 
-Five local models, temperature 0. Reproduce with
-`python3 bench/analysis/independent_value.py bench/runs`.
+Five local models, temperature 0, both arms fed the same per-item fixture.
+Reproduce with `python3 bench/analysis/independent_value2.py bench/runs`
+(reads only `*-iv2-*`; writes the full audit dump with `--json`).
 
-### Claim 1 — router `I(X;Y)` vs the independent outcome `V` (macro-ON)
+### Prediction 1 — router `I(X;Y)` vs the independent outcome `V` (macro-ON)
+
+The macro-ON arm was **not** changed by the fix (the asymmetry was only in
+macro-OFF), so these numbers match the withdrawn run, as expected.
 
 | Model | router `I(X;Y)` nats | mean `V` |
 |---|---:|---:|
@@ -89,73 +100,89 @@ Five local models, temperature 0. Reproduce with
 | llama3.1-8b | 1.301 | 0.833 |
 | mistral-7b | ~0.000 | 0.111 |
 
-**Pearson r = 0.997, bootstrap-over-models 95% CI [0.791, 1.000]** (n = 5). The
-information the router carries about the gold intent predicts a task outcome that
-is *not* read from the routing matrix. With mistral excluded (the one model that
-does not route at all), the relationship **survives**: r = 0.816 across the four
-routing models — so the correlation is not solely a mistral artifact, though the
-full-sample r is partly driven by mistral's low-`I`/low-`V` corner (see honest
-analysis).
+**Pearson r = 0.997, bootstrap-over-models 95% CI [0.791, 1.000]** (n = 5, seed
+1102). Among the four routing models (mistral dropped, `I` below the 0.05 floor),
+**r = 0.816**. The information the router carries about the gold intent predicts a
+task outcome that is not read from the routing matrix; the correlation is not solely
+a mistral artifact, though the full-sample r is partly driven by mistral's
+low-`I`/low-`V` corner (see honest analysis).
 
-### Claim 2 — macro-ON vs macro-OFF independent value-per-joule
+### Prediction 2 — macro-ON vs macro-OFF independent value-per-call (the corrected test)
 
-Per-call is the latency-robust compute proxy (the [ablation](./MACRO_ABLATION.md)
-showed wall-clock seconds carry run-level noise on the shared host); per-second is
-shown alongside and, here, agrees.
+This is the prediction the fix actually changes. macro-OFF now runs against
+fixture-backed primitives that return the **same per-item data** macro-ON gets, so
+the comparison is fair. Per-call is the latency-robust compute proxy; per-second is
+shown alongside but macro-OFF is much slower (multi-step), so per-second flatters
+macro-ON and we lead with per-call. Paired bootstrap over items, ratio jointly
+resampled (seed 7, 2000×).
 
-| Model | `V` ON | `V` OFF | ON/OFF `V`/call [95% CI] | ON/OFF `V`/sec [95% CI] |
-|---|---:|---:|---:|---:|
-| qwen2.5-1.5b | 0.778 | 0.167 | **5.00×** [2.40, 16.00] | 7.02× [2.47, 29.33] |
-| qwen2.5-3b | 0.833 | 0.167 | **6.76×** [2.63, 24.55] | 13.66× [5.57, 50.74] |
-| qwen2.5-7b | 0.889 | 0.111 | **10.00×** [3.75, 25.41] | 14.70× [4.91, 42.66] |
-| llama3.1-8b | 0.833 | 0.111 | **8.38×** [3.29, 19.83] | 25.43× [10.87, 60.86] |
-| mistral-7b | 0.111 | 0.167 | n/a | 0.83× [0.00, 1.49] |
+| Model | `V` ON | `V` OFF | router `I` OFF | ON/OFF `V`/call [95% CI] | ON/OFF `V`/sec [95% CI] |
+|---|---:|---:|---:|---:|---:|
+| qwen2.5-1.5b | 0.778 | 0.389 | 0.931 | **2.14×** [1.39, 4.64] | 3.27× [1.63, 8.57] |
+| qwen2.5-3b | 0.833 | 0.444 | 0.960 | **2.76×** [1.50, 5.78] | 6.15× [3.60, 13.29] |
+| qwen2.5-7b | 0.889 | 0.389 | 1.037 | **2.43×** [1.60, 5.28] | 4.29× [2.60, 9.79] |
+| llama3.1-8b | 0.833 | 0.389 | 1.009 | **2.39×** [1.45, 5.20] | 8.04× [5.27, 17.07] |
+| mistral-7b | 0.111 | 0.167 | ~0.000 | n/a | 0.84× [0.00, 1.49] |
 
-For every model that routes, **macro-ON delivers 5.0–10.0× the independent value
-per call** of macro-OFF, with all four CIs entirely above 1. Unlike the ablation's
-`I`/sec axis (where the 7b inverted on a noisy latency measurement), no model
-inverts here on either axis.
+For every model that routes, macro-ON delivers **~2.1–2.8× the independent value per
+call** of a *fair* macro-OFF, with all four CIs entirely above 1. This is roughly
+**half** the withdrawn run's 5–10×: that inflation was the harness defect. The lower
+bound of the worst CI is 1.39× — the macro-ON advantage is real and survives a fair
+baseline, but it is a ~2× effect, not an order of magnitude.
 
 ## What it shows
 
-**The information quantity predicts an outcome it is not defined from.** The
-macro-ON `I(X;Y)` — computed from the routing matrix — tracks `V`, scored from the
-executed end-state against hand gold. That is the claim the confusion-matrix-only
-result structurally cannot make.
+**The macro advantage survives a fair baseline, at about half the withdrawn size.**
+Once macro-OFF can see the same per-item data, weak models compose a substantial
+fraction of the workflow value from raw primitives on their own — macro-OFF reaches
+`V` ≈ 0.39–0.44, against macro-ON's 0.78–0.89. The encoded macro still roughly
+*doubles* per-call value, but it does not 5–10× it; the design-time encoding is a
+strong convenience-and-reliability win on this corpus, not a capability chasm.
 
-**Routing alone does not deliver the outcome — the encoded logic does.** This is
-the cleanest non-circular evidence in the experiment. In **macro-OFF** the models
-still route and call primitives (their decoded intent is often correct), yet
-independent `V` collapses to 0.11–0.17 — because reproducing the macro's
-*encoded logic* (the right classification, the right labels, the right reviewer
-set) from raw primitives is what they fail at. The value lives in the design-time
-encoding, not merely in picking the right workflow. That gap is exactly what the
-macro pays for once, at design time.
+**Routing is not the differentiator — executing the encoded logic is (still true,
+softer).** In the corrected macro-OFF the models route correctly about as often as
+in macro-ON (decoded router `I` ≈ 0.93–1.04 vs 1.15–1.30), yet `V` is roughly half.
+Reading the per-item dump: a model routes a PR-triage item right, fetches the PR, and
+still produces the wrong classification or omits the gold label about half the time.
+So the gap the macro closes is in *reliably reproducing the encoded logic*, not in
+picking the workflow — the original reading, but now a 0.39→0.83 gap, not the
+artifactual 0.11→0.83 one.
+
+**Prediction 1 holds and is unchanged.** Router `I(X;Y)` predicts the independent
+`V` (r = 0.997 / 0.816 among routers). Because the macro-ON arm was untouched, this
+half of the result is exactly as before — and exactly as circumscribed (next section).
 
 ## Honest analysis — what this does and does NOT escape
 
+- **The withdrawn headline was inflated ~2×, and we are not defending it.** The
+  pre-registered prior allowed for the lift to shrink or vanish; it shrank from
+  5–10× to ~2.4×. The corrected number is the one to cite. The `*-iv-*` runs stay in
+  the repo as the record of the confounded attempt.
 - **Reduces, does not eliminate, circularity.** `V` is scored externally (end-state
   vs hand gold), so it is not the routing matrix. But in **macro-ON** the end-state
-  is still largely *downstream of* routing — route the right macro and its
-  deterministic logic runs — so router `I` and `V` share routing as a common
-  driver, and a positive correlation is *expected*. It is evidence of external
-  validity, not proof of independence. The cleaner decoupling is **macro-OFF**,
-  where routing can be right while `V` is low; that is where the two signals come
-  apart, and they do (Claim 2).
-- **Claim 1's strength leans partly on mistral.** mistral barely perceives the task
-  (`I ≈ 0`, `V = 0.11`) and anchors the low corner of the line. Removing it,
-  r drops from 0.997 to 0.816 — still clearly positive, but the among-routers
-  spread is small: three of the four routing models have **identical** `I = 1.301`
-  on this 18-item corpus (near-saturated routing, a small-n artifact). A larger,
-  harder corpus would spread `I` among the routers and is the obvious next step.
+  is still *downstream of* routing, so router `I` and `V` share routing as a common
+  driver and a positive correlation is *expected* — external validity, not proof of
+  independence. The cleaner decouple is the now-fair macro-OFF arm, where routing is
+  right yet `V` is lower; that gap (Prediction 2) is the load-bearing signal, and it
+  is a ~2× effect.
+- **Prediction 1's strength leans partly on mistral.** mistral barely perceives the
+  task (`I ≈ 0`, `V = 0.11`) and anchors the low corner. Removing it, r drops from
+  0.997 to 0.816 — still clearly positive, but the among-routers spread is small:
+  three of the four routing models have **identical** `I = 1.301` on this 18-item
+  corpus (near-saturated routing, a small-n artifact). A larger, harder corpus would
+  spread `I` among the routers and is the obvious next step.
 - **Still one task family, discrete outcomes, small n.** 18 items, 3 macros, 5
-  models, four discrete `V` levels. A demonstration on `github-maintainer`, not a
-  universal law. Fixtures, gold, and scoring rule were all frozen pre-run.
-- **mistral is a reported negative, not a dropped one.** It fails in both
-  conditions (it narrates tool calls as prose — the same `tool_call_as_text`
-  plumbing failure seen in the benchmark and ablation), so it cannot inform the
-  within-model ON/OFF ratio (Claim 2, n/a). It is *kept* in Claim 1, where its
-  low-`I`/low-`V` point is a real observation.
+  models, a handful of discrete `V` levels. A demonstration on `github-maintainer`,
+  not a universal law. Fixtures, gold, scoring rule, and both predictions frozen
+  pre-run.
+- **mistral is a reported negative, not a dropped one.** It fails in both conditions
+  (it narrates tool calls as prose — the same `tool_call_as_text` plumbing failure
+  seen in the benchmark and ablation), so it cannot inform the within-model ON/OFF
+  ratio (Prediction 2, n/a). It is *kept* in Prediction 1, where its low-`I`/low-`V`
+  point is a real observation.
+- **macro-OFF is much slower, so per-second flatters macro-ON.** macro-OFF runs up to
+  five router steps; its wall-clock `V`/sec ratios (3–8×) are inflated by that, which
+  is why we lead with `V`/call (~2.4×). Reported, not hidden.
 
 ## A by-product: the VOI pruner (design-time tool, same substrate)
 
@@ -204,14 +231,18 @@ result.
 
 ## Bottom line
 
-On a pre-registered test, the routing information `I(X;Y)` **predicts an
-independently-scored task outcome** (r = 0.997 [0.791, 1.000] over five models;
-r = 0.816 with the non-routing model removed), and turning the macro on **raises
-independent value-per-call 5.0–10.0×** within every model that routes (CIs above
-1). The robust half of the story is the per-joule, externally-scored lift; the raw
-in-sample `I`-identity remains partly definitional, and we say so. A design-time
-by-product — the VOI pruner — used the same independent signal to find and propose
-cutting one zero-value primitive call in each of three macros (value-density
-+50–100%). Direct, falsifiable evidence for the mechanism in
-[`WHY_IT_WORKS.md`](./WHY_IT_WORKS.md) — a demonstration on one task family, not the
-final word.
+On a pre-registered, harness-corrected re-run, the routing information `I(X;Y)`
+**predicts an independently-scored task outcome** (r = 0.997 [0.791, 1.000] over five
+models; r = 0.816 with the non-routing model removed), and turning the macro on
+**raises independent value-per-call ~2.1–2.8×** within every model that routes (all
+CIs above 1, worst lower bound 1.39×). That ~2.4× is **about half** the 5–10× a
+confounded first run reported; the inflation was a harness asymmetry (macro-OFF was
+starved of the per-item data), and the corrected number is the one to cite. The macro
+advantage is real and survives a fair baseline — a roughly 2× value-per-call win — but
+it is not an order-of-magnitude capability chasm. A design-time by-product — the VOI
+pruner, which is unaffected by the asymmetry (it runs the deterministic handler with
+no model in the loop) — used the same independent signal to find and propose cutting
+one zero-value primitive call in each of three macros (value-density +50–100%). A
+demonstration on one task family, not the final word — and a worked example of
+publishing the corrected number when the first one doesn't survive review. Mechanism
+context in [`WHY_IT_WORKS.md`](./WHY_IT_WORKS.md).

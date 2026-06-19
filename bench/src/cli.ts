@@ -173,7 +173,10 @@ async function runOutcomeCmd(args: string[]): Promise<number> {
     return 2;
   }
   const condition = conditionFlag as "macro_on" | "macro_off";
-  const suffix = condition === "macro_off" ? "-iv-off" : "-iv";
+  // --tag lets a re-run write a distinct artifact lineage without colliding with
+  // an earlier one (e.g. the withdrawn `-iv-` runs vs the corrected `-iv2-` re-run).
+  const tag = flag(args, "--tag") ?? "iv";
+  const suffix = condition === "macro_off" ? `-${tag}-off` : `-${tag}`;
 
   const tasks = loadOutcomeTasks(resolve(BENCH_ROOT, "outcome-tasks", "outcome-corpus.jsonl"));
   process.stdout.write(`Loaded ${tasks.length} outcome tasks.\n`);
