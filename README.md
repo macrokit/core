@@ -1,6 +1,7 @@
 # Macrokit
 
 [![CI](https://github.com/macrokit/core/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/macrokit/core/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@macrokit/cli)](https://www.npmjs.com/package/@macrokit/cli)
 
 **An open-source SDK that lets weak and local LLMs work like frontier models on narrow workflows.**
 
@@ -65,7 +66,17 @@ Full argument: `docs/THE_PATTERN.md` §5.
 
 > Runs against any OpenAI-compatible endpoint (Ollama shown below). `macrokit init <name>` scaffolds a project around exactly this shape.
 
-**Install.** The `@macrokit/*` packages run from source today — it's a pnpm workspace. (npm releases are coming; once they land, `npm install @macrokit/runtime @macrokit/llm @macrokit/authoring` replaces the clone step.)
+**Install.**
+
+```sh
+# CLI (macrokit init / mcp / gate)
+npm install -g @macrokit/cli
+
+# SDK packages
+npm install @macrokit/runtime @macrokit/llm @macrokit/authoring
+```
+
+Or from source (pnpm workspace):
 
 ```sh
 git clone https://github.com/macrokit/core.git macrokit && cd macrokit

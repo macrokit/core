@@ -13,6 +13,9 @@
     }
   },
   "files": ["dist", "src"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsup && cp src/loader.mjs dist/loader.mjs",
     "test": "vitest run",
