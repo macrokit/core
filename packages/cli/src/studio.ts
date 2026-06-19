@@ -38,17 +38,37 @@ export interface LaunchMcpOptions {
 }
 
 /**
- * Launch the Studio MCP server (Phase 2). Stdio is inherited so an MCP host
- * (Claude Code / Cursor) that spawns `macrokit mcp <path>` talks to it directly.
+ * Launch the Macrokit MCP server over stdio (an MCP host like Claude Code /
+ * Cursor spawns `macrokit mcp <path>` and talks to it directly).
+ *
+ * Default = the minimal PUBLIC `@macrokit/mcp` server (record + run + gate),
+ * started in-process so this process's stdio IS the MCP transport. If the
+ * richer PRIVATE Studio MCP server is present (MACROKIT_STUDIO_DIR /
+ * @macrokit-studio/preview, which adds auto-distill on recurrence), prefer it.
  */
 export async function launchMcp(opts: LaunchMcpOptions): Promise<number> {
-  const entry = resolveStudioEntry("mcp.ts");
-  if (!entry) return notAvailable("mcp");
   if (!existsSync(opts.projectDir)) {
     process.stderr.write(`macrokit mcp: ${opts.projectDir} does not exist.\n`);
     return 2;
   }
-  return spawnNode("mcp", ["--no-warnings", entry, opts.projectDir]);
+  // Richer private path ONLY when explicitly present (env override or the
+  // package installed) — NOT the dev-sibling guess, so the public server is the
+  // real default for external users.
+  const studioEntry = resolveStudioEntryExplicit("mcp.ts");
+  if (studioEntry) {
+    return spawnNode("mcp", ["--no-warnings", studioEntry, opts.projectDir]);
+  }
+  // Public minimal server, in-process (stdout = the MCP transport).
+  try {
+    const mod = (await import("@macrokit/mcp")) as { startMcpServer: (dir: string) => Promise<void> };
+    await mod.startMcpServer(opts.projectDir);
+    return 0;
+  } catch (err) {
+    process.stderr.write(
+      `macrokit mcp: failed to start the public MCP server — ${err instanceof Error ? err.message : String(err)}\n`,
+    );
+    return 1;
+  }
 }
 
 function spawnNode(cmd: string, args: string[]): Promise<number> {
@@ -72,8 +92,34 @@ function notAvailable(cmd: string): number {
 }
 
 /**
+ * EXPLICIT-only Studio resolution: an MACROKIT_STUDIO_DIR override or an
+ * installed @macrokit-studio/preview package. NO dev-sibling guessing — used by
+ * `macrokit mcp` so the public @macrokit/mcp server is the default unless the
+ * private Studio is deliberately present.
+ */
+function resolveStudioEntryExplicit(file: string): string | undefined {
+  const envDir = process.env.MACROKIT_STUDIO_DIR;
+  if (envDir) {
+    const p = resolve(envDir, "server", file);
+    if (existsSync(p)) return p;
+  }
+  for (const base of [process.cwd(), import.meta.url]) {
+    try {
+      const req = createRequire(base.startsWith("file:") ? base : resolve(base, "noop.js"));
+      const serverEntry = req.resolve("@macrokit-studio/preview/server");
+      const cand = resolve(dirname(serverEntry), file);
+      if (existsSync(cand)) return cand;
+    } catch {
+      /* not installed */
+    }
+  }
+  return undefined;
+}
+
+/**
  * Locate a Studio server entry file (cli.ts / mcp.ts) without a static
  * dependency on the package — the core CLI must build without Studio installed.
+ * Used by `macrokit studio` (dev-sibling guess included for convenience).
  */
 function resolveStudioEntry(file: string): string | undefined {
   // 1. Explicit directory override.

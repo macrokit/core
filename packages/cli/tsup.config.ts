@@ -8,14 +8,14 @@ export default defineConfig([
     sourcemap: true,
     clean: true,
     target: "es2022",
-    external: ["@macrokit/runtime"],
+    external: ["@macrokit/runtime", "@macrokit/mcp"],
   },
   {
     entry: { cli: "src/cli.ts" },
     format: ["esm"],
     sourcemap: true,
     target: "es2022",
-    external: ["@macrokit/runtime"],
+    external: ["@macrokit/runtime", "@macrokit/mcp"],
     banner: { js: "#!/usr/bin/env node" },
   },
 ]);

@@ -265,10 +265,57 @@ console.log(result.text);
 
 function scaffoldGithub(write: (rel: string, content: string) => void): void {
   write("primitives/github-client.ts", GH_CLIENT);
+  write("primitives/github-primitives.ts", GH_PRIMITIVES);
   write("macros/summarize-open-issues.ts", GH_MACRO_SUMMARIZE);
   write("macros/triage-newest-pull.ts", GH_MACRO_TRIAGE);
   write("fixtures/example-repo.json", GH_FIXTURE);
 }
+
+// Low-level primitives, authored as `category: "utility"` macros. The MCP
+// server (`macrokit mcp`) exposes each as its own tool, so an agent can do the
+// raw workflow when no macro fits — exactly the calls `macrokit gate` flags
+// when 3+ pile up without a macro, prompting you to encode one.
+const GH_PRIMITIVES = `import { defineMacro } from "@macrokit/authoring";
+import { z } from "zod";
+import { GitHubClient } from "./github-client.js";
+
+const repo = { owner: z.string().min(1), repo: z.string().min(1) };
+function gh(ctx: { tools?: { github?: unknown } }): GitHubClient {
+  return (ctx.tools?.github as GitHubClient | undefined) ?? new GitHubClient();
+}
+
+export const ghListIssues = defineMacro({
+  name: "gh_list_issues",
+  intent: "List open issues in a repository (number, title, labels, comment count).",
+  category: "utility",
+  schema: z.object({ ...repo }),
+  handler: async ({ owner, repo: r }, ctx) => gh(ctx).listIssues(owner, r, "open"),
+});
+
+export const ghListPulls = defineMacro({
+  name: "gh_list_pulls",
+  intent: "List open pull requests in a repository, newest first.",
+  category: "utility",
+  schema: z.object({ ...repo }),
+  handler: async ({ owner, repo: r }, ctx) => gh(ctx).listPulls(owner, r, "open"),
+});
+
+export const ghListPullFiles = defineMacro({
+  name: "gh_list_pull_files",
+  intent: "List the files changed in a pull request.",
+  category: "utility",
+  schema: z.object({ ...repo, number: z.number().int().positive() }),
+  handler: async ({ owner, repo: r, number }, ctx) => gh(ctx).listPullFiles(owner, r, number),
+});
+
+export const ghSuggestLabelsDryRun = defineMacro({
+  name: "gh_suggest_labels_dryrun",
+  intent: "DRY-RUN: report which labels WOULD be applied to an issue/PR (never writes).",
+  category: "utility",
+  schema: z.object({ ...repo, number: z.number().int().positive(), labels: z.array(z.string()) }),
+  handler: async ({ owner, repo: r, number, labels }, ctx) => gh(ctx).suggestLabelsDryRun(owner, r, number, labels),
+});
+`;
 
 const GH_CLIENT = `/**
  * Thin GitHub REST client — PUBLIC repos only, read-mostly. One DRY-RUN write

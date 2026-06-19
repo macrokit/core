@@ -1,0 +1,6 @@
+{
+  "name": "test-proj",
+  "version": "0.1.0",
+  "vertical": "test",
+  "paths": { "macros": "macros", "primitives": "primitives" }
+}

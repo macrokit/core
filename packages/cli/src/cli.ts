@@ -1,4 +1,4 @@
-import { resolve } from "node:path";
+import { join, resolve } from "node:path";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import {
   analyzeSession,

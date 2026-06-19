@@ -1,37 +1,28 @@
 {
-  "name": "@macrokit/cli",
+  "name": "@macrokit/mcp",
   "version": "0.0.1",
-  "publishConfig": {
-    "access": "public"
-  },
-  "description": "Macrokit CLI: init, lint, and the distillation gate.",
+  "description": "Minimal public MCP server: expose a Macrokit project's macros + primitives as tools to Claude Code / Cursor, record the session, and let `macrokit gate` flag un-encoded workflows.",
   "license": "Apache-2.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "bin": {
-    "macrokit": "./dist/cli.js"
-  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     }
   },
-  "files": [
-    "dist",
-    "src",
-    "template"
-  ],
+  "files": ["dist", "src"],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && cp src/loader.mjs dist/loader.mjs",
     "test": "vitest run",
-    "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@macrokit/runtime": "workspace:*",
-    "@macrokit/mcp": "workspace:*"
+    "@macrokit/authoring": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "tsup": "^8.3.5",

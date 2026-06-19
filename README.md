@@ -48,7 +48,8 @@ The short version: every framework here lets the model *reason at runtime*; Macr
 - **`@macrokit/browser`** — Playwright-based browser service with annotated-screenshot and DOM action-menu primitives. Weak models pick numbered elements instead of estimating coordinates.
 - **`@macrokit/authoring`** — `defineMacro()`, a test harness with recording mode, schema helpers.
 - **`@macrokit/reference-data`** — versioned, signed reference-data bundles for the lookup tables most production macro libraries need.
-- **`macrokit` CLI** — `init`, `lint`, and the headline `macrokit gate` command that enforces the distillation discipline (see below).
+- **`@macrokit/mcp`** — a public stdio MCP server: expose a project's macros + primitives as tools to Claude Code / Cursor, record the session, and let `macrokit gate` flag un-encoded workflows. See [Wire it into Claude Code / Cursor](#wire-it-into-claude-code--cursor-5-minutes).
+- **`macrokit` CLI** — `init`, `lint`, `mcp`, and the headline `macrokit gate` command that enforces the distillation discipline (see below).
 
 ## The distillation gate
 
@@ -100,6 +101,34 @@ console.log(result.text);   // → "HELLO MACROKIT"
 ```
 
 The point of this example is what's *not* in it. No agent loop. No planning prompt. No fallback handler. The weak model classifies the intent, the macro runs deterministically, the result comes back. That is the whole runtime contract.
+
+## Wire it into Claude Code / Cursor (5 minutes)
+
+Macrokit ships a public MCP server (`@macrokit/mcp`) so the agent you already use can call your project's macros — and its raw primitives — as tools.
+
+1. **Scaffold (or open) a project:**
+   ```sh
+   macrokit init my-app --vertical github
+   ```
+2. **Add the server to your agent** (Claude Code shown; Cursor takes the same command in its MCP settings):
+   ```sh
+   claude mcp add macrokit -- macrokit mcp ./my-app
+   ```
+3. **Work normally.** The agent now has these tools:
+   - **`list_macros`** — your project's workflow macros (name, intent, args);
+   - **`run_macro`** — run one by name;
+   - **each primitive in `primitives/`** as its own tool (`gh_list_issues`, `gh_list_pulls`, …) for the raw workflow when no macro fits.
+
+   Every tool call is appended to `.macrokit/sessions/`.
+4. **Encode what recurs.** When the agent does a workflow with no macro — three or more raw primitive calls in a row — flag it:
+   ```sh
+   macrokit gate ./my-app/.macrokit/sessions --macros ./my-app/macros
+   ```
+   It names the un-encoded sequence and suggests a macro stub. Write it with `defineMacro`; next time the agent (or a weak local model via the runtime) routes to that macro instead of re-deriving the steps.
+
+That loop — **agent calls tools → session recorded → `macrokit gate` flags un-encoded work → you encode a macro** — is the whole public flow.
+
+> **Scope (honest):** this is the minimal **record + run + gate** server. It does **not** auto-distill macros on recurrence — that's the separate Macrokit Studio IDE. `macrokit mcp` uses this public server by default; it prefers a richer private Studio server only when `MACROKIT_STUDIO_DIR` is set or `@macrokit-studio/preview` is installed.
 
 ## Docs
 
