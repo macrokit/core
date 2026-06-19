@@ -121,7 +121,7 @@ function runInit(args: string[]): number {
   }
   const next =
     result.vertical === "github"
-      ? `\nNext steps:\n  cd ${name}\n  macrokit studio .\n`
+      ? `\nNext steps:\n  cd ${name}\n  # wire it into your agent (Claude Code / Cursor):\n  claude mcp add macrokit -- macrokit mcp .\n  # then, after a session, flag un-encoded workflows:\n  macrokit gate .macrokit/sessions --macros macros\n`
       : `\nNext steps:\n  cd ${name}\n  npm install\n  npm start\n`;
   process.stdout.write(next);
   return 0;
@@ -272,24 +272,31 @@ function runGate(args: string[]): number {
     return 0;
   }
 
-  process.stdout.write(formatViolations(allViolations));
+  process.stdout.write(formatViolations(allViolations, encoded));
   return 1;
 }
 
-function formatViolations(vs: ReadonlyArray<GateViolation>): string {
+function formatViolations(vs: ReadonlyArray<GateViolation>, encoded?: Set<string>): string {
+  const haveMacros = encoded !== undefined && encoded.size > 0;
+  const isEnc = (n: string): boolean => (encoded ? encoded.has(n) : false);
   const out: string[] = [];
   out.push(
-    `macrokit gate: ${vs.length} violation(s). Each user turn below composed ${
-      ""
-    }multiple macros — candidates for a single composite macro.\n`,
+    `macrokit gate: ${vs.length} turn(s) ran a multi-step workflow ${
+      haveMacros ? "without a macro" : "no single macro covers"
+    } — encode each as one macro before merging.\n`,
   );
   for (const v of vs) {
     out.push("");
     out.push(`Session: ${v.sessionPath}`);
     out.push(`Turn ${v.turnIndex} — user: ${truncate(v.userText, 80)}`);
-    out.push(`Dispatched ${v.toolCalls.length} macros:`);
+    const rawCount = v.toolCalls.filter((tc) => !isEnc(tc.name)).length;
+    out.push(
+      haveMacros
+        ? `${v.toolCalls.length} tool call(s) — ${rawCount} un-encoded:`
+        : `${v.toolCalls.length} tool call(s):`,
+    );
     for (const tc of v.toolCalls) {
-      out.push(`    - ${tc.name}`);
+      out.push(`    - ${tc.name}${haveMacros && isEnc(tc.name) ? "  (already a macro)" : ""}`);
     }
     out.push(`Suggested macro: ${v.suggestion.name}`);
     out.push("```ts");

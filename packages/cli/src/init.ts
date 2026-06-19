@@ -131,9 +131,12 @@ const PACKAGE_JSON = (name: string, vertical: Vertical): string =>
       private: true,
       type: "module",
       scripts: {
-        // Open this project in the local Studio IDE (lists + runs its macros).
+        // Run the public MCP server so your agent (Claude Code / Cursor) can call this project's macros.
+        mcp: "macrokit mcp .",
+        // Flag un-encoded workflows in recorded sessions.
+        gate: "macrokit gate .macrokit/sessions --macros macros",
+        // Optional: open in the local Studio IDE (requires the separate @macrokit-studio/preview).
         studio: "macrokit studio .",
-        gate: "macrokit gate",
         lint: vertical === "github" ? "macrokit lint macros" : "macrokit lint src",
       },
       dependencies: {
@@ -178,14 +181,25 @@ const README = (name: string, vertical: Vertical): string => `# ${name}
 A Macrokit ${vertical === "github" ? "**github-maintainer**" : ""} by-product project. See
 https://macrokit.dev for the pattern essay and architecture.
 
-## Open it in Macrokit Studio (the local IDE)
+## Wire it into your agent (Claude Code / Cursor)
 
 \`\`\`sh
-macrokit studio .
+claude mcp add macrokit -- macrokit mcp .
 \`\`\`
 
-This starts a local server + browser GUI that loads the macros in \`macros/\`,
-lists them, and lets you run a task against them on a local/weak model.
+This runs the public Macrokit MCP server: your agent can now call this project's
+macros (and its raw primitives) as tools, every call is recorded, and:
+
+\`\`\`sh
+macrokit gate .macrokit/sessions --macros macros
+\`\`\`
+
+flags any workflow you ran *without* a macro and suggests one to encode. That loop
+— agent calls tools → session recorded → \`macrokit gate\` flags → you encode a macro —
+is the whole point.
+
+*(Optional: \`macrokit studio .\` opens a local GUI IDE — it requires the separate
+\`@macrokit-studio/preview\` package; the MCP server above needs nothing extra.)*
 
 ## Layout
 
