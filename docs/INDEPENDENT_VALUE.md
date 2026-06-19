@@ -17,9 +17,13 @@
 > macro-OFF reaches `V` ≈ 0.39–0.44 (not 0.11–0.17), and the macro-ON advantage is **~2.1–2.8× per call,
 > not 5–10×** — the withdrawn lift was roughly **double** the real one. The core claim survives (macro-ON
 > still beats a *fair* macro-OFF on every routing model, all CIs above 1); the magnitude does not. The
-> sections below are the corrected (`-iv2-`) numbers. This result is pending independent adversarial
-> re-verification; the raw confusion matrices, per-item `V` vectors, and bootstrap seeds are dumped to
-> [`bench/runs/iv2_analysis.json`](../bench/runs/iv2_analysis.json) to make that easy.
+> sections below are the corrected (`-iv2-`) numbers. **This result has been independently
+> re-verified (2026-06-19):** the per-model means reproduce from the raw per-item `value` records, the
+> V/call ratios (2.14–2.76×) and Prediction-1 correlation (r=0.997) match, the analyzer is deterministic
+> under its committed seeds (re-running leaves `iv2_analysis.json` byte-identical), and the fairness fix
+> (`buildFixturedPrimitiveRegistry`) is confirmed present in the recorded harness commit. The raw
+> confusion matrices, per-item `V` vectors, and bootstrap seeds are dumped to
+> [`bench/runs/iv2_analysis.json`](../bench/runs/iv2_analysis.json).
 
 **This is an experiment reported as evidence, not a law.** One task family
 (`github-maintainer`), one ~18-item fixtured corpus, five local models, discrete
