@@ -34,6 +34,13 @@ export interface MacroDefinition<TInput, TOutput> {
    * macros in sequence — a sign a domain macro should be encoded.
    */
   category?: "domain" | "utility";
+  /**
+   * Declared capability manifest (D-017): the tool-surface keys (from
+   * `ctx.tools`) this macro may access, e.g. `["github"]`. Omit for
+   * legacy-permissive behavior; `[]` declares the macro touches no surfaces.
+   * The dispatcher enforces this at runtime — see Macro.capabilities.
+   */
+  capabilities?: string[];
   fixtures?: ReadonlyArray<MacroFixture<TInput, TOutput>>;
 }
 
@@ -76,6 +83,7 @@ export function defineMacro<TInput, TOutput>(
     intent: spec.intent,
     schema: enrichSchema(spec.schema),
     handler: spec.handler,
+    ...(spec.capabilities !== undefined ? { capabilities: spec.capabilities } : {}),
     category: spec.category ?? "domain",
     fixtures: spec.fixtures ?? [],
   };

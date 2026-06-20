@@ -82,7 +82,11 @@ describe("Runtime.dispatch — happy path", () => {
   it("writes tool_call and tool_result entries to the session log", async () => {
     const rt = newRuntime();
     await rt.dispatch({ tool: "echo", args: { text: "x" } });
-    const types = rt.log.entries.map((e) => e.type);
+    // `echo` declares no capabilities, so a legacy-permissive `system`
+    // advisory is logged alongside the tool_call/tool_result pair (D-017).
+    const types = rt.log.entries
+      .map((e) => e.type)
+      .filter((t) => t !== "system");
     expect(types).toEqual(["tool_call", "tool_result"]);
   });
 });

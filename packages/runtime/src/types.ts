@@ -20,6 +20,19 @@ export interface Macro<TInput = unknown, TOutput = unknown> {
   schema: Schema<TInput>;
   /** Deterministic handler. The encoded workflow. */
   handler: (args: TInput, ctx: MacroContext) => Promise<TOutput>;
+  /**
+   * Declared capability manifest (D-017): the tool-surface keys this macro
+   * may access from `ctx.tools` (e.g. `["github"]`). Granularity is
+   * surface-level — method-level scoping is a future refinement.
+   *
+   * Enforcement is by the dispatcher:
+   *   - `undefined` → legacy-permissive: full tool access, with a one-line
+   *     advisory logged. Lets adoption be incremental (the seed macros and
+   *     bench harness keep working untouched).
+   *   - declared (including `[]`) → access to any undeclared key throws a
+   *     `capability_violation` MacroError at runtime; `[]` denies everything.
+   */
+  capabilities?: string[];
 }
 
 export interface MacroContext {
