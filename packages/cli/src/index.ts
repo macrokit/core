@@ -29,3 +29,47 @@ export {
   type LaunchStudioOptions,
   type LaunchMcpOptions,
 } from "./studio.js";
+export {
+  buildPack,
+  extractMacros,
+  safeName,
+  PackError,
+  PACK_EXT,
+  PACK_FORMAT_VERSION,
+  type BuildPackResult,
+  type PackManifest,
+  type PackedMacro,
+} from "./pack.js";
+export {
+  publishPack,
+  installPack,
+  resolvePack,
+  listVersions,
+  disclosureFor,
+  parseSpec,
+  readLockfile,
+  RegistryError,
+  DEFAULT_REGISTRY,
+  LOCKFILE,
+  type PublishResult,
+  type InstallOptions,
+  type InstallResult,
+  type Resolved,
+  type CapabilityDisclosure,
+} from "./registry.js";
+export {
+  scanLeakage,
+  loadDenyTerms,
+  DENYLIST_FILENAME,
+  type LeakageResult,
+  type LeakageHit,
+  type ScanOptions,
+} from "./leakage.js";
+export {
+  parseVersion,
+  isValidVersion,
+  compareVersions,
+  satisfies,
+  maxSatisfying,
+  type SemVer,
+} from "./semver.js";

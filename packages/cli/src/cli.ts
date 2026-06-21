@@ -1,5 +1,6 @@
 import { join, resolve } from "node:path";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { createInterface } from "node:readline";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import {
   analyzeSession,
   findSessionLogs,
@@ -9,6 +10,14 @@ import {
 import { lintPackage, lintProject } from "./lint.js";
 import { initProject, isVertical, type Vertical } from "./init.js";
 import { launchMcp, launchStudio } from "./studio.js";
+import { buildPack, PackError } from "./pack.js";
+import {
+  DEFAULT_REGISTRY,
+  installPack,
+  publishPack,
+  RegistryError,
+  type CapabilityDisclosure,
+} from "./registry.js";
 
 const HELP = `macrokit — the Macrokit CLI
 
@@ -43,6 +52,21 @@ Usage:
       N+ distinct macros (default 3) — those sequences are candidates
       for being a single composite macro. Exits non-zero on violations.
 
+  macrokit pack <macro-dir> [--out <path>]
+      Bundle a macro package into a versioned, source-available pack
+      (a single .mkpack.json carrying the manifest + verbatim source).
+      Runs lint --pkg and the leakage scan first; refuses on either.
+
+  macrokit publish <pack> [--registry <path>]
+      Write a pack to a personal/local registry (a resolvable dir; may
+      be git-backed). Immutable per (name, version) — never overwrites,
+      never pushes to a network location. Defaults to ~/.macrokit/registry.
+
+  macrokit install <name>[@<range>] [--registry <path>] [--dir <path>] [--yes]
+      Resolve a pack from a registry (semver range, e.g. @^1), DISPLAY its
+      declared capabilities for approval, then vendor the readable source
+      and record macrokit.lock.json. --yes approves non-interactively.
+
   macrokit --help
       This message.
 
@@ -69,6 +93,12 @@ async function main(argv: string[]): Promise<number> {
       return runLint(args.slice(1));
     case "gate":
       return runGate(args.slice(1));
+    case "pack":
+      return runPack(args.slice(1));
+    case "publish":
+      return runPublish(args.slice(1));
+    case "install":
+      return runInstall(args.slice(1));
     default:
       process.stderr.write(`macrokit: unknown command "${cmd}"\n\n${HELP}`);
       return 2;
@@ -313,6 +343,157 @@ function formatViolations(vs: ReadonlyArray<GateViolation>, encoded?: Set<string
 
 function truncate(s: string, n: number): string {
   return s.length <= n ? s : s.slice(0, n - 1) + "…";
+}
+
+// ---------------------------------------------------------------------------
+// pack / publish / install (personal-registry packaging pipeline)
+// ---------------------------------------------------------------------------
+
+function runPack(args: string[]): number {
+  const macroDir = args.find((a) => !a.startsWith("--"));
+  if (!macroDir) {
+    process.stderr.write("macrokit pack: <macro-dir> required\n");
+    return 2;
+  }
+  const dir = resolve(macroDir);
+  if (!existsSync(dir)) {
+    process.stderr.write(`macrokit pack: ${dir} does not exist\n`);
+    return 2;
+  }
+  let result;
+  try {
+    result = buildPack(dir);
+  } catch (err) {
+    if (err instanceof PackError) {
+      process.stderr.write(`macrokit pack: ${err.message}\n`);
+      if (err.detail.lintFailures) {
+        for (const f of err.detail.lintFailures) process.stderr.write(`  ✗ ${f}\n`);
+      }
+      if (err.detail.leakage) {
+        for (const h of err.detail.leakage.hard) {
+          process.stderr.write(`  ✗ leakage [${h.term}] ${h.file}:${h.line}  ${h.text}\n`);
+        }
+      }
+      return 1;
+    }
+    throw err;
+  }
+
+  const outFlag = flagValue(args, "--out");
+  const outPath = outFlag ? resolve(outFlag) : resolve(process.cwd(), result.filename);
+  writeFileSync(outPath, result.json);
+
+  const m = result.manifest;
+  process.stdout.write(`Packed ${m.name}@${m.version} → ${outPath}\n`);
+  process.stdout.write(`  macros: ${m.macros.map((x) => x.name).join(", ")}\n`);
+  process.stdout.write(
+    `  capabilities: ${m.capabilities.length ? m.capabilities.join(", ") : "(none declared)"}` +
+      `${m.hasUndeclaredCapabilities ? "  ⚠ some macros declared no capabilities (full access)" : ""}\n`,
+  );
+  process.stdout.write(`  integrity: ${m.integrity}\n`);
+  return 0;
+}
+
+function runPublish(args: string[]): number {
+  const packFile = args.find((a) => !a.startsWith("--"));
+  if (!packFile) {
+    process.stderr.write("macrokit publish: <pack> required\n");
+    return 2;
+  }
+  const registry = flagValue(args, "--registry");
+  try {
+    const res = publishPack(resolve(packFile), registry ? { registry } : {});
+    process.stdout.write(
+      `Published ${res.name}@${res.version} → ${res.path}\n` +
+        `Registry: ${res.registry} (personal/local — not pushed anywhere).\n`,
+    );
+    return 0;
+  } catch (err) {
+    if (err instanceof RegistryError) {
+      process.stderr.write(`macrokit publish: ${err.message}\n`);
+      return 1;
+    }
+    throw err;
+  }
+}
+
+async function runInstall(args: string[]): Promise<number> {
+  const spec = args.find((a) => !a.startsWith("--"));
+  if (!spec) {
+    process.stderr.write("macrokit install: <name>[@<range>] required\n");
+    return 2;
+  }
+  const registry = flagValue(args, "--registry") ?? DEFAULT_REGISTRY;
+  const projectDir = flagValue(args, "--dir") ?? process.cwd();
+  const autoYes = args.includes("--yes") || args.includes("-y");
+
+  const approve = async (d: CapabilityDisclosure): Promise<boolean> => {
+    process.stdout.write(`\nInstalling ${d.name}@${d.version} from ${resolve(registry)}\n`);
+    process.stdout.write(`This pack declares the following capabilities (tool surfaces it may access):\n`);
+    if (d.capabilities.length === 0) {
+      process.stdout.write(`  (no capabilities declared at the pack level)\n`);
+    } else {
+      for (const c of d.capabilities) process.stdout.write(`  • ${c}\n`);
+    }
+    process.stdout.write(`Macros:\n`);
+    for (const m of d.macros) {
+      const caps =
+        m.capabilities === null
+          ? "⚠ undeclared (full access)"
+          : m.capabilities.length === 0
+            ? "no tool surfaces"
+            : m.capabilities.join(", ");
+      process.stdout.write(`  • ${m.name} — ${caps}\n`);
+    }
+    if (d.hasUndeclaredCapabilities) {
+      process.stdout.write(
+        `\n⚠ One or more macros declared NO capabilities and may access any tool surface.\n`,
+      );
+    }
+    if (autoYes) {
+      process.stdout.write(`Approved via --yes.\n`);
+      return true;
+    }
+    return promptYesNo(`Approve and install ${d.name}@${d.version}? [y/N] `);
+  };
+
+  try {
+    const res = await installPack(spec, { registry, projectDir, approve });
+    if (!res.approved) {
+      process.stdout.write(`\nInstall aborted: capabilities not approved. Nothing was written.\n`);
+      return 1;
+    }
+    process.stdout.write(
+      `\nInstalled ${res.name}@${res.version}.\n` +
+        `  source: ${res.vendorDir}\n` +
+        `  entry:  ${res.entryPath}\n` +
+        `  macros: ${res.macros.join(", ")}\n` +
+        `  recorded in macrokit.lock.json (reproducible installs).\n`,
+    );
+    return 0;
+  } catch (err) {
+    if (err instanceof RegistryError) {
+      process.stderr.write(`macrokit install: ${err.message}\n`);
+      return 1;
+    }
+    throw err;
+  }
+}
+
+function promptYesNo(question: string): Promise<boolean> {
+  if (!process.stdin.isTTY) {
+    process.stdout.write(
+      `${question}\n(no TTY — pass --yes to approve non-interactively; declining.)\n`,
+    );
+    return Promise.resolve(false);
+  }
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise((resolveAnswer) => {
+    rl.question(question, (answer) => {
+      rl.close();
+      resolveAnswer(/^y(es)?$/i.test(answer.trim()));
+    });
+  });
 }
 
 function flagValue(args: string[], flag: string): string | undefined {
