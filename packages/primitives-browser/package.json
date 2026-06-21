@@ -1,0 +1,33 @@
+{
+  "name": "@macrokit/primitives-browser",
+  "version": "0.0.1",
+  "description": "Generic browser primitive for Macrokit: a thin MCP-client adapter over a local browser-mcp server, exposed as the `browser` tool surface that macros reach via ctx.tools.browser.",
+  "license": "Apache-2.0",
+  "author": "Cheng Qian",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "src"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

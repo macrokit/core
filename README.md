@@ -46,9 +46,9 @@ The short version: every framework here lets the model *reason at runtime*; Macr
 
 - **`@macrokit/runtime`** — intent router, macro registry, dispatcher, session log.
 - **`@macrokit/llm`** — model adapters (OpenAI-compatible, Ollama, llama.cpp) with a bail-out detector that catches weak-model failure modes before they reach your application.
-- **`@macrokit/browser`** — Playwright-based browser service with annotated-screenshot and DOM action-menu primitives. Weak models pick numbered elements instead of estimating coordinates.
 - **`@macrokit/authoring`** — `defineMacro()`, a test harness with recording mode, schema helpers.
 - **`@macrokit/reference-data`** — versioned, signed reference-data bundles for the lookup tables most production macro libraries need.
+- **`@macrokit/primitives-browser`** — the generic `browser` primitive: a thin MCP-client adapter over a local browser-mcp server, exposed as the `browser` tool surface macros reach via `ctx.tools.browser`. First member of the primitive standard library.
 - **`@macrokit/mcp`** — a public stdio MCP server: expose a project's macros + primitives as tools to Claude Code / Cursor, record the session, and let `macrokit gate` flag un-encoded workflows. See [Wire it into Claude Code / Cursor](#wire-it-into-claude-code--cursor-5-minutes).
 - **`macrokit` CLI** — `init`, `lint`, `mcp`, and the headline `macrokit gate` command that enforces the distillation discipline (see below).
 
@@ -185,6 +185,6 @@ There are two contribution paths, with different rules.
 
 The registry is the seed of a broader ecosystem we intend to grow: a place to share and discover the vertical macro libraries authors build, so adopting a new vertical can start from proven macros instead of a cold start. If that direction interests you as an early author, say hello via [@macrokitdev](https://x.com/macrokitdev).
 
-**SDK-internal contributions** (changes to `@macrokit/runtime`, `@macrokit/llm`, `@macrokit/browser`, `@macrokit/authoring`, `@macrokit/reference-data`, `@macrokit/cli`) currently go through issues and discussion on this repo's tracker rather than direct PRs, while the API surface settles. Open an issue first and we'll talk.
+**SDK-internal contributions** (changes to `@macrokit/runtime`, `@macrokit/llm`, `@macrokit/primitives-browser`, `@macrokit/authoring`, `@macrokit/reference-data`, `@macrokit/cli`) currently go through issues and discussion on this repo's tracker rather than direct PRs, while the API surface settles. Open an issue first and we'll talk.
 
 If you are building under the constraints Macrokit is designed for and want to be a design partner, contact via [macrokit.dev](https://macrokit.dev) or [@macrokitdev](https://x.com/macrokitdev) on X.
