@@ -7,6 +7,7 @@
   "type": "module",
   "scripts": {
     "run": "tsx src/cli.ts",
+    "run:multi-macro": "tsx src/multi-macro-cli.ts",
     "test": "vitest run --passWithNoTests",
     "typecheck": "tsc --noEmit"
   },
@@ -15,6 +16,7 @@
     "@macrokit/llm": "workspace:*",
     "@macrokit/runtime": "workspace:*",
     "@macrokit-example/github-maintainer": "workspace:*",
+    "@macrokit-example/paper-triage": "workspace:*",
     "zod": "^3.23.8"
   },
   "devDependencies": {
