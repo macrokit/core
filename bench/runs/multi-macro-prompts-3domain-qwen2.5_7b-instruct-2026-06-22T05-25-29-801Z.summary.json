@@ -1,0 +1,219 @@
+{
+  "model": "qwen2.5:7b-instruct",
+  "promptSet": "prompts-3domain.json",
+  "promptSetVersion": "2.0.0",
+  "startedAt": "2026-06-22T05:25:29.801Z",
+  "total": 51,
+  "byCategory": {
+    "clear": {
+      "n": 39,
+      "routedCorrect": 39
+    },
+    "ambiguous": {
+      "n": 6,
+      "routedCorrect": 6
+    },
+    "negative": {
+      "n": 6,
+      "routedCorrect": 6
+    }
+  },
+  "routingAccuracyPositives": 1,
+  "noRouteAccuracy": 1,
+  "hallucinatedToolCallRate": 0,
+  "argKeyAccuracy": 0.9857142857142858,
+  "argsExactRate": 0.9743589743589743,
+  "perMacroRouting": {
+    "triage_pull_request": {
+      "n": 2,
+      "correct": 2
+    },
+    "triage_issue": {
+      "n": 2,
+      "correct": 2
+    },
+    "generate_release_notes": {
+      "n": 2,
+      "correct": 2
+    },
+    "close_stale_issues": {
+      "n": 2,
+      "correct": 2
+    },
+    "suggest_reviewers": {
+      "n": 3,
+      "correct": 3
+    },
+    "capture_workflow_log": {
+      "n": 2,
+      "correct": 2
+    },
+    "triage_paper": {
+      "n": 3,
+      "correct": 3
+    },
+    "compare_papers": {
+      "n": 2,
+      "correct": 2
+    },
+    "find_related_papers": {
+      "n": 2,
+      "correct": 2
+    },
+    "bibliography_lookup": {
+      "n": 2,
+      "correct": 2
+    },
+    "check_open_access": {
+      "n": 2,
+      "correct": 2
+    },
+    "parse_requisition": {
+      "n": 2,
+      "correct": 2
+    },
+    "screen_resume": {
+      "n": 3,
+      "correct": 3
+    },
+    "rank_candidates": {
+      "n": 3,
+      "correct": 3
+    },
+    "draft_candidate_outreach": {
+      "n": 2,
+      "correct": 2
+    },
+    "schedule_interview": {
+      "n": 2,
+      "correct": 2
+    },
+    "check_references_dryrun": {
+      "n": 3,
+      "correct": 3
+    }
+  },
+  "perMacroArgKey": {
+    "triage_pull_request": {
+      "keys": 6,
+      "correct": 6
+    },
+    "triage_issue": {
+      "keys": 6,
+      "correct": 6
+    },
+    "generate_release_notes": {
+      "keys": 8,
+      "correct": 8
+    },
+    "close_stale_issues": {
+      "keys": 5,
+      "correct": 4
+    },
+    "suggest_reviewers": {
+      "keys": 9,
+      "correct": 9
+    },
+    "capture_workflow_log": {
+      "keys": 6,
+      "correct": 6
+    },
+    "triage_paper": {
+      "keys": 3,
+      "correct": 3
+    },
+    "compare_papers": {
+      "keys": 2,
+      "correct": 2
+    },
+    "find_related_papers": {
+      "keys": 3,
+      "correct": 3
+    },
+    "bibliography_lookup": {
+      "keys": 2,
+      "correct": 2
+    },
+    "check_open_access": {
+      "keys": 2,
+      "correct": 2
+    },
+    "parse_requisition": {
+      "keys": 2,
+      "correct": 2
+    },
+    "screen_resume": {
+      "keys": 4,
+      "correct": 4
+    },
+    "rank_candidates": {
+      "keys": 4,
+      "correct": 4
+    },
+    "draft_candidate_outreach": {
+      "keys": 3,
+      "correct": 3
+    },
+    "schedule_interview": {
+      "keys": 2,
+      "correct": 2
+    },
+    "check_references_dryrun": {
+      "keys": 3,
+      "correct": 3
+    }
+  },
+  "confusion": {
+    "triage_pull_request": {
+      "triage_pull_request": 2
+    },
+    "triage_issue": {
+      "triage_issue": 2
+    },
+    "generate_release_notes": {
+      "generate_release_notes": 2
+    },
+    "close_stale_issues": {
+      "close_stale_issues": 2
+    },
+    "suggest_reviewers": {
+      "suggest_reviewers": 3
+    },
+    "capture_workflow_log": {
+      "capture_workflow_log": 2
+    },
+    "triage_paper": {
+      "triage_paper": 3
+    },
+    "compare_papers": {
+      "compare_papers": 2
+    },
+    "find_related_papers": {
+      "find_related_papers": 2
+    },
+    "bibliography_lookup": {
+      "bibliography_lookup": 2
+    },
+    "check_open_access": {
+      "check_open_access": 2
+    },
+    "parse_requisition": {
+      "parse_requisition": 2
+    },
+    "screen_resume": {
+      "screen_resume": 3
+    },
+    "rank_candidates": {
+      "rank_candidates": 3
+    },
+    "draft_candidate_outreach": {
+      "draft_candidate_outreach": 2
+    },
+    "schedule_interview": {
+      "schedule_interview": 2
+    },
+    "check_references_dryrun": {
+      "check_references_dryrun": 3
+    }
+  }
+}
