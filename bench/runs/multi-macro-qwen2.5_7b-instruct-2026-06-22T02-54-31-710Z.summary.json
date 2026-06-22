@@ -1,0 +1,152 @@
+{
+  "model": "qwen2.5:7b-instruct",
+  "promptSetVersion": "1.0.0",
+  "startedAt": "2026-06-22T02:54:31.710Z",
+  "total": 34,
+  "byCategory": {
+    "clear": {
+      "n": 24,
+      "routedCorrect": 24
+    },
+    "ambiguous": {
+      "n": 4,
+      "routedCorrect": 3
+    },
+    "negative": {
+      "n": 6,
+      "routedCorrect": 6
+    }
+  },
+  "routingAccuracyPositives": 0.9642857142857143,
+  "noRouteAccuracy": 1,
+  "hallucinatedToolCallRate": 0,
+  "argKeyAccuracy": 0.9807692307692307,
+  "argsExactRate": 0.9583333333333334,
+  "perMacroRouting": {
+    "triage_pull_request": {
+      "n": 2,
+      "correct": 2
+    },
+    "triage_issue": {
+      "n": 2,
+      "correct": 2
+    },
+    "generate_release_notes": {
+      "n": 2,
+      "correct": 2
+    },
+    "close_stale_issues": {
+      "n": 2,
+      "correct": 2
+    },
+    "suggest_reviewers": {
+      "n": 3,
+      "correct": 3
+    },
+    "capture_workflow_log": {
+      "n": 2,
+      "correct": 2
+    },
+    "triage_paper": {
+      "n": 3,
+      "correct": 3
+    },
+    "compare_papers": {
+      "n": 2,
+      "correct": 2
+    },
+    "find_related_papers": {
+      "n": 2,
+      "correct": 2
+    },
+    "bibliography_lookup": {
+      "n": 2,
+      "correct": 2
+    },
+    "check_open_access": {
+      "n": 2,
+      "correct": 2
+    }
+  },
+  "perMacroArgKey": {
+    "triage_pull_request": {
+      "keys": 6,
+      "correct": 6
+    },
+    "triage_issue": {
+      "keys": 6,
+      "correct": 6
+    },
+    "generate_release_notes": {
+      "keys": 8,
+      "correct": 8
+    },
+    "close_stale_issues": {
+      "keys": 5,
+      "correct": 4
+    },
+    "suggest_reviewers": {
+      "keys": 9,
+      "correct": 9
+    },
+    "capture_workflow_log": {
+      "keys": 6,
+      "correct": 6
+    },
+    "triage_paper": {
+      "keys": 3,
+      "correct": 3
+    },
+    "compare_papers": {
+      "keys": 2,
+      "correct": 2
+    },
+    "find_related_papers": {
+      "keys": 3,
+      "correct": 3
+    },
+    "bibliography_lookup": {
+      "keys": 2,
+      "correct": 2
+    },
+    "check_open_access": {
+      "keys": 2,
+      "correct": 2
+    }
+  },
+  "confusion": {
+    "triage_pull_request": {
+      "triage_pull_request": 2
+    },
+    "triage_issue": {
+      "triage_issue": 2
+    },
+    "generate_release_notes": {
+      "generate_release_notes": 2
+    },
+    "close_stale_issues": {
+      "close_stale_issues": 2
+    },
+    "suggest_reviewers": {
+      "suggest_reviewers": 3
+    },
+    "capture_workflow_log": {
+      "capture_workflow_log": 2
+    },
+    "triage_paper": {
+      "triage_paper": 3
+    },
+    "compare_papers": {
+      "compare_papers": 2
+    },
+    "find_related_papers": {
+      "find_related_papers": 2
+    },
+    "bibliography_lookup": {
+      "bibliography_lookup": 2
+    },
+    "check_open_access": {
+      "check_open_access": 2
+    }
+  }
+}

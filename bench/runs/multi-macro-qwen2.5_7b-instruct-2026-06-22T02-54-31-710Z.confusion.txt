@@ -1,0 +1,12 @@
+gold \ actual         triage pul triage iss generate r close stal suggest re capture wo triage pap compare pa find relat bibliograp check open (no-route)
+triage_pull_request            2          0          0          0          0          0          0          0          0          0          0          0
+triage_issue                   0          2          0          0          0          0          0          0          0          0          0          0
+generate_release_notes         0          0          2          0          0          0          0          0          0          0          0          0
+close_stale_issues             0          0          0          2          0          0          0          0          0          0          0          0
+suggest_reviewers              0          0          0          0          3          0          0          0          0          0          0          0
+capture_workflow_log           0          0          0          0          0          2          0          0          0          0          0          0
+triage_paper                   0          0          0          0          0          0          3          0          0          0          0          0
+compare_papers                 0          0          0          0          0          0          0          2          0          0          0          0
+find_related_papers            0          0          0          0          0          0          0          0          2          0          0          0
+bibliography_lookup            0          0          0          0          0          0          0          0          0          2          0          0
+check_open_access              0          0          0          0          0          0          0          0          0          0          2          0
