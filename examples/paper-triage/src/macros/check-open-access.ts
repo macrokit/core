@@ -4,6 +4,7 @@ import { OpenAlexClient, SemanticScholarClient } from "../api-client.js";
 
 export const checkOpenAccess = defineMacro({
   name: "check_open_access",
+  capabilities: ["openAlex", "semanticScholar"],
   intent:
     "Check whether an academic paper is open-access via OpenAlex. Returns " +
     "the OA status (closed / bronze / hybrid / green / gold / diamond), the " +

@@ -5,6 +5,7 @@ import { groupReleaseCommits, renderReleaseNotes } from "../classifiers.js";
 
 export const generateReleaseNotes = defineMacro({
   name: "generate_release_notes",
+  capabilities: ["github"],
   intent:
     "Generate release notes for a GitHub repo by comparing two refs (tags, " +
     "branches, or commit SHAs). Commits are grouped by conventional-commit " +

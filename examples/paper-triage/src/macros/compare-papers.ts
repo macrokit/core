@@ -5,6 +5,7 @@ import { toComparisonRow } from "../classifiers.js";
 
 export const comparePapers = defineMacro({
   name: "compare_papers",
+  capabilities: ["semanticScholar"],
   intent:
     "Compare 2–10 academic papers side-by-side by their arXiv IDs or DOIs. " +
     "Returns a table-row per paper with year, citation count, primary " +

@@ -5,6 +5,7 @@ import { classifyPaper, suggestTags } from "../classifiers.js";
 
 export const triagePaper = defineMacro({
   name: "triage_paper",
+  capabilities: ["semanticScholar"],
   intent:
     "Triage an academic paper by its arXiv ID or DOI: fetch metadata, " +
     "classify by primary subject, suggest reading-queue tags (recent / " +

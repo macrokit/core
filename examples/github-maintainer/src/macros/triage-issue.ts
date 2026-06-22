@@ -5,6 +5,7 @@ import { classify } from "../classifiers.js";
 
 export const triageIssue = defineMacro({
   name: "triage_issue",
+  capabilities: ["github"],
   intent:
     "Triage a GitHub issue: classify it (bug/feature/docs/chore), suggest " +
     "labels based on the title and body, and identify potential duplicates " +

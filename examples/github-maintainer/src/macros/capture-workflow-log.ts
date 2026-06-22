@@ -28,6 +28,7 @@ import { z } from "zod";
  */
 export const captureWorkflowLog = defineMacro({
   name: "capture_workflow_log",
+  capabilities: ["browser"],
   intent:
     "Capture the rendered text of a GitHub Actions workflow run's logs by " +
     "driving the github.com UI. Use this when you need the same log view a " +

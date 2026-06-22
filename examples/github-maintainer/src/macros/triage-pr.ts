@@ -5,6 +5,7 @@ import { classify } from "../classifiers.js";
 
 export const triagePullRequest = defineMacro({
   name: "triage_pull_request",
+  capabilities: ["github"],
   intent:
     "Triage a GitHub pull request: classify it (bug/feature/docs/test/chore) " +
     "and suggest labels based on title and changed files.",

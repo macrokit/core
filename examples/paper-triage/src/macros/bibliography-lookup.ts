@@ -5,6 +5,7 @@ import { buildBibtex } from "../classifiers.js";
 
 export const bibliographyLookup = defineMacro({
   name: "bibliography_lookup",
+  capabilities: ["semanticScholar"],
   intent:
     "Search the academic literature by free-text query and return BibTeX " +
     "entries for the top matches. Useful when adding citations to a paper " +

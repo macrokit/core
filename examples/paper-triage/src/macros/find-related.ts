@@ -5,6 +5,7 @@ import { rankByQuery } from "../classifiers.js";
 
 export const findRelatedPapers = defineMacro({
   name: "find_related_papers",
+  capabilities: ["semanticScholar"],
   intent:
     "Find papers related to a given arXiv ID or DOI via Semantic Scholar's " +
     "recommendations endpoint. Optionally re-rank the recommendations against " +

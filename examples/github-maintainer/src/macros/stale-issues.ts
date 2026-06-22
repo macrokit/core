@@ -5,6 +5,7 @@ import { isStale } from "../classifiers.js";
 
 export const closeStaleIssues = defineMacro({
   name: "close_stale_issues",
+  capabilities: ["github"],
   intent:
     "Find open GitHub issues that have been inactive past a threshold and " +
     "close them with a polite comment. Skips issues labeled bug, security, " +

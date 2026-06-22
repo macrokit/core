@@ -57,9 +57,6 @@ importers:
 
   examples/github-maintainer:
     dependencies:
-      '@macrokit/authoring':
-        specifier: workspace:*
-        version: link:../../packages/authoring
       '@macrokit/browser':
         specifier: workspace:*
         version: link:../../packages/browser
@@ -76,6 +73,9 @@ importers:
         specifier: ^3.23.8
         version: 3.25.76
     devDependencies:
+      '@macrokit/authoring':
+        specifier: workspace:*
+        version: link:../../packages/authoring
       playwright-core:
         specifier: ^1.50.0
         version: 1.60.0
@@ -91,9 +91,6 @@ importers:
 
   examples/hr-recruiting:
     dependencies:
-      '@macrokit/authoring':
-        specifier: workspace:*
-        version: link:../../packages/authoring
       '@macrokit/llm':
         specifier: workspace:*
         version: link:../../packages/llm
@@ -104,6 +101,9 @@ importers:
         specifier: ^3.23.8
         version: 3.25.76
     devDependencies:
+      '@macrokit/authoring':
+        specifier: workspace:*
+        version: link:../../packages/authoring
       tsx:
         specifier: ^4.19.0
         version: 4.22.3
@@ -116,9 +116,6 @@ importers:
 
   examples/paper-triage:
     dependencies:
-      '@macrokit/authoring':
-        specifier: workspace:*
-        version: link:../../packages/authoring
       '@macrokit/llm':
         specifier: workspace:*
         version: link:../../packages/llm
@@ -129,6 +126,9 @@ importers:
         specifier: ^3.23.8
         version: 3.25.76
     devDependencies:
+      '@macrokit/authoring':
+        specifier: workspace:*
+        version: link:../../packages/authoring
       tsx:
         specifier: ^4.19.0
         version: 4.22.3

@@ -1,0 +1,11 @@
+{
+  "@macrokit-example/github-maintainer": [
+    "1.0.0"
+  ],
+  "@macrokit-example/paper-triage": [
+    "1.0.0"
+  ],
+  "@macrokit-example/hr-recruiting": [
+    "1.0.0"
+  ]
+}

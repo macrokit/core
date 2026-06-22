@@ -5,6 +5,7 @@ import { suggestReviewers } from "../classifiers.js";
 
 export const suggestReviewersMacro = defineMacro({
   name: "suggest_reviewers",
+  capabilities: ["github"],
   intent:
     "Suggest reviewers for a GitHub PR by combining CODEOWNERS matches with " +
     "the PR's changed files. Excludes the PR author.",

@@ -1,6 +1,6 @@
 {
   "name": "@macrokit-example/hr-recruiting",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Macrokit reference implementation: a recruiter/employer-side HR agent over a fixtured ATS/HRIS surface. Synthetic data only — no real PII, no live calls.",
   "license": "Apache-2.0",
   "private": true,
@@ -12,12 +12,15 @@
     "gate": "node ../../packages/cli/dist/cli.js gate .macrokit/sessions"
   },
   "dependencies": {
-    "@macrokit/authoring": "workspace:*",
     "@macrokit/llm": "workspace:*",
     "@macrokit/runtime": "workspace:*",
     "zod": "^3.23.8"
   },
+  "peerDependencies": {
+    "@macrokit/authoring": "^0.0.1"
+  },
   "devDependencies": {
+    "@macrokit/authoring": "workspace:*",
     "tsx": "^4.19.0",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
