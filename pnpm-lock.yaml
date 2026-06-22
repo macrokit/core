@@ -26,6 +26,9 @@ importers:
       '@macrokit-example/github-maintainer':
         specifier: workspace:*
         version: link:../examples/github-maintainer
+      '@macrokit-example/hr-recruiting':
+        specifier: workspace:*
+        version: link:../examples/hr-recruiting
       '@macrokit-example/paper-triage':
         specifier: workspace:*
         version: link:../examples/paper-triage

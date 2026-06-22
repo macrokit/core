@@ -1,13 +1,14 @@
 /**
  * CLI for the multi-macro routing stress test.
  *
- *   pnpm --filter @macrokit/bench run:multi-macro
+ *   pnpm --filter @macrokit/bench run:multi-macro                    # default 16-macro / 3-domain set
+ *   MULTI_MACRO_PROMPTS=prompts.json pnpm ... run:multi-macro        # the original 11-macro prompt set
  *
  * Needs Ollama serving qwen2.5:7b-instruct at http://localhost:11434.
  * Writes the raw per-prompt artifact + summary + confusion matrix to bench/runs/.
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { OllamaAdapter } from "@macrokit/llm";
 import {
@@ -22,9 +23,11 @@ import {
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..");
 const MODEL = process.env.MULTI_MACRO_MODEL ?? "qwen2.5:7b-instruct";
+// Which frozen prompt set to run. Default = the 16-macro / 3-domain set.
+const PROMPT_FILE = process.env.MULTI_MACRO_PROMPTS ?? "prompts-3domain.json";
 
 function loadPrompts(): PromptFile {
-  const raw = readFileSync(join(ROOT, "multi-macro", "prompts.json"), "utf8");
+  const raw = readFileSync(join(ROOT, "multi-macro", PROMPT_FILE), "utf8");
   return JSON.parse(raw) as PromptFile;
 }
 
@@ -49,19 +52,20 @@ async function main(): Promise<void> {
 
   const summary = aggregate(results);
   const stamp = startedAt.replace(/[:.]/g, "-");
+  const tag = basename(PROMPT_FILE, ".json");
   const outDir = join(ROOT, "runs");
   mkdirSync(outDir, { recursive: true });
-  const base = join(outDir, `multi-macro-${MODEL.replace(/[:/]/g, "_")}-${stamp}`);
+  const base = join(outDir, `multi-macro-${tag}-${MODEL.replace(/[:/]/g, "_")}-${stamp}`);
 
   // Raw artifact: header + one line per prompt result.
   const jsonl = [
-    JSON.stringify({ type: "header", model: MODEL, promptSetVersion: version, startedAt }),
+    JSON.stringify({ type: "header", model: MODEL, promptSet: PROMPT_FILE, promptSetVersion: version, startedAt }),
     ...results.map((r: PromptResult) => JSON.stringify({ type: "result", ...r })),
   ].join("\n");
   writeFileSync(`${base}.jsonl`, jsonl + "\n");
   writeFileSync(
     `${base}.summary.json`,
-    JSON.stringify({ model: MODEL, promptSetVersion: version, startedAt, ...summary }, null, 2) + "\n",
+    JSON.stringify({ model: MODEL, promptSet: PROMPT_FILE, promptSetVersion: version, startedAt, ...summary }, null, 2) + "\n",
   );
   writeFileSync(`${base}.confusion.txt`, renderConfusion(summary) + "\n");
 

@@ -17,6 +17,7 @@
     "@macrokit/runtime": "workspace:*",
     "@macrokit-example/github-maintainer": "workspace:*",
     "@macrokit-example/paper-triage": "workspace:*",
+    "@macrokit-example/hr-recruiting": "workspace:*",
     "zod": "^3.23.8"
   },
   "devDependencies": {

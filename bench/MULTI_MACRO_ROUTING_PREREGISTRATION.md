@@ -95,6 +95,62 @@ the real confusion matrix, whatever they are.
 ```sh
 cd core
 pnpm --filter @macrokit/bench run:multi-macro          # needs Ollama + qwen2.5:7b-instruct
-# → writes bench/runs/multi-macro-<model>-<stamp>.{jsonl,summary.json,confusion.txt}
+# → writes bench/runs/multi-macro-<tag>-<model>-<stamp>.{jsonl,summary.json,confusion.txt}
 pnpm --filter @macrokit/bench test                     # offline harness test (no Ollama)
+```
+
+---
+
+# Addendum v2 — scale to 17 macros / 3 domains (HR added)
+
+**Status:** frozen before the v2 run. This addendum + `multi-macro/prompts-3domain.json`
+are committed in the same prereg commit, which **precedes** the v2 results
+artifact (`bench/runs/multi-macro-prompts-3domain-*`).
+
+## Question (scaling)
+
+The baseline above validated routing at **11 macros / 2 domains** (a fully
+diagonal confusion matrix, 96.4% positives). Does routing **hold as the library
+grows**? We add the third reference vertical — `hr-recruiting` (6 macros) — for
+**17 macros across 3 domains**, and ask specifically: **does HR's
+people/candidate language bleed into the github or paper macros** (or vice
+versa)? The worry is lexical overlap — "triage", "compare", "find references",
+"review" — that a person could read as either a candidate action or an
+issue/paper action.
+
+## What changed vs. the baseline (everything else identical)
+
+- **Registry:** now all **17** macros in ONE registry — github-maintainer (6) +
+  paper-triage (5) + hr-recruiting (6). Same stubbed-handler, routing-only setup.
+- **Prompt set:** `prompts-3domain.json` (v2.0.0) = the **original 34 prompts
+  verbatim** (now competing against 6 extra HR distractor macros — this is the
+  pure "did adding HR break the existing routing" test) **+ 17 new HR prompts**:
+  - **12 HR clear-intent** — 2 per HR macro, varied phrasings.
+  - **3 cross-domain lexical-collision** (clear, single gold = HR): prompts that
+    deliberately reuse a verb owned by another domain but with a candidate/req
+    referent, so the right answer is the HR macro:
+    `hx1` "**Triage** candidate CAND-2001…" → `screen_resume` (not triage_*);
+    `hx2` "**Find the references** for candidate…" → `check_references_dryrun`
+    (not bibliography_lookup); `hx3` "**Compare** the candidates…ranks highest"
+    → `rank_candidates` (not compare_papers). These are the bleed probes.
+  - **2 HR ambiguous** (accept-set): `ha1` req-vs-rank, `ha2` rank-vs-outreach.
+  - Total **51 prompts**: 39 clear / 6 ambiguous / 6 negative.
+- **Scoring + confusion matrix:** unchanged (same frozen rules). HR arg-scoring
+  uses the reliably-extractable ID keys (`requisitionId`, `candidateId`, `top`);
+  free-form `interviewers`/`proposedSlots` are not value-scored.
+
+## Reported comparison
+
+The v2 results doc reports the 17-macro numbers **side-by-side with the 11-macro
+baseline** (commit `a1c45c0`): routing accuracy, no-route accuracy, arg
+extraction, and — the headline for the scaling question — **whether the
+confusion matrix stayed diagonal or grew off-diagonal cross-domain cells**,
+especially any HR↔github/paper bleed. A drop here is a valid, publishable
+finding (it would say the library needs retrieval pre-filtering or sharper
+intents past ~N macros); holding the diagonal says the library stays routable as
+it scales.
+
+```sh
+pnpm --filter @macrokit/bench run:multi-macro                      # v2: 17 macros, prompts-3domain.json (default)
+MULTI_MACRO_PROMPTS=prompts.json pnpm --filter @macrokit/bench run:multi-macro   # baseline prompt set, now vs 17 macros
 ```

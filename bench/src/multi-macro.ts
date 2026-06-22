@@ -1,11 +1,18 @@
 /**
  * Multi-macro routing stress test — harness.
  *
- * Registers ALL 11 public reference macros (github-maintainer + paper-triage)
- * into ONE registry and measures whether a weak local model can disambiguate
- * among them. Routing-only: macro handlers are stubbed (no live GitHub /
- * Semantic Scholar / OpenAlex / browser calls), so we score the classification
- * + argument-extraction decision, not handler fills.
+ * Registers ALL public reference macros across THREE domains into ONE registry
+ * (github-maintainer 6 + paper-triage 5 + hr-recruiting 6 = 17) and measures
+ * whether a weak local model can disambiguate among them. Routing-only: macro
+ * handlers are stubbed (no live GitHub / Semantic Scholar / OpenAlex / browser /
+ * ATS calls), so we score the classification + argument-extraction decision, not
+ * handler fills.
+ *
+ * Scaling history: started at 11 macros / 2 domains (prompts.json, prereg
+ * f490e1f, baseline run a1c45c0). HR added → 17 macros / 3 domains
+ * (prompts-3domain.json) to test whether routing HOLDS as the library grows —
+ * in particular whether HR's people/candidate language bleeds into the github
+ * or paper macros.
  *
  * Scoring is the frozen pre-registration (MULTI_MACRO_ROUTING_PREREGISTRATION.md).
  */
@@ -32,20 +39,37 @@ import {
   findRelatedPapers,
   triagePaper,
 } from "@macrokit-example/paper-triage/src/macros/index.js";
+import {
+  checkReferencesDryRun,
+  draftCandidateOutreach,
+  parseRequisition,
+  rankCandidates,
+  scheduleInterview,
+  screenResume,
+} from "@macrokit-example/hr-recruiting/src/macros/index.js";
 
-/** The 11 real macros, in a stable order. */
+/** The 17 real macros across 3 domains, in a stable order. */
 const REAL_MACROS: ReadonlyArray<Macro> = [
+  // github-maintainer (6)
   triagePullRequest,
   triageIssue,
   generateReleaseNotes,
   closeStaleIssues,
   suggestReviewersMacro,
   captureWorkflowLog,
+  // paper-triage (5)
   triagePaper,
   comparePapers,
   findRelatedPapers,
   bibliographyLookup,
   checkOpenAccess,
+  // hr-recruiting (6)
+  parseRequisition,
+  screenResume,
+  rankCandidates,
+  draftCandidateOutreach,
+  scheduleInterview,
+  checkReferencesDryRun,
 ] as unknown as ReadonlyArray<Macro>;
 
 export const ALL_MACRO_NAMES: ReadonlyArray<string> = REAL_MACROS.map((m) => m.name);
@@ -79,7 +103,7 @@ export type Category = "clear" | "ambiguous" | "negative";
 export interface Prompt {
   id: string;
   category: Category;
-  domain: "github" | "paper" | "none";
+  domain: "github" | "paper" | "hr" | "none";
   prompt: string;
   /** Acceptable macros. [] for negatives; one for clear; ≥2 for ambiguous. */
   expect: string[];

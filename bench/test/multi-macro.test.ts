@@ -25,9 +25,10 @@ import {
 } from "../src/multi-macro.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const PROMPTS = JSON.parse(
-  readFileSync(join(HERE, "..", "multi-macro", "prompts.json"), "utf8"),
-) as PromptFile;
+const loadSet = (file: string) =>
+  JSON.parse(readFileSync(join(HERE, "..", "multi-macro", file), "utf8")) as PromptFile;
+const BASELINE = loadSet("prompts.json"); // 11-macro / 2-domain baseline
+const THREE_DOMAIN = loadSet("prompts-3domain.json"); // 17-macro / 3-domain
 
 /** Adapter that replays a prompt→toolcall script. null = no tool call. */
 function scriptedAdapter(
@@ -52,10 +53,14 @@ function scriptedAdapter(
 }
 
 describe("multi-macro registry", () => {
-  it("registers all 11 reference macros with stubbed (offline) handlers", async () => {
+  it("registers all 17 reference macros (3 domains) with stubbed (offline) handlers", async () => {
     const reg = buildMultiMacroRegistry();
     expect(reg.list().map((m) => m.name).sort()).toEqual([...ALL_MACRO_NAMES].sort());
-    expect(ALL_MACRO_NAMES).toHaveLength(11);
+    expect(ALL_MACRO_NAMES).toHaveLength(17);
+    // The three domains are all present.
+    for (const m of ["triage_pull_request", "triage_paper", "screen_resume"]) {
+      expect(ALL_MACRO_NAMES).toContain(m);
+    }
     // The stub handler echoes args and never touches the network/ctx.tools.
     const macro = reg.lookup("triage_paper")!;
     const echoed = await macro.handler({ paperId: "x" }, {} as never);
@@ -158,17 +163,38 @@ describe("runMultiMacro end-to-end (scripted, offline)", () => {
   });
 });
 
-describe("frozen prompt set", () => {
-  it("is well-formed: 34 prompts, valid macros, category invariants", () => {
-    const macros = new Set(ALL_MACRO_NAMES);
-    expect(PROMPTS.prompts).toHaveLength(34);
-    for (const p of PROMPTS.prompts) {
+describe("frozen prompt sets", () => {
+  const macros = new Set(ALL_MACRO_NAMES);
+  const counts = (f: PromptFile, c: string) => f.prompts.filter((p) => p.category === c).length;
+
+  function assertWellFormed(f: PromptFile) {
+    for (const p of f.prompts) {
       for (const m of p.expect) expect(macros.has(m)).toBe(true);
       if (p.category === "negative") expect(p.expect).toHaveLength(0);
       if (p.category === "clear") expect(p.expect).toHaveLength(1);
       if (p.category === "ambiguous") expect(p.expect.length).toBeGreaterThanOrEqual(2);
     }
-    const n = (c: string) => PROMPTS.prompts.filter((p) => p.category === c).length;
-    expect([n("clear"), n("ambiguous"), n("negative")]).toEqual([24, 4, 6]);
+    // unique ids
+    expect(new Set(f.prompts.map((p) => p.id)).size).toBe(f.prompts.length);
+  }
+
+  it("baseline (11-macro): 34 prompts, 24/4/6", () => {
+    assertWellFormed(BASELINE);
+    expect(BASELINE.prompts).toHaveLength(34);
+    expect([counts(BASELINE, "clear"), counts(BASELINE, "ambiguous"), counts(BASELINE, "negative")])
+      .toEqual([24, 4, 6]);
+  });
+
+  it("3-domain (17-macro): 51 prompts, 39/6/6, HR macros covered", () => {
+    assertWellFormed(THREE_DOMAIN);
+    expect(THREE_DOMAIN.prompts).toHaveLength(51);
+    expect([counts(THREE_DOMAIN, "clear"), counts(THREE_DOMAIN, "ambiguous"), counts(THREE_DOMAIN, "negative")])
+      .toEqual([39, 6, 6]);
+    // every HR macro has at least one clear prompt
+    const hr = ["parse_requisition", "screen_resume", "rank_candidates",
+      "draft_candidate_outreach", "schedule_interview", "check_references_dryrun"];
+    for (const m of hr) {
+      expect(THREE_DOMAIN.prompts.some((p) => p.category === "clear" && p.expect[0] === m)).toBe(true);
+    }
   });
 });
